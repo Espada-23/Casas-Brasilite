@@ -134,7 +134,7 @@
 }
 
 /* Modificador do grid base para 4 colunas */
-.grid-produtos-4 {
+.grid-produtos {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 15px;

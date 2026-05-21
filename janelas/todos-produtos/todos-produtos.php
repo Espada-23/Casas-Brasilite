@@ -84,237 +84,58 @@
                 </div>
             </div>
 
-            <div class="grid-produtos-4">
+            <div class="grid-produtos">
+                <?php foreach ($produtos as $produto): ?>
+                    <div class="cartao-produto">
 
-                <div class="cartao-produto">
-                    <span class="selo-desconto">-15%</span>
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Furadeira" alt="Furadeira Bosch" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Furadeira de Impacto Bosch 550W 127V GSB 550</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i> (128)</div>
-                    <span class="preco-antigo">R$ 352,90</span>
-                    <div class="preco-produto">R$ 299,90</div>
-                    <div class="parcelamento">ou 10x de R$ 29,99</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
+                        <?php if (!empty($produto['desconto'])): ?>
+                            <span class="selo-desconto">
+                                -<?= $produto['desconto'] ?>%
+                            </span>
+                        <?php endif; ?>
 
-                <div class="cartao-produto">
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Parafusadeira" alt="Parafusadeira DeWalt" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Parafusadeira e Furadeira DeWalt 12V 3/8" DCD700LC1</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i> (96)</div>
-                    <br>
-                    <div class="preco-produto">R$ 439,90</div>
-                    <div class="parcelamento">ou 10x de R$ 43,99</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
+                        <i class="fa-regular fa-heart icone-favoritar"></i>
 
-                <div class="cartao-produto">
-                    <span class="selo-desconto">-10%</span>
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Esmerilhadeira" alt="Esmerilhadeira" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Esmerilhadeira Angular Bosch 4.1/2" 850W GWS 850</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i> (74)</div>
-                    <span class="preco-antigo">R$ 219,90</span>
-                    <div class="preco-produto">R$ 197,90</div>
-                    <div class="parcelamento">ou 8x de R$ 24,74</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
+                        <div class="imagem-produto-placeholder" style="background: transparent;">
+                            <img src="<?= $produto['imagem'] ?>" alt="<?= $produto['nome'] ?>" style="max-width: 100%; object-fit: contain;">
+                        </div>
 
-                <div class="cartao-produto">
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Maleta+Vonder" alt="Maleta" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Jogo de Ferramentas Vonder 110 Peças com Maleta</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i> (63)</div>
-                    <br>
-                    <div class="preco-produto">R$ 159,90</div>
-                    <div class="parcelamento">ou 5x de R$ 26,65</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
-                <div class="cartao-produto">
-                    <span class="selo-desconto">-15%</span>
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Furadeira" alt="Furadeira Bosch" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Furadeira de Impacto Bosch 550W 127V GSB 550</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i> (128)</div>
-                    <span class="preco-antigo">R$ 352,90</span>
-                    <div class="preco-produto">R$ 299,90</div>
-                    <div class="parcelamento">ou 10x de R$ 29,99</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
+                        <span class="tag-estoque">
+                            <?= !empty($produto['em_estoque']) && $produto['em_estoque'] ? 'Em estoque' : 'Esgotado' ?>
+                        </span>
 
-                <div class="cartao-produto">
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Parafusadeira" alt="Parafusadeira DeWalt" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Parafusadeira e Furadeira DeWalt 12V 3/8" DCD700LC1</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i> (96)</div>
-                    <br>
-                    <div class="preco-produto">R$ 439,90</div>
-                    <div class="parcelamento">ou 10x de R$ 43,99</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
+                        <h3 class="titulo-produto">
+                            <?= $produto['nome'] ?>
+                        </h3>
 
-                <div class="cartao-produto">
-                    <span class="selo-desconto">-10%</span>
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Esmerilhadeira" alt="Esmerilhadeira" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Esmerilhadeira Angular Bosch 4.1/2" 850W GWS 850</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i> (74)</div>
-                    <span class="preco-antigo">R$ 219,90</span>
-                    <div class="preco-produto">R$ 197,90</div>
-                    <div class="parcelamento">ou 8x de R$ 24,74</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
+                        <div class="estrelas-produto">
+                            <!-- colocar a alteração das estrelas pelo banco aqui, por enquanto estão fixas -->
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                            (<?= $produto['avaliacoes'] ?>)
+                        </div>
 
-                <div class="cartao-produto">
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Maleta+Vonder" alt="Maleta" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Jogo de Ferramentas Vonder 110 Peças com Maleta</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i> (63)</div>
-                    <br>
-                    <div class="preco-produto">R$ 159,90</div>
-                    <div class="parcelamento">ou 5x de R$ 26,65</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
-                <div class="cartao-produto">
-                    <span class="selo-desconto">-15%</span>
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Furadeira" alt="Furadeira Bosch" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Furadeira de Impacto Bosch 550W 127V GSB 550</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i> (128)</div>
-                    <span class="preco-antigo">R$ 352,90</span>
-                    <div class="preco-produto">R$ 299,90</div>
-                    <div class="parcelamento">ou 10x de R$ 29,99</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
+                        <?php if (!empty($produto['preco_antigo'])): ?>
+                            <span class="preco-antigo">
+                                R$ <?= number_format($produto['preco_antigo'], 2, ',', '.') ?>
+                            </span>
+                        <?php endif; ?>
 
-                <div class="cartao-produto">
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Parafusadeira" alt="Parafusadeira DeWalt" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Parafusadeira e Furadeira DeWalt 12V 3/8" DCD700LC1</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i> (96)</div>
-                    <br>
-                    <div class="preco-produto">R$ 439,90</div>
-                    <div class="parcelamento">ou 10x de R$ 43,99</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
+                        <div class="preco-produto">
+                            R$ <?= number_format($produto['preco'], 2, ',', '.') ?>
+                        </div>
 
-                <div class="cartao-produto">
-                    <span class="selo-desconto">-10%</span>
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Esmerilhadeira" alt="Esmerilhadeira" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Esmerilhadeira Angular Bosch 4.1/2" 850W GWS 850</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i> (74)</div>
-                    <span class="preco-antigo">R$ 219,90</span>
-                    <div class="preco-produto">R$ 197,90</div>
-                    <div class="parcelamento">ou 8x de R$ 24,74</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
+                        <?php if (!empty($produto['parcelas'])): ?>
+                            <div class="parcelamento">
+                                ou <?= $produto['parcelas'] ?>x de R$ <?= number_format($produto['preco'] / $produto['parcelas'], 2, ',', '.') ?>
+                            </div>
+                        <?php endif; ?>
 
-                <div class="cartao-produto">
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Maleta+Vonder" alt="Maleta" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Jogo de Ferramentas Vonder 110 Peças com Maleta</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i> (63)</div>
-                    <br>
-                    <div class="preco-produto">R$ 159,90</div>
-                    <div class="parcelamento">ou 5x de R$ 26,65</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
-                <div class="cartao-produto">
-                    <span class="selo-desconto">-15%</span>
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Furadeira" alt="Furadeira Bosch" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Furadeira de Impacto Bosch 550W 127V GSB 550</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i> (128)</div>
-                    <span class="preco-antigo">R$ 352,90</span>
-                    <div class="preco-produto">R$ 299,90</div>
-                    <div class="parcelamento">ou 10x de R$ 29,99</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
+                        <button class="btn btn-laranja btn-comprar-block">
+                            <i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho
+                        </button>
 
-                <div class="cartao-produto">
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Parafusadeira" alt="Parafusadeira DeWalt" style="max-width: 100%; object-fit: contain;">
                     </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Parafusadeira e Furadeira DeWalt 12V 3/8" DCD700LC1</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i> (96)</div>
-                    <br>
-                    <div class="preco-produto">R$ 439,90</div>
-                    <div class="parcelamento">ou 10x de R$ 43,99</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
-
-                <div class="cartao-produto">
-                    <span class="selo-desconto">-10%</span>
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Esmerilhadeira" alt="Esmerilhadeira" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Esmerilhadeira Angular Bosch 4.1/2" 850W GWS 850</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i> (74)</div>
-                    <span class="preco-antigo">R$ 219,90</span>
-                    <div class="preco-produto">R$ 197,90</div>
-                    <div class="parcelamento">ou 8x de R$ 24,74</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
-
-                <div class="cartao-produto">
-                    <i class="fa-regular fa-heart icone-favoritar"></i>
-                    <div class="imagem-produto-placeholder" style="background: transparent;">
-                        <img src="https://via.placeholder.com/150?text=Maleta+Vonder" alt="Maleta" style="max-width: 100%; object-fit: contain;">
-                    </div>
-                    <span class="tag-estoque">Em estoque</span>
-                    <h3 class="titulo-produto">Jogo de Ferramentas Vonder 110 Peças com Maleta</h3>
-                    <div class="estrelas-produto"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i> (63)</div>
-                    <br>
-                    <div class="preco-produto">R$ 159,90</div>
-                    <div class="parcelamento">ou 5x de R$ 26,65</div>
-                    <button class="btn btn-laranja btn-comprar-block"><i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho</button>
-                </div>
-
+                <?php endforeach; ?>
             </div>
 
             <div class="paginacao">
