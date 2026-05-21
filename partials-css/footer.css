@@ -1,0 +1,158 @@
+.rodape-completo {
+    background-color: #001f42;
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.logo img {
+    width: 180px;
+    height: auto;
+    display: block;
+}
+
+.newsletter {
+    background-color: #002d62;
+    padding: 25px 0;
+    color: var(--branco);
+    border-bottom: 1px solid #001f42;
+}
+
+.newsletter-conteudo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.texto-news {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.texto-news i {
+    font-size: 1.6rem;
+}
+
+.form-news {
+    display: flex;
+    gap: 10px;
+    width: 45%;
+}
+
+.form-news input {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    font-size: 0.85rem;
+}
+
+.conteudo-rodape {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 40px;
+    padding: 45px 0;
+    align-items: start;
+}
+
+.coluna-rodape h4 {
+    color: var(--branco);
+    margin-bottom: 18px;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.coluna-rodape ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.coluna-rodape ul li {
+    margin-bottom: 8px;
+}
+
+.coluna-rodape a {
+    color: #94a3b8;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.coluna-rodape ul li a:hover {
+    color: var(--branco);
+}
+
+.texto-descricao-rodape {
+    margin-top: 15px;
+    line-height: 1.4;
+    font-size: 0.8rem;
+}
+
+.redes-sociais {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+    align-items: center;
+}
+
+.redes-sociais a {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0d2e54;
+    border-radius: 50%;
+    color: white;
+    transition: 0.3s;
+}
+
+.redes-sociais a:hover {
+    background: #1d4f8f;
+    transform: translateY(-2px);
+}
+
+.redes-sociais svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    fill: currentColor;
+}
+
+.icones-pagamento {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cartao-falso {
+    background: #0d2e54;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    border-radius: 3px;
+    font-weight: bold;
+    border: 1px solid #1e3a5f;
+}
+
+.cartao-falso.pix {
+    background: #00bdae;
+    border: none;
+}
+
+.rodape-inferior {
+    border-top: 1px solid #0d2e54;
+    padding: 20px 0;
+    font-size: 0.75rem;
+}
+
+.rodape-inferior .container {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 20px;
+}

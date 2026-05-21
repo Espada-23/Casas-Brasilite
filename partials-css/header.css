@@ -1,0 +1,313 @@
+    :root {
+        --azul-escuro: #002d62;
+        --laranja: #f26522;
+        --cinza-fundo: #f4f7f9;
+        --cinza-claro: #e2e8f0;
+        --texto-principal: #1e293b;
+        --texto-secundario: #64748b;
+        --branco: #ffffff;
+    }
+
+    /* barra topo */
+
+    .barra-topo {
+        background-color: #f8fafc;
+        font-size: 0.8rem;
+        color: var(--texto-secundario);
+        padding: 10px 0;
+        border-bottom: 1px solid var(--cinza-claro);
+    }
+
+    .barra-topo-conteudo {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .topo-esquerda {
+        display: flex;
+        gap: 25px;
+    }
+
+    .topo-esquerda i {
+        color: var(--azul-escuro);
+        margin-right: 6px;
+    }
+
+    .topo-direita {
+        display: flex;
+        gap: 20px;
+    }
+
+    .topo-direita a {
+        transition: 0.3s;
+    }
+
+    .topo-direita a:hover {
+        color: var(--laranja);
+    }
+
+    /* header */
+
+    .cabecalho-principal {
+        padding: 18px 0;
+        background-color: var(--branco);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .cabecalho-conteudo {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 45px;
+    }
+
+    /* logo */
+    .logo {
+        display: flex;
+        align-items: center;
+        margin-right: 30px;
+    }
+
+    .logo img {
+        width: 220px !important;
+        height: auto !important;
+    }
+
+    /* pesquisa */
+
+    .barra-pesquisa {
+        flex: 1;
+        display: flex;
+        background-color: #f1f5f9;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        overflow: hidden;
+        transition: 0.3s;
+    }
+
+    .barra-pesquisa:focus-within {
+        border-color: var(--laranja);
+        box-shadow: 0 0 0 4px rgba(242, 101, 34, 0.15);
+    }
+
+    .barra-pesquisa input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 14px 18px;
+        outline: none;
+        font-size: 0.95rem;
+    }
+
+    .btn-pesquisa {
+        background: transparent;
+        border: none;
+        color: var(--texto-secundario);
+        padding: 0 22px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: 0.3s;
+    }
+
+    .btn-pesquisa:hover {
+        background-color: var(--laranja);
+        color: white;
+    }
+
+    /* ações */
+
+    .acoes-usuario {
+        display: flex;
+        gap: 30px;
+    }
+
+    .icone-acao {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 0.75rem;
+        color: var(--azul-escuro);
+        font-weight: 600;
+        cursor: pointer;
+        position: relative;
+        transition: 0.3s;
+    }
+
+    .icone-acao i {
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+    }
+
+    .icone-acao:hover {
+        color: var(--laranja);
+        transform: translateY(-3px);
+    }
+
+    .badge-carrinho {
+        position: absolute;
+        top: -6px;
+        right: 6px;
+        background-color: var(--laranja);
+        color: var(--branco);
+        font-size: 0.65rem;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-weight: 700;
+    }
+
+    /* menu */
+
+    .menu-navegacao {
+        border-top: 1px solid var(--cinza-claro);
+        border-bottom: 1px solid var(--cinza-claro);
+        padding: 14px 0;
+        background: white;
+    }
+
+    .menu-conteudo {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* departamentos */
+
+    .menu-departamentos {
+        position: relative;
+        height: 100%;
+    }
+
+    .departamentos {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        color: var(--azul-escuro);
+        cursor: pointer;
+        padding: 10px 0;
+    }
+
+    .departamentos i {
+        font-size: 1.2rem;
+    }
+
+    .dropdown-departamentos {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 320px;
+        background: white;
+        border-top: 3px solid var(--laranja);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        display: none;
+        flex-direction: column;
+        z-index: 999;
+    }
+
+    .dropdown-departamentos a {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 22px;
+        color: var(--texto-principal);
+        font-weight: 600;
+        border-bottom: 1px solid #f1f5f9;
+        transition: 0.2s;
+    }
+
+    .dropdown-departamentos a i {
+        width: 20px;
+        color: var(--azul-escuro);
+        font-size: 1rem;
+    }
+
+    .dropdown-departamentos a:hover {
+        background: #f8fafc;
+        color: var(--laranja);
+        padding-left: 28px;
+    }
+
+    .menu-departamentos:hover .dropdown-departamentos {
+        display: flex;
+    }
+
+    .dropdown-departamentos a {
+        padding: 14px 18px;
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+    .dropdown-departamentos a:hover {
+        background: #f5f5f5;
+        color: var(--azul-principal);
+    }
+
+    .menu-departamentos:hover .dropdown-departamentos {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    /* links */
+
+    .lista-links {
+        display: flex;
+        gap: 28px;
+    }
+
+    .lista-links a {
+        position: relative;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--azul-escuro);
+        transition: 0.3s;
+    }
+
+    .lista-links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 0%;
+        height: 2px;
+        background-color: var(--laranja);
+        transition: 0.3s;
+    }
+
+    .lista-links a:hover {
+        color: var(--laranja);
+    }
+
+    .lista-links a:hover::after {
+        width: 100%;
+    }
+
+    .link-ofertas {
+        color: var(--laranja) !important;
+    }
+
+    /* localização */
+
+    .localizacao {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+    }
+
+    .localizacao i {
+        color: var(--laranja);
+        font-size: 1.1rem;
+    }
+
+    .texto-local {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .texto-local span {
+        color: var(--texto-secundario);
+    }
