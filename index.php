@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casas Brasilite - Página Inicial</title>
+    <link rel="icon" href="\Casas-Brasilite\imagens\icon.png" type="image/x-icon">
+    <title>Casas Brasilite</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -282,37 +283,22 @@
 
     <section class="secao-marcas">
         <div class="container">
-            <h3 class="titulo-marcas">As melhores marcas para sua obra</h3>
+            <h3 class="titulo-marcas">Nossos Principais Parceiros</h3>
             <div class="carrossel-marcas">
-                <div class="lista-marcas">
+                <div class="carrossel-track">
+                    <div class="parceiro-logo"><img src="https://melhorindustria.com.br/media/image/82/ff/09/tigre-logo-2.png" alt="tigre"></div>
+                    <div class="parceiro-logo"><img src="https://logodownload.org/wp-content/uploads/2019/07/coral-logo-0.png" alt="coral"></div>
+                    <div class="parceiro-logo"><img src="https://cdn.cookielaw.org/logos/27e912f4-2342-4569-b692-c1d67f9a1d91/def26e55-fce3-456f-b2a9-5a41ec372e27/5f00bf70-54d6-4d75-815f-bd6a5e36354d/Logo_VC_-_One_Trust.png" alt="votorantim"></div>
+                    <div class="parceiro-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Tramontina-Logo.svg/1280px-Tramontina-Logo.svg.png" alt="tramontina"></div>
+                    <div class="parceiro-logo"><img src="https://lojasolar.vtexassets.com/arquivos/ids/164344-auto-262.5?width=auto&height=262.5&aspect=true" alt="vonder"></div>
 
-                    <div class="logo-marca">
-                        <img src="imagens/1.svg" alt="Vonder">
-                    </div>
-
-                    <div class="logo-marca">
-                        <img src="imagens/2.svg" alt="Bosch">
-                    </div>
-
-                    <div class="logo-marca">
-                        <img src="imagens/3.svg" alt="Tramontina">
-                    </div>
-
-                    <div class="logo-marca">
-                        <img src="imagens/4.svg" alt="Tigre">
-                    </div>
-
-                    <div class="logo-marca">
-                        <img src="imagens/5.svg" alt="Coral">
-                    </div>
-
-                    <div class="logo-marca">
-                        <img src="imagens/6.svg" alt="Quartzolit">
-                    </div>
-
+                    <div class="parceiro-logo"><img src="https://melhorindustria.com.br/media/image/82/ff/09/tigre-logo-2.png" alt="tigre"></div>
+                    <div class="parceiro-logo"><img src="https://logodownload.org/wp-content/uploads/2019/07/coral-logo-0.png" alt="coral"></div>
+                    <div class="parceiro-logo"><img src="https://cdn.cookielaw.org/logos/27e912f4-2342-4569-b692-c1d67f9a1d91/def26e55-fce3-456f-b2a9-5a41ec372e27/5f00bf70-54d6-4d75-815f-bd6a5e36354d/Logo_VC_-_One_Trust.png" alt="votorantim"></div>
+                    <div class="parceiro-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Tramontina-Logo.svg/1280px-Tramontina-Logo.svg.png" alt="tramontina"></div>
+                    <div class="parceiro-logo"><img src="https://lojasolar.vtexassets.com/arquivos/ids/164344-auto-262.5?width=auto&height=262.5&aspect=true" alt="vonder"></div>
                 </div>
             </div>
-        </div>
         </div>
     </section>
 
@@ -359,54 +345,68 @@
                 <h3>O que nossos clientes dizem</h3>
             </div>
 
-            <div class="grid-depoimentos">
-                <div class="cartao-depoimento">
-                    <div class="estrelas">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="texto-avaliacao">Produtos de excelente qualidade e entrega super rápida. Recomendo a
-                        Casas Brasilite!</p>
-                    <div class="cliente-info">
-                        <div>
-                            <strong>Carlos Almeida</strong>
-                            <span>São Paulo - SP</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="carrossel-depoimentos">
+                <div class="depoimentos-wrapper">
+                    <div class="grid-depoimentos">
 
-                <div class="cartao-depoimento">
-                    <div class="estrelas">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="texto-avaliacao">Encontrei tudo que precisava para minha obra. Preços justos e ótimo
-                        atendimento.</p>
-                    <div class="cliente-info">
-                        <div>
-                            <strong>Mariana Silva</strong>
-                            <span>Campinas - SP</span>
+                        <div class="cartao-depoimento">
+                            <div class="estrelas">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <p class="texto-avaliacao">Produtos de excelente qualidade e entrega super rápida. Recomendo a Casas Brasilite!</p>
+                            <div class="cliente-info">
+                                <div>
+                                    <strong>Carlos Almeida</strong>
+                                    <span>São Paulo - SP</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="cartao-depoimento">
-                    <div class="estrelas">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="texto-avaliacao">Loja confiável e com muitas opções. Voltarei a comprar!</p>
-                    <div class="cliente-info">
-                        <div>
-                            <strong>João Ferreira</strong>
-                            <span>Sorocaba - SP</span>
+                        <div class="cartao-depoimento">
+                            <div class="estrelas">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <p class="texto-avaliacao">Encontrei tudo que precisava para minha obra. Preços justos e ótimo atendimento.</p>
+                            <div class="cliente-info">
+                                <div>
+                                    <strong>Mariana Silva</strong>
+                                    <span>Campinas - SP</span>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="cartao-depoimento">
+                            <div class="estrelas">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <p class="texto-avaliacao">Loja confiável e com muitas opções. Voltarei a comprar!</p>
+                            <div class="cliente-info">
+                                <div>
+                                    <strong>João Ferreira</strong>
+                                    <span>Sorocaba - SP</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cartao-depoimento">
+                            <div class="estrelas">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <p class="texto-avaliacao">Melhor preço da região e o material de fundação é excelente. Nota 10!</p>
+                            <div class="cliente-info">
+                                <div>
+                                    <strong>Pedro Santos</strong>
+                                    <span>Santos - SP</span>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
+
 
     <?php include_once "partials/footer.php" ?>
 
