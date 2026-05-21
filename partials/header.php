@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="\teste\partials-css\header.css">
+<link rel="stylesheet" href="\Casas-Brasilite\partials-css\header.css">
 
 <div class="barra-topo">
     <div class="container barra-topo-conteudo">
@@ -62,7 +62,7 @@
 
             <div class="dropdown-departamentos">
 
-                <a href="/teste/janelas\todos-produtos\todos-produtos.php"><i class="fa-solid fa-cart-flatbed-suitcase"></i>Todas Categorias</a>
+                <a href="/Casas-Brasilite/janelas\todos-produtos\todos-produtos.php"><i class="fa-solid fa-cart-flatbed-suitcase"></i>Todas Categorias</a>
 
                 <a href="#"><i class="fas fa-hammer"></i> Ferramentas</a>
 

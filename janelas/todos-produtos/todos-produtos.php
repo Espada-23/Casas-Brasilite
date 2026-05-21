@@ -7,7 +7,7 @@
     <title>Casas Brasilite - Todas Categorias</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="\teste\style.css">
+    <link rel="stylesheet" href="\Casas-Brasilite\style.css">
     <link rel="stylesheet" href="todos-produtos.css">
 
 </head>
