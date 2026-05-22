@@ -1,3 +1,29 @@
+:root {
+    --primary: #1D4ED8;
+    --green: #22C55E;
+    --red: #EF4444;
+    --orange: #F97316;
+    --primary-color: #074880;
+    --secondary-color: #C26931;
+    --orange-grafico: #ff7700;
+    --blue-grafico: #2b09ec;
+    --background-color: #fdfdfd;
+    --title: #04196B;
+    --top-header: #032949e3;
+    --text-color: #FFFFFF;
+    --border: #e5e7eb;
+    --detalhes: #032949;
+    --icon-box: #aaaaaa;
+    --text-info: #707070b4;
+    --box-critico: #fa3e3e71;
+    --box-atencao: #f9c74f71;
+    --text-atencao: #ffd902;
+    --text-critico: #ff0000;
+    --border-lista: #e5e7eb34;
+    --footer-sidebar: #031349;
+}
+
+
 *,
 *::before,
 *::after {
@@ -48,6 +74,11 @@ body {
     margin-bottom: 1em;
 }
 
+.logo span {
+    font-size: .6em;
+    color: var(--orange);
+}
+
 .logo h1 {
     font-size: 24px;
     font-weight: 600;
@@ -93,4 +124,16 @@ body {
     color: var(--text-m);
     font-size: .9rem;
     margin-top: 2px;
+}
+
+.container-pagina {
+    padding: 22px;
+    max-width: 1550px;
+    margin: 0 auto;
+}
+
+.container-tabela-produto {
+    padding: 22px;
+    max-width: 1250px;
+    margin: 0 auto
 }
