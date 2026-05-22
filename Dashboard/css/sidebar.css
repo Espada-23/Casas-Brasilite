@@ -3,18 +3,15 @@
     --green: #22C55E;
     --red: #EF4444;
     --orange: #F97316;
-    --orange-hover: #b44b00;
-
     --primary-color: #074880;
     --secondary-color: #C26931;
-    --orange-grafico: #E67E22;
-    --blue-grafico: #4A90C2;
-    --background-color: #F7F7F5;
+    --orange-grafico: #ff7700;
+    --blue-grafico: #2b09ec;
+    --background-color: #fdfdfd;
     --title: #04196B;
     --top-header: #032949e3;
     --text-color: #FFFFFF;
     --border: #e5e7eb;
-    --border-lista: #e5e7eb34;
     --detalhes: #032949;
     --icon-box: #aaaaaa;
     --text-info: #707070b4;
@@ -22,8 +19,8 @@
     --box-atencao: #f9c74f71;
     --text-atencao: #ffd902;
     --text-critico: #ff0000;
+    --border-lista: #e5e7eb34;
     --footer-sidebar: #031349;
-
 }
 
 #menu-toggle {
@@ -116,7 +113,7 @@
     color: var(--text-color);
     font-size: 1rem;
     font-weight: 500;
-    padding: 22px 10px;
+    padding: 20px 10px;
     text-decoration: none;
     display: flex;
     gap: 20px;
@@ -129,7 +126,6 @@
 }
 
 .user-info-sidebar {
-    margin-top: 7em;
     display: flex;
     align-items: center;
     gap: 15px;

@@ -1,0 +1,96 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    font-size: .9em;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--background-color);
+    color: var(--detalhes);
+    font-size: 14px;
+    line-height: 1.5;
+    display: flex;
+    overflow-x: hidden;
+}
+
+.topbar {
+    background: var(--background-color);
+    border-bottom: 1px solid var(--border);
+    padding: 45px 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 2em;
+}
+
+.topbar i {
+    font-size: 1.5em;
+}
+
+.topbar label {
+    margin-bottom: 1em;
+}
+
+.logo h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--title);
+}
+
+.logo p {
+    font-size: 13px;
+    color: var(--detalhes);
+    margin-top: 1px;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--text-color);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 4px 15px;
+    cursor: pointer;
+}
+
+.tabela-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.tabela-header h1 {
+    font-size: 1.6rem;
+    color: var(--navy);
+}
+
+.tabela-header p {
+    color: var(--text-m);
+    font-size: .9rem;
+    margin-top: 2px;
+}
