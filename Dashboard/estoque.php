@@ -64,7 +64,7 @@
             <span class="menu-title">GESTÃO</span>
 
             <div class="lista-sidebar">
-                <a href="#">
+                <a href="clientes.html">
                     <i class="bi bi-people-fill"></i>
                     <p>Clientes</p>
                 </a>

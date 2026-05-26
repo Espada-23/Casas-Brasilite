@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Produtos</title>
+    <title>Dashboard - Movimentação de Produtos</title>
     <link rel="icon" href="../imagens/logo.png">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/produtos.css">
+    <link rel="stylesheet" href="css/movimentacao.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
@@ -32,7 +32,7 @@
             </div>
 
             <div class="lista-sidebar">
-                <a href="produtos.html" class="active">
+                <a href="produtos.html">
                     <i class="bi bi-box-seam-fill"></i>
                     <p>Produtos</p>
                 </a>
@@ -46,14 +46,14 @@
             </div>
 
             <div class="lista-sidebar">
-                <a href="pedidos.html">
+                <a href="pedidos.html" >
                     <i class="bi-card-list"></i>
                     <p>Pedidos</p>
                 </a>
             </div>
 
             <div class="lista-sidebar">
-                <a href="movimentacao.html">
+                <a href="movimentacao.html" class="active">
                     <i class="bi bi-arrow-left-right"></i>
                     <p>Movimentações</p>
                 </a>
@@ -62,7 +62,7 @@
             <span class="menu-title">GESTÃO</span>
 
             <div class="lista-sidebar">
-                <a href="#">
+                <a href="clientes.html">
                     <i class="bi bi-people-fill"></i>
                     <p>Clientes</p>
                 </a>
@@ -107,8 +107,8 @@
                     <i class="bi bi-list"></i>
                 </label>
                 <div class="header-left">
-                    <h1>Produtos</h1>
-                    <p>Gerencie e acompanhe os produtos do estoque</p>
+                    <h1>Movimentação</h1>
+                    <p>Histórico de entradas e saídas</p>
                 </div>
             </div>
             <div class="topbar-right">
@@ -123,12 +123,63 @@
             <div class="container-pagina">
                 <div class="tabela-header">
                     <div>
-                        <h1>Produtos</h1>
-                        <p>6 produtos cadastrados</p>
+                        <h1>Movimentações</h1>
+                        <p>Histórico de entradas e saídas de estoque</p>
                     </div>
-                    <a href="cadastro_produtos.php">
-                        <i class="bi bi-plus-lg"></i> Novo Produto
-                    </a>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-left">
+                                <div class="kpi-icon entrada">
+                                    <i class="bi bi-arrow-down-circle-fill"></i>
+                                </div>
+                                <div>
+                                    <div class="kpi-label">Total de Entradas</div>
+                                    <small>Movimentações do mês</small>
+                                </div>
+                            </div>
+                            <span class="kpi-extra positivo">
+                                +32 hoje
+                            </span>
+                        </div>
+                        <div class="kpi-valor">324</div>
+                    </div>
+
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-left">
+                                <div class="kpi-icon saida">
+                                    <i class="bi bi-arrow-up-circle-fill"></i>
+                                </div>
+                                <div>
+                                    <div class="kpi-label">Total de Saídas</div>
+                                    <small>Movimentações do mês</small>
+                                </div>
+                            </div>
+                            <span class="kpi-extra negativo">
+                                -15 hoje
+                            </span>
+                        </div>
+                        <div class="kpi-valor">186</div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-left">
+                                <div class="kpi-icon saldo">
+                                    <i class="bi bi-arrow-left-right"></i>
+                                </div>
+                                <div>
+                                    <div class="kpi-label">Saldo do Período</div>
+                                    <small>Entradas - saídas</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kpi-valor">+62</div>
+                    </div>
                 </div>
 
                 <div class="main-filtro">
@@ -136,23 +187,13 @@
                         <button>
                             <i class="bi bi-search"></i>
                         </button>
-                        <input type="text" name="pesquisa" placeholder="Buscar Produto...">
+                        <input type="text" name="pesquisa" placeholder="Buscar Pedido...">
                     </div>
-                    <div class="categorias">
+                    <div class="status">
                         <select>
-                            <option>Todas as caetgorias</option>
-                            <option>Cimento</option>
-                            <option>Areia</option>
-                            <option>Tinta</option>
-                            <option>Argamassa</option>
-                        </select>
-                    </div>
-                    <div class="departamentos">
-                        <select>
-                            <option>Todos os departamentos</option>
-                            <option>Construção</option>
-                            <option>Acabamento</option>
-                            <option>Estrutura</option>
+                            <option>Todos os Tipos</option>
+                            <option>Entrada</option>
+                            <option>Saída</option>
                         </select>
                     </div>
                 </div>
@@ -163,102 +204,82 @@
                             <table>
                                 <thead>
                                     <tr>
+                                        <th>Tipo</th>
                                         <th>Produto</th>
                                         <th>SKU</th>
-                                        <th>Categoria</th>
-                                        <th>Departamento</th>
-                                        <th>Marca</th>
-                                        <th>Estoque</th>
-                                        <th>Preço</th>
-                                        <th>Ações</th>
+                                        <th>Qnt</th>
+                                        <th>Responsável</th>
+                                        <th>Data/Hora</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
+                                        <td class="tipo tp-entrada">
+                                            <i class="bi bi-arrow-down-short"></i>
+                                            <p>Entrada</p>
+                                        </td>
                                         <td>Cimento CP II 50kg</td>
                                         <td>CMT001</td>
-                                        <td>Cimento</td>
-                                        <td>Construção</td>
+                                        <td>+50</td>
                                         <td>Votoran</td>
-                                        <td class="estoque-produtos">20</td>
-                                        <td class="preco-produtos">R$ 35,90</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
+                                        <td class="data">22/05/2025<span>09:15</span></td>
                                     </tr>
                                     <tr>
+                                        <td class="tipo tp-saida">
+                                            <i class="bi bi-arrow-up-short"></i>
+                                            <p>Saída</p>
+                                        </td>
                                         <td>Areia Média 20kg</td>
                                         <td>ARE002</td>
-                                        <td>Areia</td>
-                                        <td>Construção</td>
+                                        <td>-20</td>
                                         <td>Quartzolit</td>
-                                        <td class="estoque-produtos">35</td>
-                                        <td class="preco-produtos">R$ 18,50</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
+                                        <td class="data">22/05/2025<span>09:15</span></td>
                                     </tr>
                                     <tr>
+                                        <td class="tipo tp-entrada">
+                                            <i class="bi bi-arrow-down-short"></i>
+                                            <p>Entrada</p>
+                                        </td>
                                         <td>Tijolo Cerâmico 8 Furos</td>
                                         <td>TJL003</td>
-                                        <td>Tijolos</td>
-                                        <td>Construção</td>
+                                        <td>+30</td>
                                         <td>Cerâmica União</td>
-                                        <td class="estoque-produtos">150</td>
-                                        <td class="preco-produtos">R$ 1,29</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
+                                        <td class="data">22/05/2025<span>09:15</span></td>
                                     </tr>
                                     <tr>
+                                        <td class="tipo tp-saida">
+                                            <i class="bi bi-arrow-up-short"></i>
+                                            <p>Saída</p>
+                                        </td>
                                         <td>Tinta Acrílica Branco 18L</td>
                                         <td>TNT004</td>
-                                        <td>Tinta</td>
-                                        <td>Acabamento</td>
+                                        <td>-100</td>
                                         <td>Suvinil</td>
-                                        <td class="estoque-produtos">12</td>
-                                        <td class="preco-produtos">R$ 179,90</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
+                                        <td class="data">22/05/2025<span>09:15</span></td>
                                     </tr>
                                     <tr>
+                                        <td class="tipo tp-entrada">
+                                            <i class="bi bi-arrow-down-short"></i>
+                                            <p>Entrada</p>
+                                        </td>
                                         <td>Ferro CA-50 10mm</td>
                                         <td>FER005</td>
-                                        <td>Ferragem</td>
-                                        <td>Estrutura</td>
+                                        <td>+25</td>
                                         <td>Gerdau</td>
-                                        <td class="estoque-produtos">40</td>
-                                        <td class="preco-produtos">R$ 54,90</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
+                                        <td class="data">22/05/2025<span>09:15</span></td>
                                     </tr>
                                     <tr>
+                                        <td class="tipo tp-saida">
+                                            <i class="bi bi-arrow-up-short"></i>
+                                            <p>Saída</p>
+                                        </td>
                                         <td>Argamassa AC-II 20kg</td>
                                         <td>ARG006</td>
-                                        <td>Argamassa</td>
-                                        <td>Acabamento</td>
+                                        <td>-8</td>
                                         <td>Quartzolit</td>
-                                        <td class="estoque-produtos">28</td>
-                                        <td class="preco-produtos">R$ 29,90</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
+                                        <td class="data">22/05/2025<span>09:15</span></td>
                                     </tr>
                                 </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th>Total</th>
-                                        <th>--</th>
-                                        <th>--</th>
-                                        <th>--</th>
-                                        <th>--</th>
-                                        <th>285</th>
-                                        <th>R$ 319,49</th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
                     </div>

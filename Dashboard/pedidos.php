@@ -62,7 +62,7 @@
             <span class="menu-title">GESTÃO</span>
 
             <div class="lista-sidebar">
-                <a href="#">
+                <a href="clientes.html">
                     <i class="bi bi-people-fill"></i>
                     <p>Clientes</p>
                 </a>
@@ -126,9 +126,9 @@
                         <h1>Pedidos</h1>
                         <p>Gerencie Todos os Pedidos</p>
                     </div>
-                    <!-- <a href="cadastro_produtos.php">
+                    <a href="cadastro_produtos.php">
                         <i class="bi bi-plus-lg"></i> Novo Pedido
-                    </a> -->
+                    </a>
                 </div>
 
                 <div class="kpi-grid">

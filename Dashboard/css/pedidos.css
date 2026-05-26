@@ -108,7 +108,7 @@ body {
     margin-top: 2px;
 }
 
-/* .tabela-header a {
+.tabela-header a {
     text-decoration: none;
     background: var(--orange);
     color: var(--text-color);
@@ -123,9 +123,9 @@ body {
     gap: 6px;
 } */
 
-/* .tabela-header a:hover {
+ .tabela-header a:hover {
     background: var(--orange-hover);
-} */
+}
 
 .kpi-grid {
     display: grid;
