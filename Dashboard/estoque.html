@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Produtos</title>
+    <title>Dashboard - Estoque</title>
     <link rel="icon" href="../imagens/logo.png">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/produtos.css">
+    <link rel="stylesheet" href="css/estoque.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
@@ -32,19 +32,19 @@
             </div>
 
             <div class="lista-sidebar">
-                <a href="produtos.html" class="active">
+                <a href="produtos.html">
                     <i class="bi bi-box-seam-fill"></i>
                     <p>Produtos</p>
                 </a>
             </div>
 
             <div class="lista-sidebar">
-                <a href="estoque.html">
+                <a href="estoque.html" class="active">
                     <i class="bi bi-grid-fill"></i>
                     <p>Estoque</p>
                 </a>
             </div>
-
+            
             <div class="lista-sidebar">
                 <a href="pedidos.html">
                     <i class="bi-card-list"></i>
@@ -58,6 +58,8 @@
                     <p>Movimentações</p>
                 </a>
             </div>
+
+
 
             <span class="menu-title">GESTÃO</span>
 
@@ -107,8 +109,8 @@
                     <i class="bi bi-list"></i>
                 </label>
                 <div class="header-left">
-                    <h1>Produtos</h1>
-                    <p>Gerencie e acompanhe os produtos do estoque</p>
+                    <h1>Estoque</h1>
+                    <p>Visualize e controle o estoque de produtos</p>
                 </div>
             </div>
             <div class="topbar-right">
@@ -123,12 +125,27 @@
             <div class="container-pagina">
                 <div class="tabela-header">
                     <div>
-                        <h1>Produtos</h1>
-                        <p>6 produtos cadastrados</p>
+                        <h1>Estoque</h1>
+                        <p>Situação atual dos produtos</p>
                     </div>
-                    <a href="cadastro_produtos.php">
-                        <i class="bi bi-plus-lg"></i> Novo Produto
+                    <a href="#">
+                        <i class="bi bi-plus-lg"></i> Nova Entrada
                     </a>
+                </div>
+
+                <div class="cards-status">
+                    <div class="normal">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <p>3 Normal</p>
+                    </div>
+                    <div class="atencao">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <p>1 Atenção</p>
+                    </div>
+                    <div class="critico">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <p>2 Críticos</p>
+                    </div>
                 </div>
 
                 <div class="main-filtro">
@@ -138,6 +155,15 @@
                         </button>
                         <input type="text" name="pesquisa" placeholder="Buscar Produto...">
                     </div>
+                    <div class="status">
+                        <select>
+                            <option>Todos os status</option>
+                            <option>Normal</option>
+                            <option>Crítico</option>
+                            <option>Atenção</option>
+                            <option>Argamassa</option>
+                        </select>
+                    </div>
                     <div class="categorias">
                         <select>
                             <option>Todas as caetgorias</option>
@@ -145,14 +171,6 @@
                             <option>Areia</option>
                             <option>Tinta</option>
                             <option>Argamassa</option>
-                        </select>
-                    </div>
-                    <div class="departamentos">
-                        <select>
-                            <option>Todos os departamentos</option>
-                            <option>Construção</option>
-                            <option>Acabamento</option>
-                            <option>Estrutura</option>
                         </select>
                     </div>
                 </div>
@@ -165,97 +183,61 @@
                                     <tr>
                                         <th>Produto</th>
                                         <th>SKU</th>
-                                        <th>Categoria</th>
-                                        <th>Departamento</th>
-                                        <th>Marca</th>
-                                        <th>Estoque</th>
-                                        <th>Preço</th>
-                                        <th>Ações</th>
+                                        <th>Qtd. Atual</th>
+                                        <th>Qtd. Pct</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>Cimento CP II 50kg</td>
                                         <td>CMT001</td>
-                                        <td>Cimento</td>
-                                        <td>Construção</td>
-                                        <td>Votoran</td>
                                         <td class="estoque-produtos">20</td>
-                                        <td class="preco-produtos">R$ 35,90</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
+                                        <td class="embalagens">15</td>
+                                        <td><span class="badge badge-ok">Normal</span></td>
                                     </tr>
                                     <tr>
                                         <td>Areia Média 20kg</td>
                                         <td>ARE002</td>
-                                        <td>Areia</td>
-                                        <td>Construção</td>
-                                        <td>Quartzolit</td>
                                         <td class="estoque-produtos">35</td>
-                                        <td class="preco-produtos">R$ 18,50</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
+                                        <td class="embalagens">20</td>
+                                        <td><span class="badge badge-ok">Normal</span></td>
                                     </tr>
                                     <tr>
                                         <td>Tijolo Cerâmico 8 Furos</td>
                                         <td>TJL003</td>
-                                        <td>Tijolos</td>
-                                        <td>Construção</td>
-                                        <td>Cerâmica União</td>
                                         <td class="estoque-produtos">150</td>
-                                        <td class="preco-produtos">R$ 1,29</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
+                                        <td class="embalagens">50</td>
+                                        <td><span class="badge badge-ok">Normal</span></td>
                                     </tr>
                                     <tr>
                                         <td>Tinta Acrílica Branco 18L</td>
                                         <td>TNT004</td>
-                                        <td>Tinta</td>
-                                        <td>Acabamento</td>
-                                        <td>Suvinil</td>
-                                        <td class="estoque-produtos">12</td>
-                                        <td class="preco-produtos">R$ 179,90</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
+                                        <td class="estoque-produtos" style="color:var(--red);">5</td>
+                                        <td class="embalagens">10</td>
+                                        <td><span class="badge badge-critico">Crítico</span></td>
                                     </tr>
                                     <tr>
                                         <td>Ferro CA-50 10mm</td>
                                         <td>FER005</td>
-                                        <td>Ferragem</td>
-                                        <td>Estrutura</td>
-                                        <td>Gerdau</td>
                                         <td class="estoque-produtos">40</td>
-                                        <td class="preco-produtos">R$ 54,90</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
+                                        <td class="embalagens">20</td>
+                                        <td><span class="badge badge-ok">Normal</span></td>
                                     </tr>
                                     <tr>
                                         <td>Argamassa AC-II 20kg</td>
                                         <td>ARG006</td>
-                                        <td>Argamassa</td>
-                                        <td>Acabamento</td>
-                                        <td>Quartzolit</td>
-                                        <td class="estoque-produtos">28</td>
-                                        <td class="preco-produtos">R$ 29,90</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
+                                        <td class="estoque-produtos" style="color:var(--orange);">12</td>
+                                        <td class="embalagens">15</td>
+                                        <td><span class="badge badge-atencao">Atenção</span></td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <th>Total</th>
                                         <th>--</th>
-                                        <th>--</th>
-                                        <th>--</th>
-                                        <th>--</th>
-                                        <th>285</th>
-                                        <th>R$ 319,49</th>
+                                        <th class="estoque-produtos" style="color: white;">262</th>
+                                        <th class="embalagens">115</th>
                                         <th></th>
                                     </tr>
                                 </tfoot>

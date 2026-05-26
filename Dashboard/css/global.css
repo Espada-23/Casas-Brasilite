@@ -1,0 +1,25 @@
+:root {
+    --primary: #1D4ED8;
+    --green: #22C55E;
+    --red: #EF4444;
+    --orange: #F97316;
+    --orange-hover: #c05000;
+    --primary-color: #074880;
+    --secondary-color: #C26931;
+    --orange-grafico: #ff7700;
+    --blue-grafico: #2b09ec;
+    --background-color: #fdfdfd;
+    --title: #04196B;
+    --top-header: #032949e3;
+    --text-color: #FFFFFF;
+    --border: #e5e7eb;
+    --detalhes: #032949;
+    --icon-box: #aaaaaa;
+    --text-info: #707070b4;
+    --box-critico: #fa3e3e71;
+    --box-atencao: #f9c74f71;
+    --text-atencao: #ffd902;
+    --text-critico: #ff0000;
+    --border-lista: #e5e7eb34;
+    --footer-sidebar: #031349;
+}
