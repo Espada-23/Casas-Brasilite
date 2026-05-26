@@ -9,7 +9,7 @@
         </div>
 
         <div class="topo-direita">
-            <a href="#"><i class="fas fa-box"></i> Meus pedidos</a>
+            <a href="\Casas-Brasilite\janelas\pedidos\pedidos.php"><i class="fas fa-box"></i> Meus pedidos</a>
             <a href="#">Ajuda</a>
         </div>
     </div>
@@ -18,8 +18,8 @@
 <header class="cabecalho-principal">
     <div class="container cabecalho-conteudo">
 
-        <a href="/teste/index.php" class="logo">
-            <img src="/teste/imagens/logo1.png">
+        <a href="/Casas-Brasilite/index.php" class="logo">
+            <img src="/Casas-Brasilite/imagens/logo1.png">
         </a>
 
         <form class="barra-pesquisa" action="pesquisa.php" method="GET">
@@ -36,12 +36,12 @@
                 <span>Favoritos</span>
             </a>
 
-            <a href="#" class="icone-acao">
+            <a href="\Casas-Brasilite\janelas\cadastro-login\login.php" class="icone-acao">
                 <i class="far fa-user"></i>
                 <span>Entrar</span>
             </a>
 
-            <a href="#" class="icone-acao carrinho">
+            <a href="\Casas-Brasilite\janelas\carrinho\carrinho.php" class="icone-acao carrinho">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="badge-carrinho">0</span>
                 <span>Carrinho</span>
@@ -62,11 +62,11 @@
 
             <div class="dropdown-departamentos">
 
-                <a href="/Casas-Brasilite/janelas\todos-produtos\todos-produtos.php"><i class="fa-solid fa-cart-flatbed-suitcase"></i>Todas Categorias</a>
+                <a href="\Casas-Brasilite\janelas\todos-produtos\todos-produtos.php"><i class="fa-solid fa-cart-flatbed-suitcase"></i>Todas Categorias</a>
 
-                <a href="#"><i class="fas fa-hammer"></i> Ferramentas</a>
+                <a href="\Casas-Brasilite\janelas\janela-produto\janela-produto.php"><i class="fas fa-hammer"></i> Ferramentas</a>
 
-                <a href="#"><i class="fas fa-paint-roller"></i> Tintas</a>
+                <a href="\Casas-Brasilite\janelas\carrinho\carrinho.php"><i class="fas fa-paint-roller"></i> Tintas</a>
 
                 <a href="#"><i class="fas fa-hard-hat"></i> EPI</a>
 
