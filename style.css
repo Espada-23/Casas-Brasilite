@@ -16,7 +16,7 @@
 }
 
 body {
-    background-color: var(--branco);
+    background-color: var(--cinza-fundo);
     color: var(--texto-principal);
 }
 
@@ -149,17 +149,7 @@ li {
     margin-bottom: 30px;
 }
 
-.seta-banner {
-    background: rgba(255, 255, 255, 0.8);
-    border: none;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    cursor: pointer;
-    color: var(--azul-escuro);
-}
-
-/* GRID DE VANTAGENS */
+/* vantagens */
 .secao-vantagens {
     background-color: var(--cinza-fundo);
     padding: 20px 0;
@@ -220,7 +210,7 @@ li {
     transition: 0.2s ease-in-out;
 }
 
-.item-categoria-circulo:hover{
+.item-categoria-circulo:hover {
     transform: scale(1.05);
 }
 
@@ -361,14 +351,23 @@ li {
 }
 
 .seta-carrossel-prod {
-    background: var(--branco);
-    border: 1px solid var(--cinza-claro);
+    background-color: var(--branco);
+    text-decoration: none;
+    cursor: pointer;
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    cursor: pointer;
+    border: 1px solid var(--cinza-claro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+    z-index: 10;
     color: var(--texto-secundario);
+
 }
+
 
 /* OFERTAS DA SEMANA COM CRONOMETRO */
 .secao-ofertas-semana {
@@ -464,7 +463,7 @@ li {
     align-items: center;
     padding: 45px;
     color: var(--branco);
-    background: linear-gradient(90deg, rgba(0, 45, 98, 0.98) 0%, rgba(0, 45, 98, 0.95) 35%, rgba(0, 45, 98, 0.75) 50%, rgba(0, 45, 98, 0.35) 65%, rgba(0, 45, 98, 0) 100%), url('https://media.canva.com/v2/files/uri:ifs%3A%2F%2FM%2F3d22dfaf-1d11-417d-9a28-473e4726d132?csig=AAAAAAAAAAAAAAAAAAAAAKPxIyJH6XkWhTmEH1VmkNHjmTvQoQVy3bY-8maIUeCM&exp=1779231658&signer=media-rpc&token=AAIAAU0AJDNkMjJkZmFmLTFkMTEtNDE3ZC05YTI4LTQ3M2U0NzI2ZDEzMgAAAAABnkJ4kBDp10PgO_GMAExFDpje0QaLfSonlLm-7mj2hLqCecvrww');
+    background: linear-gradient(90deg, rgba(0, 45, 98, 0.98) 0%, rgba(0, 45, 98, 0.95) 35%, rgba(0, 45, 98, 0.75) 50%, rgba(0, 45, 98, 0.35) 65%, rgba(0, 45, 98, 0) 100%), url('imagens/banner2.jpg');
     background-size: cover;
     background-position: center right;
     background-repeat: no-repeat;
@@ -530,7 +529,7 @@ li {
     transition: 0.2s ease-in-out;
 }
 
-.cartao-categoria-img:hover{
+.cartao-categoria-img:hover {
     transform: scale(1.05);
 }
 
@@ -576,32 +575,30 @@ li {
     transition: 0.2s ease-in-out;
 }
 
-.btn-branco:hover{
+.btn-branco:hover {
     transform: scale(1.05);
 }
 
 /* Placeholders de imagens de fundo */
 .estrutura-bg {
-    background-image: url('https://media-public.canva.com/--G1A/MAGZOd--G1A/1/s.jpg');
+    background-image: url('imagens/materias2.jpg');
 }
 
 .materiais-bg {
-    background-image: url('https://media.canva.com/v2/files/uri:ifs%3A%2F%2FM%2FKJX5GR5zMcsRBBqK3V_pWaSzxg8HMQ_9ClhIZdy6Ebc.jpg?csig=AAAAAAAAAAAAAAAAAAAAAFIxEFwbNDH9qjlijKIdjNlvUNd2jFWOx4QhPKTLMiso&exp=1779233427&signer=media-rpc&token=AAIAAU0AL0tKWDVHUjV6TWNzUkJCcUszVl9wV2FTenhnOEhNUV85Q2xoSVpkeTZFYmMuanBnAAAAAAGeQpOOOE3jMZfQd4t7V0XMx3Zup2c8_A7nHjTqEwejIoP2QxNK');
+    background-image: url('imagens/tijolos.jpg');
 }
 
 .ferramentas-bg {
-    background-image: url('https://media-public.canva.com/D8YD4/MAEOVFD8YD4/1/s.jpg');
+    background-image: url('imagens/ferramentas2.jpg');
 }
 
 .epi-bg {
-    background-image: url('https://media.canva.com/v2/files/uri:ifs%3A%2F%2FM%2FpeuY8tQUCkV2dqheqvzWRnTaCrv2ZEzydenEvIRg0qM.jpg?csig=AAAAAAAAAAAAAAAAAAAAAAVuRrjKi_G3cK_kzpXxP66yiZ6Y4R8zeeaHOSrcntiv&exp=1779234831&signer=media-rpc&token=AAIAAU0AL3BldVk4dFFVQ2tWMmRxaGVxdnpXUm5UYUNydjJaRXp5ZGVuRXZJUmcwcU0uanBnAAAAAAGeQqj6mC558_Yc5ZPYzTTXX763nbvg1he5y30nufu0UH74Lclw');
+    background-image: url('imagens/epi2.jpg');
 }
 
-/* SEÇÃO MARCAS */
 .secao-marcas {
-    padding: 40px 0;
-    text-align: center;
-    background: #fff;
+    padding: 50px 0;
+    overflow: hidden;
 }
 
 .titulo-marcas {
@@ -609,54 +606,83 @@ li {
     color: var(--azul-escuro);
     font-weight: 800;
     margin-bottom: 30px;
-    text-align: left;
 }
 
 .carrossel-marcas {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    border-top: 1px solid var(--cinza-claro);
-    border-bottom: 1px solid var(--cinza-claro);
-    padding: 25px 0;
-}
-
-.lista-marcas {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    gap: 40px;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
     width: 100%;
-    flex-wrap: wrap;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 0;
 }
 
-.logo-marca {
-    width: 140px;
-    height: 80px;
-    display: flex;
+.carrossel-marcas::before,
+.carrossel-marcas::after {
+    content: "";
+    height: 100%;
+    position: absolute;
+    width: 150px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.carrossel-marcas::before {
+    left: 0;
+    top: 0;
+    background: linear-gradient(to right, var(--cinza-fundo) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.carrossel-marcas::after {
+    right: 0;
+    top: 0;
+    background: linear-gradient(to left, var(--cinza-fundo) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.carrossel-track {
+    display: inline-flex;
     align-items: center;
+    width: max-content;
+    animation: scrollmarcas 25s linear infinite;
+}
+
+.parceiro-logo {
+    width: 180px;
+    margin: 0 40px;
+    display: flex;
     justify-content: center;
-    transition: 0.3s;
+    align-items: center;
 }
 
-.logo-marca img {
+.parceiro-logo img {
     max-width: 100%;
-    min-height: 200px;
-    transition: 0.3s;
+    height: auto;
+    transition: all 0.3s ease-in-out;
 }
 
-.logo-marca:hover img {
-    transform: scale(1.08);
+.parceiro-logo img:hover {
+    transform: scale(1.1);
 }
 
-/* SOBRE A EMPRESA COMPLETO */
+@keyframes scrollmarcas {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+
+/* sobre */
 .secao-sobre-nos {
     padding: 30px 0;
 }
 
 .caixa-sobre-nos {
-    background-color: #f8fafc;
+    background-color: (var(--branco));
     border: 1px solid var(--cinza-claro);
     border-radius: 8px;
     padding: 35px;
@@ -679,7 +705,7 @@ li {
     margin-bottom: 20px;
 }
 
-.beneficios-sobre{
+.beneficios-sobre {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -727,22 +753,55 @@ li {
     line-height: 1.3;
 }
 
-/* DEPOIMENTOS */
+/* depoimentos */
+
 .secao-depoimentos {
     padding: 30px 0 50px;
 }
 
 .carrossel-depoimentos {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 15px;
+    width: 100%;
+}
+
+.depoimentos-wrapper {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    width: 100%;
+    padding: 10px 0 25px;
+    scroll-behavior: smooth;
+}
+
+.depoimentos-wrapper::-webkit-scrollbar {
+    height: 7px;
+}
+
+.depoimentos-wrapper::-webkit-scrollbar-track {
+    background: var(--cinza-claro, #f1f5f9);
+    border-radius: 10px;
+}
+
+.depoimentos-wrapper::-webkit-scrollbar-thumb {
+    background: var(--azul-escuro, #002d62);
+    border-radius: 10px;
+    transition: background-color 0.2s;
+}
+
+.depoimentos-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--destaque-laranja, #ff6a00);
+}
+
+.depoimentos-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: var(--azul-escuro, #002d62) var(--cinza-claro, #f1f5f9);
 }
 
 .grid-depoimentos {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
     gap: 15px;
-    flex: 1;
+    width: max-content;
 }
 
 .cartao-depoimento {
@@ -770,13 +829,7 @@ li {
     display: flex;
     align-items: center;
     gap: 12px;
-}
 
-.foto-cliente {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background-color: #cbd5e1;
 }
 
 .cliente-info strong {
