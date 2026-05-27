@@ -1,3 +1,9 @@
+<?php
+require_once "Crud/crud.php";
+$produtos = readAll($pdo, "produto");
+$promocoes = readAll($pdo, "produto", "status_produto = 'ativo' AND desconto > 0");
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -21,8 +27,8 @@
                 <h2 class="titulo-banner">"Nenhum sonho é pequeno demais<br>para uma <span
                         class="destaque-laranja">grande obra.</span>"</h2>
                 <div class="botoes-banner">
-                    <button class="btn btn-azul">Ver ofertas</button>
-                    <a href="\Casas-Brasilite\janelas\sobre\paginas\sobre.html" class="btn btn-laranja">Sobre nós</a>
+                    <a href="#ofertas" class="btn btn-azul">Ver ofertas</a>
+                    <a href="#sobre-nos" class="btn btn-laranja">Sobre nós</a>
                 </div>
             </div>
         </div>
@@ -105,59 +111,54 @@
                 <a href="#" class="link-ver-todos">Ver todos <i class="fas fa-arrow-right"></i></a>
             </div>
 
-            <div class="carrossel-produtos-container">
-                <button class="seta-carrossel-prod"><i class="fas fa-chevron-left"></i></button>
-                <div class="grid-produtos">
+            <div class="produtos-container">
+                <div class="wrapper">
+                    <div class="grid-produtos">
 
-                    <?php foreach ($produtos as $produto): ?>
+                        <?php foreach ($produtos as $produto): ?>
 
-                        <div class="cartao-produto">
+                            <div class="cartao-produto">
 
-                            <?php if (!empty($produto['desconto'])): ?>
-                                <span class="selo-desconto">
-                                    -
-                                    <?= $produto['desconto'] ?>%
-                                </span>
-                            <?php endif; ?>
+                                <?php if (!empty($produto['desconto']) && $produto['desconto'] > 0): ?>
+                                    <span class="selo-desconto">
+                                        <?= $produto['desconto'] ?>%
+                                    </span>
+                                <?php endif; ?>
 
-                            <div class="imagem-produto-placeholder">
-                                <img src="<?= $produto['imagem'] ?>" alt="<?= $produto['nome'] ?>">
+                                <div class="imagem-produto-placeholder">
+                                    <img src="imagens/produto_padrao.png" alt="<?= $produto['nome_produto'] ?>">
+                                </div>
+
+                                <h4 class="titulo-produto">
+                                    <?= $produto['nome_produto'] ?>
+                                </h4>
+
+                                <p class="preco-produto">
+                                    R$ <?= number_format($produto['preco_unitario'], 2, ',', '.') ?>
+                                </p>
+
+                                <?php if (!empty($produto['desconto']) && $produto['desconto'] > 0): ?>
+                                    <p class="preco-antigo">
+                                        R$ <?= number_format($produto['preco_unitario'] + $produto['desconto'], 2, ',', '.') ?>
+                                    </p>
+                                <?php endif; ?>
+
+                                <p class="parcelamento">
+                                    ou 3x de R$
+                                    <?= number_format($produto['preco_unitario'] / 3, 2, ',', '.') ?>
+                                </p>
+
                             </div>
 
-                            <h4 class="titulo-produto">
-                                <?= $produto['nome'] ?>
-                            </h4>
+                        <?php endforeach; ?>
 
-                            <p class="preco-produto">
-                                R$
-                                <?= number_format($produto['preco'], 2, ',', '.') ?>
-                            </p>
-
-                            <?php if (!empty($produto['preco_antigo'])): ?>
-                                <p class="preco-antigo">
-                                    R$
-                                    <?= number_format($produto['preco_antigo'], 2, ',', '.') ?>
-                                </p>
-                            <?php endif; ?>
-
-                            <p class="parcelamento">
-                                ou
-                                <?= $produto['parcelas'] ?>x de
-                                R$
-                                <?= number_format($produto['preco'] / $produto['parcelas'], 2, ',', '.') ?>
-                            </p>
-
-                        </div>
-
-                    <?php endforeach; ?>
-
+                    </div>
                 </div>
-                <button class="seta-carrossel-prod"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </section>
 
-    <section class="secao-ofertas-semana">
+    <section id="ofertas" class="secao-ofertas-semana">
         <div class="container">
             <div class="cabecalho-secao">
                 <h3>Ofertas da semana</h3>
@@ -178,44 +179,34 @@
 
                 <?php foreach ($promocoes as $produto): ?>
 
-                    <div class="cartao-produto cartao-oferta">
+                    <div class="cartao-produtos cartao-oferta">
 
-                        <?php if (!empty($produto['desconto'])): ?>
+                        <?php if (!empty($produto['desconto']) && $produto['desconto'] > 0): ?>
                             <span class="selo-desconto">
-                                -
-                                <?= $produto['desconto'] ?>%
+                                -<?= $produto['desconto'] ?>%
                             </span>
                         <?php endif; ?>
 
                         <div class="imagem-produto-placeholder">
-                            <img src="<?= $produto['imagem'] ?>" alt="<?= $produto['nome'] ?>">
+                            <img src="imagens/produto-sem-imagem.png" alt="<?= $produto['nome_produto'] ?>">
                         </div>
 
                         <h4 class="titulo-produto">
-                            <?= $produto['nome'] ?>
+                            <?= $produto['nome_produto'] ?>
                         </h4>
 
-                        <div class="precos-bloco">
+                        <p class="preco-produto">
+                            R$ <?= number_format($produto['preco_unitario'], 2, ',', '.') ?>
+                        </p>
 
-                            <p class="preco-produto">
-                                R$
-                                <?= number_format($produto['preco'], 2, ',', '.') ?>
+                        <?php if (!empty($produto['desconto']) && $produto['desconto'] > 0): ?>
+                            <p class="preco-antigo">
+                                R$ <?= number_format($produto['preco_unitario'] + $produto['desconto'], 2, ',', '.') ?>
                             </p>
-
-                            <?php if (!empty($produto['preco_antigo'])): ?>
-                                <p class="preco-antigo">
-                                    R$
-                                    <?= number_format($produto['preco_antigo'], 2, ',', '.') ?>
-                                </p>
-                            <?php endif; ?>
-
-                        </div>
+                        <?php endif; ?>
 
                         <p class="parcelamento">
-                            ou
-                            <?= $produto['parcelas'] ?>x de
-                            R$
-                            <?= number_format($produto['preco'] / $produto['parcelas'], 2, ',', '.') ?>
+                            ou 10x de R$ <?= number_format($produto['preco_unitario'] / 10, 2, ',', '.') ?>
                         </p>
 
                         <button class="btn btn-laranja btn-comprar-card">
@@ -225,6 +216,7 @@
                     </div>
 
                 <?php endforeach; ?>
+
             </div>
         </div>
     </section>
@@ -302,14 +294,14 @@
         </div>
     </section>
 
-    <section class="secao-sobre-nos">
+    <section id="sobre-nos" class="secao-sobre-nos">
         <div class="container">
             <div class="caixa-sobre-nos">
                 <div class="texto-sobre">
                     <h3>Sobre a Casas Brasilite</h3>
                     <p>Somos especialistas em materiais para construção civil e fundação. Aqui você encontra qualidade,
                         variedade e os melhores preços para sua obra avançar com segurança e eficiência.</p>
-                    <button class="btn btn-azul-escuro">Saiba mais</button>
+                    <a href="janelas\sobre\sobre.php" class="btn btn-azul-escuro">Saiba mais</a>
                 </div>
                 <div class="beneficios-sobre">
                     <div class="grid-beneficios-sobre">
@@ -346,7 +338,7 @@
             </div>
 
             <div class="carrossel-depoimentos">
-                <div class="depoimentos-wrapper">
+                <div class="wrapper">
                     <div class="grid-depoimentos">
 
                         <div class="cartao-depoimento">
