@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <?php require_once 'sidebar.php'?>
+    <?php require_once '../partials/sidebar.php' ?>
     
     <div class="content">
         <header class="topbar">

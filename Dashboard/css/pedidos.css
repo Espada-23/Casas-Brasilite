@@ -91,21 +91,21 @@ body {
 
 .tabela-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
 .tabela-header h1 {
-    font-size: 1.5rem;
+    font-size: 2rem;
     color: var(--title);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .tabela-header p {
+    font-size: .9rem;
     color: var(--text-info);
-    font-size: .88rem;
-    margin-top: 2px;
+    margin-top: 4px;
 }
 
 .tabela-header a {
@@ -121,9 +121,9 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-} */
+}
 
- .tabela-header a:hover {
+*/ .tabela-header a:hover {
     background: var(--orange-hover);
 }
 
@@ -258,5 +258,3 @@ select {
 .tabela tbody tr:hover {
     background-color: rgba(7, 72, 128, 0.04);
 }
-
-

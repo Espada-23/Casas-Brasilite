@@ -10,35 +10,35 @@
             <span class="menu-title">GERAL</span>
 
             <div class="lista-sidebar">
-                <a href="dashboard.php">
+                <a href="../Dashboard/dashboard.php">
                     <i class="bi bi-house-door-fill"></i>
                     <p>Dashboard</p>
                 </a>
             </div>
 
             <div class="lista-sidebar">
-                <a href="produtos.php">
+                <a href="../Dashboard/produtos.php">
                     <i class="bi bi-box-seam-fill"></i>
                     <p>Produtos</p>
                 </a>
             </div>
 
             <div class="lista-sidebar">
-                <a href="estoque.php">
+                <a href="../Dashboard/estoque.php">
                     <i class="bi bi-grid-fill"></i>
                     <p>Estoque</p>
                 </a>
             </div>
 
             <div class="lista-sidebar">
-                <a href="pedidos.php">
+                <a href="../Dashboard/pedidos.php">
                     <i class="bi-card-list"></i>
                     <p>Pedidos</p>
                 </a>
             </div>
 
             <div class="lista-sidebar">
-                <a href="movimentacao.php">
+                <a href="../Dashboard/movimentacao.php">
                     <i class="bi bi-arrow-left-right"></i>
                     <p>Movimentações</p>
                 </a>
@@ -47,7 +47,7 @@
             <span class="menu-title">GESTÃO</span>
 
             <div class="lista-sidebar">
-                <a href="clientes.php" class="active">
+                <a href="../Dashboard/clientes.php" class="active">
                     <i class="bi bi-people-fill"></i>
                     <p>Clientes</p>
                 </a>
