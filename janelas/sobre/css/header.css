@@ -1,0 +1,42 @@
+header {
+    width: 100%;
+    background-color: var(--branco);
+    border-bottom: 2px solid var(--azul-escuro);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    margin-bottom: 50px;
+}
+
+.header-container {
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    max-height: 70px;
+    width: auto;
+    display: block;
+}
+
+.menu {
+    display: flex;
+    gap: 35px;
+    align-items: center;
+}
+
+.menu a {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+    transition: color 0.2s ease-in-out;
+}
+
+.menu a:hover {
+    color: var(--laranja);
+}
