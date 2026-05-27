@@ -13,7 +13,10 @@
 </head>
 
 <body>
-    <?php require_once '../partials/sidebar.php' ?>
+    <?php
+    $pagina = "movimentacao";
+    require_once("../partials/sidebar.php");
+    ?>
 
     <div class="content">
         <header class="topbar">

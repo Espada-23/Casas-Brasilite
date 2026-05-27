@@ -11,57 +11,39 @@
     top: 0;
     display: flex;
     flex-direction: column;
-    z-index: 100;
     overflow-y: auto;
     overflow-x: hidden;
+    z-index: 100;
     transition: .3s;
 }
 
-#menu-toggle:checked~.sidebar {
-    left: -260px;
+#menu-toggle:checked ~ .sidebar{
+    left:-260px;
 }
 
-.menu-btn {
-    font-size: 1.5rem;
-    color: var(--title);
-    cursor: pointer;
-    position: fixed;
-    top: 18px;
-    left: 20px;
-    z-index: 9999;
-    transition: .3s;
-}
-
-.menu-btn:hover {
-    transform: scale(1.1);
-}
-
-#menu-toggle:checked~.content {
-    width: 100%;
-    margin-left: 0;
+#menu-toggle:checked ~ .content{
+    width:100%;
+    margin-left:0;
 }
 
 .content {
     width: calc(100% - 260px);
     margin-left: 260px;
     min-height: 100vh;
-    transition: .3s;
 }
 
 .logo {
-    padding: 24px 20px 16px;
-    border-bottom: 1px solid rgba(255,255,255,.08);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-direction: row;
-    gap: 12px;
-    margin: 0;
+    padding: 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
 }
 
-.logo i {
-    color: var(--orange);
-    font-size: 0.9em;
+.logo-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .logo img {
@@ -77,65 +59,60 @@
 
 .logo-text h2 {
     color: white;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
-    margin: 0;
 }
 
 .logo-text p {
-    font-size: .72rem;
-    color: rgba(255,255,255,.45);
-    margin: 2px 0 0;
-    letter-spacing: .5px;
+    color: rgba(255, 255, 255, .45);
+    font-size: .68rem;
+    letter-spacing: 1px;
+}
+
+.menu-sidebar {
+    color: rgba(255, 255, 255, .5);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.menu-sidebar:hover {
+    color: white;
 }
 
 .sidebar nav {
     flex: 1;
     padding: 16px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
 }
 
 .menu-title {
-    color: rgba(255,255,255,.35);
+    display: block;
+    color: rgba(255, 255, 255, .35);
     font-size: .67rem;
     font-weight: 600;
     letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 12px 8px 6px;
-    margin-top: 8px;
+    margin: 15px 0 8px;
 }
 
 .lista-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
+    margin-bottom: 5px;
 }
 
 .lista-sidebar a {
-    color: rgba(255,255,255,.65);
-    font-size: .88rem;
-    font-weight: 500;
-    text-decoration: none;
-
     display: flex;
     align-items: center;
     gap: 12px;
-
-    padding: 10px 12px;
+    padding: 11px 14px;
     border-radius: 10px;
-    transition: .2s;
-}
-
-.lista-sidebar a i {
-    font-size: 1rem;
-    width: 18px;
-    flex-shrink: 0;
+    text-decoration: none;
+    color: rgba(255, 255, 255, .65);
+    transition: .3s;
 }
 
 .lista-sidebar a:hover {
-    background: rgba(255,255,255,.08);
+    background: rgba(255, 255, 255, .08);
     color: white;
 }
 
@@ -150,67 +127,61 @@
 
 .footer-sidebar {
     padding: 12px;
-    border-top: 1px solid rgba(255,255,255,.08);
+    border-top: 1px solid rgba(255, 255, 255, .08);
 }
 
 .user-info-sidebar {
     display: flex;
     align-items: center;
     gap: 10px;
-
-    padding: 10px 12px;
-    margin-bottom: 8px;
-
-    background: rgba(255,255,255,.06);
+    background: rgba(255, 255, 255, .05);
+    padding: 10px;
     border-radius: 10px;
+    margin-bottom: 10px;
 }
 
 .user-info-sidebar i {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-
-    background: var(--orange);
+    width: 35px;
+    height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
-
+    border-radius: 50%;
+    background: var(--orange);
     color: white;
-    font-size: .9rem;
+
 }
 
 .user-name p {
     color: white;
     font-size: .85rem;
     font-weight: 600;
-    margin: 0;
+
 }
 
 .user-name span {
-    color: rgba(255,255,255,.45);
+    color: rgba(255, 255, 255, .45);
     font-size: .72rem;
+
 }
 
 .exit a {
+
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-
     width: 100%;
-    padding: 9px;
-
-    background: rgba(239,68,68,.15);
-    color: #ff8080;
-
-    text-decoration: none;
+    padding: 10px;
     border-radius: 10px;
-
-    font-size: .82rem;
-    font-weight: 500;
-    transition: .2s;
+    background: rgba(239, 68, 68, .15);
+    color: #ff8080;
+    text-decoration: none;
+    transition: .3s;
 }
 
 .exit a:hover {
-    background: rgba(239,68,68,.25);
+
+    background: rgba(239, 68, 68, .25);
+
 }

@@ -13,7 +13,10 @@
 </head>
 
 <body>
-    <?php require_once '../partials/sidebar.php' ?>
+    <?php
+    $pagina = "pedidos";
+    require_once("../partials/sidebar.php");
+    ?>
 
     <div class="content">
         <header class="topbar">
@@ -159,7 +162,7 @@
                                         <td>01/05/2025</td>
                                     </tr>
                                     <tr>
-                                       <td>#0001</td>
+                                        <td>#0001</td>
                                         <td>Construtora Alpha</td>
                                         <td>5</td>
                                         <td>R$ 1.000,00</td>
@@ -167,7 +170,7 @@
                                         <td>01/05/2025</td>
                                     </tr>
                                     <tr>
-                                       <td>#0001</td>
+                                        <td>#0001</td>
                                         <td>Construtora Alpha</td>
                                         <td>5</td>
                                         <td>R$ 1.000,00</td>
