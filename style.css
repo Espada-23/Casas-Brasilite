@@ -15,6 +15,10 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background-color: var(--cinza-fundo);
     color: var(--texto-principal);
@@ -67,8 +71,7 @@ li {
 }
 
 
-
-/* BANNER PRINCIPAL (HERO) */
+/* banner da pagina */
 .banner-principal {
     position: relative;
     height: 420px;
@@ -275,7 +278,7 @@ li {
     color: var(--laranja);
 }
 
-.carrossel-produtos-container {
+.produtos-container {
     display: flex;
     align-items: center;
     gap: 15px;
@@ -283,13 +286,22 @@ li {
 }
 
 .grid-produtos {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    display: flex;
     gap: 15px;
-    flex: 1;
+    width: max-content;
 }
 
 .cartao-produto {
+    border: 1px solid var(--cinza-claro);
+    border-radius: 8px;
+    padding: 15px;
+    position: relative;
+    background: var(--branco);
+    min-width: 220px;
+    max-width: 220px;
+}
+
+.cartao-produtos {
     border: 1px solid var(--cinza-claro);
     border-radius: 8px;
     padding: 15px;
@@ -369,7 +381,7 @@ li {
 }
 
 
-/* OFERTAS DA SEMANA COM CRONOMETRO */
+/* seção de ofertas */
 .secao-ofertas-semana {
     padding: 30px 0;
 }
@@ -766,7 +778,7 @@ li {
     width: 100%;
 }
 
-.depoimentos-wrapper {
+.wrapper {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     width: 100%;
@@ -774,26 +786,26 @@ li {
     scroll-behavior: smooth;
 }
 
-.depoimentos-wrapper::-webkit-scrollbar {
+.wrapper::-webkit-scrollbar {
     height: 7px;
 }
 
-.depoimentos-wrapper::-webkit-scrollbar-track {
+.wrapper::-webkit-scrollbar-track {
     background: var(--cinza-claro, #f1f5f9);
     border-radius: 10px;
 }
 
-.depoimentos-wrapper::-webkit-scrollbar-thumb {
+.wrapper::-webkit-scrollbar-thumb {
     background: var(--azul-escuro, #002d62);
     border-radius: 10px;
     transition: background-color 0.2s;
 }
 
-.depoimentos-wrapper::-webkit-scrollbar-thumb:hover {
+.wrapper::-webkit-scrollbar-thumb:hover {
     background: var(--destaque-laranja, #ff6a00);
 }
 
-.depoimentos-wrapper {
+.wrapper {
     scrollbar-width: thin;
     scrollbar-color: var(--azul-escuro, #002d62) var(--cinza-claro, #f1f5f9);
 }
