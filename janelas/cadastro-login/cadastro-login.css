@@ -251,3 +251,24 @@
 .link-voltar-fluxo:hover {
     color: var(--azul-escuro);
 }
+
+/* MENSAGENS*/
+
+.mensagem,
+.msg {
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.sucesso {
+  background: #d4edda;
+  color: #155724;
+}
+
+.erro {
+  background: #f8d7da;
+  color: #721c24;
+}

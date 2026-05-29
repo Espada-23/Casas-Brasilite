@@ -673,10 +673,6 @@ body {
     font-weight: 600;
 }
 
-.tabela-wrapper {
-    background: var(--background-color);
-}
-
 .tabela table {
     width: 100%;
     border-collapse: collapse;
@@ -855,4 +851,10 @@ body {
     background: rgba(249,199,79,.15);
     color: #ca8a04;
     border: 1px solid rgba(249,199,79,.3);
+}
+
+.condicao.ok {
+    background: rgba(113, 249, 79, 0.15);
+    color: #04ca1e;
+    border: 1px solid rgba(79, 249, 79, 0.3);
 }

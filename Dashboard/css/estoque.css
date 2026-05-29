@@ -213,6 +213,7 @@ body {
 .main-filtro {
     display: flex;
     gap: 10px;
+    justify-content: space-between;
 }
 
 .barra-pesquisa {
@@ -228,8 +229,13 @@ body {
     background: none;
 }
 
+.selects {
+    display: flex;
+    gap: 10px;
+}
+
 input {
-    min-width: 1150px;
+    min-width: 500px;
     outline: none;
     border: none;
     font-family: 'Inter', sans-serif;
@@ -239,6 +245,7 @@ select {
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 10px;
+    outline: none;
 }
 
 .cards-status {

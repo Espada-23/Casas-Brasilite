@@ -123,7 +123,7 @@ body {
     gap: 6px;
 }
 
-*/ .tabela-header a:hover {
+ .tabela-header a:hover {
     background: var(--orange-hover);
 }
 
@@ -176,6 +176,7 @@ body {
 .main-filtro {
     display: flex;
     gap: 10px;
+    justify-content: space-between;
 }
 
 .barra-pesquisa {
@@ -192,7 +193,7 @@ body {
 }
 
 input {
-    min-width: 1250px;
+    min-width: 500px;
     outline: none;
     border: none;
     font-family: 'Inter', sans-serif;
@@ -202,7 +203,7 @@ select {
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 10px;
-    min-width: 200px;
+    outline: none;
 }
 
 .container-tabela-produto {

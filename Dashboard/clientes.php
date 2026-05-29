@@ -1,9 +1,50 @@
+<?php
+
+require_once '../Crud/init.php';
+require_once '../Crud/crud.php';
+
+$cadastrados = readAll($pdo, 'usuario');
+
+$hoje = date('Y-m-d');
+
+$resultados = [];
+$registros_pesquisa = 0;
+
+$mensagem_erro = "";
+
+$novos_dia = (read($pdo, 'usuario', '*', 'data_cadastro = '.$hoje) == 0) ? '0' : read($pdo, 'usuario', '*', 'data_cadastro = '.$hoje);
+
+$novos_mes = count(read($pdo, 'usuario', '*', 'data_cadastro >= NOW() - INTERVAL 1 MONTH'));
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $pesquisa = $_POST['pesquisa'];
+
+    if (empty(trim($pesquisa))) {
+        $mensagem_erro = "Por favor, digite um nome ou e-mail para realizar a busca."; 
+    } else {
+        $registros = read($pdo, 'usuario', '*', "nome LIKE '%$pesquisa%' OR email LIKE '%$pesquisa%'");
+        
+        if (count($registros) > 0) {
+            foreach ($registros as $usuario => $value) {
+                $resultados[$usuario] = is_array($value) ? $value['nome'] : $registros['nome'];
+            }
+        } else {
+            $mensagem_pesquisa = "Nenhum usuário encontrado.";
+        }
+
+        $registros_pesquisa = 1;
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="\Casas-Brasilite\imagens\icon.png" type="image/x-icon">
     <title>Dashboard - Clientes</title>
     <link rel="icon" href="../imagens/logo.png">
     <link rel="stylesheet" href="css/global.css">
@@ -58,13 +99,9 @@
                                     <small>Movimentações do mês</small>
                                 </div>
                             </div>
-                            <span class="kpi-extra positivo">
-                                +32 hoje
-                            </span>
                         </div>
-                        <div class="kpi-valor">324</div>
+                        <div class="kpi-valor"><?= count($cadastrados) ?></div>
                     </div>
-
 
                     <div class="kpi-card">
                         <div class="kpi-header">
@@ -78,121 +115,95 @@
                                 </div>
                             </div>
                             <span class="kpi-extra negativo">
-                                +15 hoje
+                                + <?= $novos_dia; ?> hoje
                             </span>
                         </div>
-                        <div class="kpi-valor">186</div>
-                    </div>
-
-                    <div class="kpi-card">
-                        <div class="kpi-header">
-                            <div class="kpi-left">
-                                <div class="kpi-icon saldo">
-                                    <i class="bi bi-arrow-up-circle-fill"></i>
-                                </div>
-                                <div>
-                                    <div class="kpi-label">Clientes Ativos</div>
-                                    <small>Total</small>
-                                </div>
-                            </div>
-                            <span class="kpi-extra positivo">
-                                78% Total
-                            </span>
-                        </div>
-                        <div class="kpi-valor">62</div>
-                    </div>
-
-                    <div class="kpi-card">
-                        <div class="kpi-header">
-                            <div class="kpi-left">
-                                <div class="kpi-icon desativo">
-                                    <i class="bi bi-arrow-down-circle-fill"></i>
-                                </div>
-                                <div>
-                                    <div class="kpi-label">Clientes Desativados</div>
-                                    <small>Total</small>
-                                </div>
-                            </div>
-                            <span class="kpi-extra p-des">
-                                20% Total
-                            </span>
-                        </div>
-                        <div class="kpi-valor">22</div>
+                        <div class="kpi-valor"><?= $novos_mes; ?></div>
                     </div>
                 </div>
 
                 <div class="main-filtro">
                     <div class="barra-pesquisa">
-                        <button>
-                            <i class="bi bi-search"></i>
-                        </button>
-                        <input type="text" name="pesquisa" placeholder="Buscar Pedido...">
+                        <form method="POST"  action="clientes.php">
+                            <button type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                            <input type="text" name="pesquisa" placeholder="<?php echo ((isset($mensagem_erro) && $mensagem_erro != '') ? $mensagem_erro : 'Buscar Cliente...'); $mensagem_erro = '';?>">
+                        </form>
+                    </div>
+                    <div>
+                        <p>Olá</p>
                     </div>
                 </div>
 
                 <div class="grid-clientes">
+                    <?php
+                    
+                    foreach ($cadastrados as $usuario) {
+                    ?>
+                        <div class="card-cliente">
+                            <div class="perfil">
+                                <div class="nome">
+                                    <p><?=  htmlspecialchars($usuario['nome']);  ?></p>
+                                    <span>Pessoa Física</span>
+                                </div>
+                            </div>
 
-                    <div class="card-cliente">
-                        <div class="perfil">
-                            <h1>JS</h1>
+                            <div class="info-geral">
+                                <div class="info">
+                                    <div class="fone">
+                                        <label><?= var_dump($resultados); ?></label>
+                                        <p><?= htmlspecialchars($usuario['telefone']); ?></p>
+                                    </div>
+                                    <div class="cpf">
+                                        <label>CPF</label>
+                                        <p><?=  htmlspecialchars($usuario['cpf']); ?></p>
+                                    </div>
+                                </div>
+                                <div class="cadastrado">
+                                    <div class="email">
+                                        <label>Email</label>
+                                        <p><?=  htmlspecialchars($usuario['email']); ?></p>
+                                    </div>
+                                    <div class="senha">
+                                        <label>Senha</label>
+                                        <p style="font-size: 11px; max-width: 150px; overflow: hidden; text-overflow: ellipsis;"><?= htmlspecialchars(($usuario['senha'])) ?></p>
+                                    </div>
+                                </div>
+                                <div class="localizacao">
+                                    <div class="cep">
+                                        <label>CEP</label>
+                                        <p><?=  htmlspecialchars($usuario['cep']); ?></p>
+                                    </div>
 
-                            <div class="nome">
-                                <p>João Silva</p>
-                                <span>Pessoa Física</span>
+                                    <div class="cid-est">
+                                        <div class="cidade">
+                                            <label>Cidade</label>
+                                            <p><?= htmlspecialchars($usuario['cidade']); ?></p>
+                                        </div>
+                                        <div class="estado">
+                                            <label>Estado</label>
+                                            <p><?=  htmlspecialchars($usuario['estado']); ?></p>
+                                        </div>
+                                    </div>
+                                    <div class="complemento">
+                                        <div class="bairro">
+                                            <label>Bairro</label>
+                                            <p><?=  htmlspecialchars($usuario['bairro']); ?></p>
+                                        </div>
+                                        <div class="numero">
+                                            <label>Número</label>
+                                            <p><?=  htmlspecialchars($usuario['numero']); ?></p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="info-geral">
-                            <div class="info">
-                                <div class="fone">
-                                    <label>Telefone</label>
-                                    <p>(11) 99999-9999</p>
-                                </div>
-                                <div class="cpf">
-                                    <label>CPF</label>
-                                    <p>111.111.111-11</p>
-                                </div>
-                            </div>
-                            <div class="cadastrado">
-                                <div class="email">
-                                    <label>Email</label>
-                                    <p>joaosilva@gmail.com</p>
-                                </div>
-                                <div class="senha">
-                                    <label>Senha</label>
-                                    <p>joao123</p>
-                                </div>
-                            </div>
-                            <div class="localizacao">
-                                <div class="cep">
-                                    <label>CEP</label>
-                                    <p>11111-111</p>
-                                </div>
-
-                                <div class="cid-est">
-                                    <div class="cidade">
-                                        <label>Cidade</label>
-                                        <p>São Caetano do Sul</p>
-                                    </div>
-                                    <div class="estado">
-                                        <label>Estado</label>
-                                        <p>SP</p>
-                                    </div>
-                                </div>
-                                <div class="complemento">
-                                    <div class="bairro">
-                                        <label>Bairro</label>
-                                        <p>Santa Maria</p>
-                                    </div>
-                                    <div class="numero">
-                                        <label>Número</label>
-                                        <p>45</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <?php
+                    }
+                    ?>
                 </div>
+
             </div>
         </main>
     </div>

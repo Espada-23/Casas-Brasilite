@@ -6,7 +6,7 @@
 
         <div class="logo-left">
 
-            <img src="../imagens/logo-branca.png" alt="logo">
+            <img src="../imagens/logo-tri.png" alt="logo">
 
             <div class="logo-text">
                 <h2>Brasilite</h2>
@@ -146,7 +146,7 @@
 
             <div class="user-name">
 
-                <p>Gustavo</p>
+                <p>$Nome</p>
                 <span>Administrador</span>
 
             </div>

@@ -62,29 +62,60 @@
 
             <div class="dropdown-departamentos">
 
-                <a href="\Casas-Brasilite\janelas\todos-produtos\todos-produtos.php"><i class="fa-solid fa-cart-flatbed-suitcase"></i>Todas Categorias</a>
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php">
+                    <i class="fa-solid fa-cart-flatbed-suitcase"></i> Todas Categorias
+                </a>
 
-                <a href="\Casas-Brasilite\janelas\janela-produto\janela-produto.php"><i class="fas fa-hammer"></i> Ferramentas</a>
+                <strong>Ferramentas</strong>
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=1">Ferramentas Manuais</a>
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=2">Ferramentas Elétricas</a>
 
-                <a href="\Casas-Brasilite\janelas\carrinho\carrinho.php"><i class="fas fa-paint-roller"></i> Tintas</a>
+                <strong>Materiais</strong>
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=3">Cimentos</a>
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=4">Argamassas</a>
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=5">Blocos</a>
 
-                <a href="#"><i class="fas fa-hard-hat"></i> EPI</a>
-
-                <a href="#"><i class="fas fa-couch"></i> Decoração</a>
-
-                <a href="#"><i class="fas fa-building"></i> Estruturas</a>
+                <strong>Acabamento</strong>
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=6">Pisos</a>
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=7">Revestimentos</a>
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=8">Tintas</a>
 
             </div>
 
         </div>
 
         <ul class="lista-links">
-            <li><a href="#">Materiais</a></li>
-            <li><a href="#">Ferramentas</a></li>
-            <li><a href="#">Acabamento</a></li>
-            <li><a href="#">Estruturas</a></li>
-            <li><a href="#">EPI</a></li>
-            <li><a href="#" class="link-ofertas">Ofertas</a></li>
+
+            <li>
+                <a href="/Casas-Brasilite/index.php#mais-vendidos">
+                    Mais vendidos
+                </a>
+            </li>
+
+            <li>
+                <a href="/Casas-Brasilite/index.php#ofertas">
+                    Promoções
+                </a>
+            </li>
+
+            <li>
+                <a href="/Casas-Brasilite/index.php#parcerias">
+                    Parcerias
+                </a>
+            </li>
+
+            <li>
+                <a href="/Casas-Brasilite/index.php#avaliaçoes">
+                    Avaliações
+                </a>
+            </li>
+
+            <li>
+                <a href="/Casas-Brasilite/index.php#orcamentos" class="link-laranja">
+                    Orçamentos
+                </a>
+            </li>
+
         </ul>
         <div class="localizacao">
             <i class="fas fa-map-marker-alt"></i>

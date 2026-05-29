@@ -1,3 +1,40 @@
+<?php
+
+require_once '../../Crud/init.php';
+require_once '../../Crud/crud.php';
+
+$mensagem = "";
+$classe = "";
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    
+    $email = isset($_POST['email']) ? trim($_POST['email']) : null;
+    $senha = isset($_POST['senha']) ? trim($_POST['senha']) : null;
+
+    if ($email ===  "" || $senha === "") {
+        $mensagem = "Informe o e-mail e a senha.";
+    } else {
+    $senha_criptografada = md5($senha);
+    $registros=read($pdo, 'usuario', '*', "email = '$email'");
+
+    if ($registros) {
+        if ($senha_criptografada == $registros['senha']) {
+            $_SESSION['login']['usuario'] = $registros['nome'];
+            $_SESSION['login']['id'] = $registros['id_usuario'];
+
+            header("Location: /Casas-Brasilite/index.php");
+        } else {
+            $mensagem = "Senha incorreta.";
+            $classe = "erro";
+        }
+    } else {
+        $mensagem = "Email não encontrado.";
+        $classe = "erro";
+    }
+}
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -21,15 +58,20 @@
         <h2 class="titulo-autenticacao">Bem-vindo de volta</h2>
         <p class="subtitulo-autenticacao">Faça login na sua conta!</p>
 
-        <form action="#">
+        <form method="POST" action="login.php">
             <div class="grupo-campo">
                 <label>Email</label>
-                <input type="email" placeholder="Ex: meunome@gmail.com" required>
+                <input type="email" name="email" placeholder="Ex: meunome@gmail.com" required>
             </div>
             <div class="grupo-campo">
                 <label>Senha</label>
-                <input type="password" placeholder="Ex: meunome123" required>
+                <input type="password" name="senha" placeholder="Ex: meunome123" required>
             </div>
+            <?php if ($mensagem): ?>
+            <div class="<?= $classe; ?>">
+                <?= htmlspecialchars($mensagem); ?>
+            </div>
+            <?php endif; ?>
 
             <div class="linha-links-autenticacao">
                 <a href="#">Esqueceu senha?</a>
@@ -38,6 +80,8 @@
 
             <button type="submit" class="btn btn-azul btn-bloco">Entrar &rarr;</button>
         </form>
+
+        <?php echo (isset($registros) ? var_dump($registros) : '');?>
     </div>
 
 </body>

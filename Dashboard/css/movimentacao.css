@@ -201,6 +201,7 @@ body {
 .main-filtro {
     display: flex;
     gap: 10px;
+    justify-content: space-between;
 }
 
 .barra-pesquisa {
@@ -217,7 +218,7 @@ body {
 }
 
 input {
-    min-width: 1250px;
+    min-width: 500px;
     outline: none;
     border: none;
     font-family: 'Inter', sans-serif;
@@ -228,6 +229,7 @@ select {
     border-radius: 6px;
     padding: 10px;
     min-width: 200px;
+    outline: none;
 }
 
 .container-tabela-produto {
@@ -319,10 +321,4 @@ select {
 .tp-saida i {
     background: rgba(239, 68, 68, .12);
     color: var(--red);
-}
-
-
-.data {
-    display: flex;
-    gap: 10px;
 }

@@ -1,10 +1,80 @@
+<?php
+
+require_once '../Crud/init.php';
+require_once '../Crud/crud.php';
+
+$clientes = read($pdo, 'usuario');
+$pedidos = read($pdo, 'pedido');
+
+$total_clientes = count($clientes);
+$total_pedidos = count($pedidos);
+
+$stmt = $pdo->query("
+    SELECT SUM(valor_total) as total 
+    FROM pagamento 
+    WHERE status_pagamento = 'pago'
+");
+
+$faturamento = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+
+$stmt = $pdo->query("
+    SELECT SUM(quantidade) as total 
+    FROM item_pedido
+");
+$itens_vendidos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+
+$stmt = $pdo->query("
+    SELECT SUM(frete) as total 
+    FROM produto
+");
+$custos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+
+$lucro = $faturamento - $custos;
+
+$margem = $faturamento > 0 ? ($lucro / $faturamento) * 100 : 0;
+
+// Estoque Crítico
+
+$stmt = $pdo->query("
+    SELECT
+        produto.nome_produto,
+        estoque.quantidade_atual,
+        estoque.estoque_minimo
+    FROM estoque
+    JOIN produto ON produto.id_produto = estoque.idProduto
+    ORDER BY estoque.quantidade_atual ASC
+    LIMIT 5
+");
+
+$estoques = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Pedidos
+
+$stmt = $pdo->query("
+    SELECT
+        p.id_pedido,
+        u.nome as cliente,
+        pg.valor_total,
+        pg.status_pagamento,
+        pg.data_pagamento
+    FROM pedido p 
+    JOIN usuario u ON p.idUsuario = u.id_usuario
+    JOIN pagamento pg ON p.idPagamento = pg.id_pagamento
+    ORDER BY p.id_pedido ASC
+    LIMIT 5
+");
+
+$pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <link rel="icon" href="\Casas-Brasilite\imagens\icon.png" type="image/x-icon">
     <link rel="icon" href="../imagens/logo.png">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/sidebar.css">
@@ -48,8 +118,8 @@
                             <i class="bi bi-cash-stack"></i>
                         </div>
                         <div>
-                            <h5>Faturamento Mensal</h5>
-                            <h3>R$ 125.430,90</h3>
+                            <h5>Faturamento Total</h5>
+                            <h3>R$ <?= number_format($faturamento, 2, ',', '.') ?></h3>
                         </div>
                     </div>
                     <div class="card-bottom">
@@ -60,28 +130,12 @@
 
                 <div class="card">
                     <div class="card-top">
-                        <div class="icon blue">
-                            <i class="bi bi-graph-up-arrow"></i>
-                        </div>
-                        <div>
-                            <h5>Faturamento Anual</h5>
-                            <h3>R$ 1.348.750,40</h3>
-                        </div>
-                    </div>
-                    <div class="card-bottom">
-                        <span class="green">↑ 24,3%</span>
-                        <p>vs ano anterior</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-top">
                         <div class="icon green-bg">
                             <i class="bi bi-currency-dollar"></i>
                         </div>
                         <div>
                             <h5>Lucro Total</h5>
-                            <h3>R$ 68.345,60</h3>
+                            <h3>R$ <?= number_format($lucro, 2, ',', '.') ?></h3>
                         </div>
                     </div>
                     <div class="card-bottom">
@@ -97,12 +151,8 @@
                         </div>
                         <div>
                             <h5>Total de Custos</h5>
-                            <h3>R$ 57.085,30</h3>
+                            <h3><?= number_format($custos, 2, ',', '.') ?></h3>
                         </div>
-                    </div>
-                    <div class="card-bottom">
-                        <span class="red-text">↓ 5,4%</span>
-                        <p>vs mês anterior</p>
                     </div>
                 </div>
 
@@ -113,12 +163,8 @@
                         </div>
                         <div>
                             <h5>Número de Pedidos</h5>
-                            <h3>324</h3>
+                            <h3><?= $total_pedidos ?></h3>
                         </div>
-                    </div>
-                    <div class="card-bottom">
-                        <span class="green">↑ 15,2%</span>
-                        <p>vs mês anterior</p>
                     </div>
                 </div>
 
@@ -129,7 +175,7 @@
                         </div>
                         <div>
                             <h5>Itens Vendidos</h5>
-                            <h3>3.842</h3>
+                            <h3><?= $itens_vendidos ?></h3>
                         </div>
                     </div>
                     <div class="card-bottom">
@@ -321,22 +367,29 @@
                             <option>1 Ano</option>
                         </select>
                     </div>
+
+                    <?php
+
+                    $margin_lucro = ($lucro / $faturamento) * 100;
+
+                    ?>
+
                     <div class="infos-resumo">
                         <div class="faturamento">
                             <p>Faturamento Total</p>
-                            <span>R$ 125.430,90</span>
+                            <span>R$ <?= number_format($faturamento, 2, ',', '.') ?></span>
                         </div>
                         <div class="custos">
                             <p>Total de Custos</p>
-                            <span>R$ 57.085,30</span>
+                            <span>R$ <?= number_format($custos, 2, ',', '.') ?></span>
                         </div>
                         <div class="lucro">
                             <p>Lucro Total</p>
-                            <span>R$ 68.345,60</span>
+                            <span>R$ <?= number_format($lucro, 2, ',', '.') ?></span>
                         </div>
                         <div class="margin">
                             <p>Margem de Lucro</p>
-                            <span>54,5%</span>
+                            <span><?= number_format($margin_lucro, 1, ',', '.') ?>%</span>
                         </div>
                     </div>
                 </div>
@@ -457,41 +510,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>#0001</td>
-                                        <td>Cliente A</td>
-                                        <td style="white-space:nowrap;">R$ 1.000,00</td>
-                                        <td>Pendente</td>
-                                        <td style="white-space:nowrap;">01/01/2025</td>
-                                    </tr>
-                                    <tr>
-                                        <td>#0002</td>
-                                        <td>Cliente B</td>
-                                        <td style="white-space:nowrap;">R$ 2.500,00</td>
-                                        <td>Pago</td>
-                                        <td style="white-space:nowrap;">02/01/2025</td>
-                                    </tr>
-                                    <tr>
-                                        <td>#0003</td>
-                                        <td>Cliente C</td>
-                                        <td style="white-space:nowrap;">R$ 500,00</td>
-                                        <td>Cancelado</td>
-                                        <td style="white-space:nowrap;">03/01/2025</td>
-                                    </tr>
-                                    <tr>
-                                        <td>#0004</td>
-                                        <td>Cliente D</td>
-                                        <td style="white-space:nowrap;">R$ 3.000,00</td>
-                                        <td style="white-space:nowrap;">Em separação</td>
-                                        <td style="white-space:nowrap;">04/01/2025</td>
-                                    </tr>
-                                    <tr>
-                                        <td>#0005</td>
-                                        <td>Cliente E</td>
-                                        <td style="white-space:nowrap;">R$ 1.500,00</td>
-                                        <td>Entregue</td>
-                                        <td style="white-space:nowrap;">05/01/2025</td>
-                                    </tr>
+                                    <?php
+
+                                    foreach ($pedidos_recentes as $pedido) {
+
+                                        $valor = number_format($pedido['valor_total'], 2, ',', '.');
+
+                                        echo '
+                                            <tr>
+                                                <td>#' . $pedido['id_pedido'] . '</td>
+                                                <td style="white-space: nowrap;">' . $pedido['cliente'] . '</td>
+                                                <td style="white-space:nowrap;">R$ ' . $valor . '</td>
+                                                <td>' . $pedido['status_pagamento'] . '</td>
+                                                <td style="white-space:nowrap;">' . $pedido['data_pagamento'] . '</td>
+                                            </tr>
+                                        ';
+                                    }
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -505,53 +540,43 @@
                 <div class="card">
                     <div class="estoque">
                         <div class="top-estoque">
-                            <p>Estoque Crítico</p>
+                            <p>Status Estoque</p>
                             <a href="estoque.html">Ver Todos</a>
                         </div>
 
-                        <div class="produtos-critico">
-                            <div class="info-produto">
-                                <img src="#" alt="produto">
-                                <div class="detalhes-produtos">
-                                    <h4>Vergalhão CA50 10mm</h4>
-                                    <p>Estoque: <span>5 unidades</span></p>
-                                </div>
-                            </div>
-                            <p class="condicao critico">Crítico</p>
-                        </div>
+                        <?php
 
-                        <div class="produtos-critico">
-                            <div class="info-produto">
-                                <img src="#" alt="produto">
-                                <div class="detalhes-produtos">
-                                    <h4>Cimento CP II 50kg</h4>
-                                    <p>Estoque: <span>20 unidades</span></p>
-                                </div>
-                            </div>
-                            <p class="condicao atencao">Atenção</p>
-                        </div>
+                        foreach ($estoques as $item) {
 
-                        <div class="produtos-critico">
-                            <div class="info-produto">
-                                <img src="#" alt="produto">
-                                <div class="detalhes-produtos">
-                                    <h4>Areia Média</h4>
-                                    <p>Estoque: <span>3 unidades</span></p>
-                                </div>
-                            </div>
-                            <p class="condicao critico">Crítico</p>
-                        </div>
+                            $qtd = $item['quantidade_atual'];
+                            $min = $item['estoque_minimo'];
 
-                        <div class="produtos-critico">
+                            if ($qtd <= $min) {
+                                $status = "Crítico";
+                                $classe = "critico";
+                            } elseif ($qtd <= $min * 2) {
+                                $status = "Atenção";
+                                $classe = "atencao";
+                            } else {
+                                $status = "Ok";
+                                $classe = "ok";
+                            }
+
+                            echo '
+                            <div class="produtos-critico">
                             <div class="info-produto">
                                 <img src="#" alt="produto">
                                 <div class="detalhes-produtos">
-                                    <h4>Brita 1</h4>
-                                    <p>Estoque: <span>20 unidades</span></p>
+                                    <h4>' . $item['nome_produto'] . '</h4>
+                                    <p>Estoque: <span>' . $item['quantidade_atual'] . ' unidades</span></p>
                                 </div>
                             </div>
-                            <p class="condicao atencao">Atenção</p>
+                            <p class="condicao ' . $classe . '">' . $status . '</p>
                         </div>
+                            ';
+                        }
+
+                        ?>
 
                     </div>
                 </div>

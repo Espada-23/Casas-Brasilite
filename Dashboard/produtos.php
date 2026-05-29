@@ -1,21 +1,91 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<?php 
+require_once '../Crud/crud.php';
 
+$acao = $_GET['acao'] ?? 'listar';
+$id = $_GET['id'] ?? null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $dados_produto = [
+        'idCategoria'       => $_POST['idCategoria'],
+        'sku'               => $_POST['sku'],
+        'nome_produto'      => $_POST['nome_produto'],
+        'preco_unitario'    => $_POST['preco_unitario'],
+        'marca'             => $_POST['marca'] ?? null,
+        'descricao_produto' => $_POST['descricao_produto'] ?? null
+    ];
+
+    if ($acao === 'salvar_novo') {
+        $id_produto_novo = create($pdo, 'produto', $dados_produto);
+
+        $quantidade_inicial = $_POST['quantidade'] ?? 1;
+        $dados_estoque = [
+            'idProduto' => $id_produto_novo,
+            'quantidade_atual' => $quantidade_inicial,
+            'estoque_minimo' => 1,
+            'status_estoque' => 'disponivel'
+        ];
+        create($pdo, 'estoque', $dados_estoque);
+
+        header('Location: produtos.php?mensagem=Criado e adicionado ao estoque com sucesso');
+        exit;
+    }
+
+    if ($acao === 'salvar_edicao' && $id) {
+        update($pdo, 'produto', $dados_produto, "id_produto = " . (int)$id);
+        
+        $nova_quantidade = $_POST['quantidade'] ?? 0;
+        $dados_estoque = [
+            'quantidade_atual' => $nova_quantidade
+        ];
+        update($pdo, 'estoque', $dados_estoque, "idProduto = " . (int)$id);
+        
+        header('Location: produtos.php?mensagem=Editado com sucesso');
+        exit;
+    }
+}
+
+if ($acao === 'excluir' && $id) {
+    delete($pdo, 'produto', "id_produto = " . (int)$id);
+    header('Location: produtos.php?mensagem=Excluido com sucesso');
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <title>Gerenciar Produtos - Casas Brasilite</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Produtos</title>
+    <link rel="icon" href="\Casas-Brasilite\imagens\icon.png" type="image/x-icon">
     <link rel="icon" href="../imagens/logo.png">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/produtos.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
-
 <body>
+
+
     <?php
     $pagina = "produtos";
     require_once("../partials/sidebar.php");
+    ?>
+
+    <?php if (isset($_GET['mensagem'])): ?>
+        <p style="color: green; font-weight: bold; padding: 10px; border: 1px solid green; background: #e8f5e9;"> 
+            <?= htmlspecialchars($_GET['mensagem']) ?> 
+        </p>
+    <?php endif; ?>z
+
+    <hr>
+
+    <?php
+    if ($acao === 'listar'):
+        $sql = "SELECT p.*, e.quantidade_atual 
+                FROM produto p 
+                LEFT JOIN estoque e ON p.id_produto = e.idProduto";
+        $stmt = $pdo->query($sql);
+        $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     ?>
 
     <div class="content">
@@ -44,9 +114,7 @@
                         <h1>Produtos</h1>
                         <p>6 produtos cadastrados</p>
                     </div>
-                    <a href="cadastro_produtos.php">
-                        <i class="bi bi-plus-lg"></i> Novo Produto
-                    </a>
+                    <a href="?acao=novo" class="btn">Adicionar Novo Produto <i class="bi bi-plus-lg"></i></a>
                 </div>
 
                 <div class="main-filtro">
@@ -58,19 +126,11 @@
                     </div>
                     <div class="categorias">
                         <select>
-                            <option>Todas as caetgorias</option>
+                            <option>Todas as categorias</option>
                             <option>Cimento</option>
                             <option>Areia</option>
                             <option>Tinta</option>
                             <option>Argamassa</option>
-                        </select>
-                    </div>
-                    <div class="departamentos">
-                        <select>
-                            <option>Todos os departamentos</option>
-                            <option>Construção</option>
-                            <option>Acabamento</option>
-                            <option>Estrutura</option>
                         </select>
                     </div>
                 </div>
@@ -81,102 +141,33 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Produto</th>
+                                        <th>ID</th>
                                         <th>SKU</th>
-                                        <th>Categoria</th>
-                                        <th>Departamento</th>
+                                        <th>Nome</th>
                                         <th>Marca</th>
-                                        <th>Estoque</th>
-                                        <th>Preço</th>
-                                        <th>Ações</th>
+                                        <th class="preco-produtos">Preço</th>
+                                        <th>Descrição</th>
+                                        <th class="estoque-produtos">Quantidade em estoque</th>
+                                        <th class="acao">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <?php foreach ($produtos as $p): ?>
                                     <tr>
-                                        <td>Cimento CP II 50kg</td>
-                                        <td>CMT001</td>
-                                        <td>Cimento</td>
-                                        <td>Construção</td>
-                                        <td>Votoran</td>
-                                        <td class="estoque-produtos">20</td>
-                                        <td class="preco-produtos">R$ 35,90</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
+                                        <td><?= $p['id_produto'] ?></td>
+                                        <td><?= htmlspecialchars($p['sku']) ?></td>
+                                        <td><?= htmlspecialchars($p['nome_produto']) ?></td>
+                                        <td><?= htmlspecialchars($p['marca']) ?></td>
+                                        <td><?= number_format($p['preco_unitario'], 2, ',', '.') ?></td>
+                                        <td><?= htmlspecialchars($p['descricao_produto']) ?></td>
+                                        <td><?= number_format($p['quantidade_atual']) ?></td>
+                                        <td>
+                                            <a href="?acao=editar&id=<?= $p['id_produto'] ?>" class="btn">Editar</a>
+                                            <a href="?acao=excluir&id=<?= $p['id_produto'] ?>" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir?');">Excluir</a>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>Areia Média 20kg</td>
-                                        <td>ARE002</td>
-                                        <td>Areia</td>
-                                        <td>Construção</td>
-                                        <td>Quartzolit</td>
-                                        <td class="estoque-produtos">35</td>
-                                        <td class="preco-produtos">R$ 18,50</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tijolo Cerâmico 8 Furos</td>
-                                        <td>TJL003</td>
-                                        <td>Tijolos</td>
-                                        <td>Construção</td>
-                                        <td>Cerâmica União</td>
-                                        <td class="estoque-produtos">150</td>
-                                        <td class="preco-produtos">R$ 1,29</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tinta Acrílica Branco 18L</td>
-                                        <td>TNT004</td>
-                                        <td>Tinta</td>
-                                        <td>Acabamento</td>
-                                        <td>Suvinil</td>
-                                        <td class="estoque-produtos">12</td>
-                                        <td class="preco-produtos">R$ 179,90</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ferro CA-50 10mm</td>
-                                        <td>FER005</td>
-                                        <td>Ferragem</td>
-                                        <td>Estrutura</td>
-                                        <td>Gerdau</td>
-                                        <td class="estoque-produtos">40</td>
-                                        <td class="preco-produtos">R$ 54,90</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Argamassa AC-II 20kg</td>
-                                        <td>ARG006</td>
-                                        <td>Argamassa</td>
-                                        <td>Acabamento</td>
-                                        <td>Quartzolit</td>
-                                        <td class="estoque-produtos">28</td>
-                                        <td class="preco-produtos">R$ 29,90</td>
-                                        <td class="acao">
-                                            <a href="#">Detalhes</a>
-                                        </td>
-                                    </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th>Total</th>
-                                        <th>--</th>
-                                        <th>--</th>
-                                        <th>--</th>
-                                        <th>--</th>
-                                        <th>285</th>
-                                        <th>R$ 319,49</th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -184,6 +175,67 @@
             </div>
         </main>
     </div>
-</body>
 
+    <?php
+    elseif ($acao === 'novo' || $acao === 'editar'):
+        $produto = null;
+        $url_post = "?acao=salvar_novo";
+        
+        if ($acao === 'editar' && $id) {
+            $produto = read($pdo, 'produto', '*', "id_produto = " . (int)$id);
+            
+            $estoque_atual = read($pdo, 'estoque', 'quantidade_atual', "idProduto = " . (int)$id);
+            $produto['quantidade'] = $estoque_atual ? $estoque_atual['quantidade_atual'] : 0;
+            
+            $url_post = "?acao=salvar_edicao&id=" . (int)$id;
+        }
+    ?>
+        <a href="?acao=listar" class="btn">Voltar para a Lista</a>
+        
+        <h2><?= $acao === 'novo' ? 'Cadastrar Novo Produto' : 'Editar Produto' ?></h2>
+
+        <form action="<?= $url_post ?>" method="POST">
+            <div class="form-group">
+                <label>ID Categoria (Ex: 1 para Construção):</label>
+                <input type="number" name="idCategoria" value="<?= $produto['idCategoria'] ?? '1' ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label>SKU (Código Único):</label>
+                <input type="text" name="sku" value="<?= $produto['sku'] ?? '' ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label>Nome do Produto:</label>
+                <input type="text" name="nome_produto" value="<?= $produto['nome_produto'] ?? '' ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label>Marca:</label>
+                <input type="text" name="marca" value="<?= $produto['marca'] ?? '' ?>">
+            </div>
+
+            <div class="form-group">
+                <label>Preço Unitário (R$):</label>
+                <input type="number" step="0.01" name="preco_unitario" value="<?= $produto['preco_unitario'] ?? '' ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label>Quantidade em Estoque (Quantas unidades?):</label>
+                <input type="number" name="quantidade" value="<?= $produto['quantidade'] ?? '1' ?>" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label>Descrição:</label>
+                <input type="text" name="descricao_produto" value="<?= $produto['descricao_produto'] ?? '' ?>">
+            </div>
+
+            <button type="submit" class="btn" style="background: #28A745; font-size: 16px; padding: 10px 20px;">
+                <?= $acao === 'novo' ? 'Salvar Novo Produto' : 'Atualizar Produto e Estoque' ?>
+            </button>
+        </form>
+
+    <?php endif; ?>
+
+</body>
 </html>

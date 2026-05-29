@@ -1,9 +1,23 @@
+<?php 
+    require_once '../Crud/data.php'
+
+
+
+?>
+
+
+
+
 <!DOCTYPE html>
+
+
+
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="\Casas-Brasilite\imagens\icon.png" type="image/x-icon">
     <title>Dashboard - Financeiro</title>
     <link rel="icon" href="../imagens/logo.png">
     <link rel="stylesheet" href="css/global.css">

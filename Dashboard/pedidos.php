@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="\Casas-Brasilite\imagens\icon.png" type="image/x-icon">
     <title>Dashboard - Pedidos</title>
     <link rel="icon" href="../imagens/logo.png">
     <link rel="stylesheet" href="css/global.css">
@@ -44,9 +45,9 @@
                         <h1>Pedidos</h1>
                         <p>Gerencie Todos os Pedidos</p>
                     </div>
-                    <a href="cadastro_produtos.php">
+                    <!-- <a href="cadastro_produtos.php">
                         <i class="bi bi-plus-lg"></i> Novo Pedido
-                    </a>
+                    </a> -->
                 </div>
 
                 <div class="kpi-grid">
@@ -133,6 +134,7 @@
                                         <th>Itens</th>
                                         <th>Valor Total</th>
                                         <th>Status</th>
+                                        <th>CEP</th>
                                         <th>Data</th>
                                     </tr>
                                 </thead>
@@ -143,6 +145,7 @@
                                         <td>5</td>
                                         <td>R$ 1.000,00</td>
                                         <td>Pago</td>
+                                        <td>09791-310</td>
                                         <td>01/05/2025</td>
                                     </tr>
                                     <tr>
@@ -151,6 +154,7 @@
                                         <td>5</td>
                                         <td>R$ 1.000,00</td>
                                         <td>Pago</td>
+                                        <td>09791-310</td>
                                         <td>01/05/2025</td>
                                     </tr>
                                     <tr>
@@ -159,6 +163,7 @@
                                         <td>5</td>
                                         <td>R$ 1.000,00</td>
                                         <td>Pago</td>
+                                        <td>09791-310</td>
                                         <td>01/05/2025</td>
                                     </tr>
                                     <tr>
@@ -167,6 +172,7 @@
                                         <td>5</td>
                                         <td>R$ 1.000,00</td>
                                         <td>Pago</td>
+                                        <td>09791-310</td>
                                         <td>01/05/2025</td>
                                     </tr>
                                     <tr>
@@ -175,6 +181,7 @@
                                         <td>5</td>
                                         <td>R$ 1.000,00</td>
                                         <td>Pago</td>
+                                        <td>09791-310</td>
                                         <td>01/05/2025</td>
                                     </tr>
                                     <tr>
@@ -183,6 +190,7 @@
                                         <td>5</td>
                                         <td>R$ 1.000,00</td>
                                         <td>Pago</td>
+                                        <td>09791-310</td>
                                         <td>01/05/2025</td>
                                     </tr>
                                 </tbody>

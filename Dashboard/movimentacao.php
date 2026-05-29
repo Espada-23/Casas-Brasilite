@@ -1,9 +1,82 @@
+<?php
+require_once '../Crud/init.php';
+require_once '../Crud/crud.php';
+
+// total de entradas e saidas
+$stmt = $pdo->query("
+    SELECT SUN(quantidade) as total
+    FROM movimentacao
+    WHERE tipo_movimentacao = 'entrada'
+");
+
+$entradas = $stmt->fetch(PDO::FETCH_ASSOC) ['total'] ?? 0;
+
+$stmt = $pdo->query("
+    SELECT SUN(quantidade) as total
+    FROM movimentacao
+    WHERE tipo_movimentacao = 'saida'
+");
+
+$saidas = $stmt->fetch(PDO::FETCH_ASSOC) ['total'] ?? 0;
+
+$stmt = $pdo->query("
+    SELECT COUNT(*) as total
+    FROM movimentacao
+");
+$total_mov = $stmt
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $produto_id = $_POST['produto_id'];
+    $quantidade = (int)
+    $_POST['quantidade'];
+    $tipo = $_POST['tipo'];
+    $responsavel = $_POST['responsavel'];
+
+    $stmt = $pdo->query("
+        INSERT INTO movimentacoes
+         (prduto_id, quantidade, tipo, responsavel, data_movimentacao) 
+         VALUES ($produto_id, $quantidade, '$tipo', '$responsavel', NOW())
+    ");
+
+    if ($tipo === 'entrada') {
+        $pdo->query("
+        UPDATE produto
+        SET quantidade_atual = quantidade_atual + $quantidade
+        WHERE id = $produto_id
+        ");
+    } else {
+        $pdo->query("
+        UPDATE produto
+        SET quantidade_atual = quantidade_atual - $quantidade
+        WHERE id = $produto_id
+        ");
+    }
+}
+
+
+$stmt = $pdo->query("
+    SELECT
+        m.id_movimentacao,
+        m.tipo_movimentacao,
+        m.quantidade,
+        m.data_movimentacao,
+        p.nome_produto
+    FROM movimentacao m
+    JOIN estoque e ON m.idEstoque = e.id_estoque
+    JOIN produto p ON e.idProduto = p.id_produto
+    ORDER BY m.data_movimentacao DESC
+");
+
+$movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="\Casas-Brasilite\imagens\icon.png" type="image/x-icon">
     <title>Dashboard - Movimentação de Produtos</title>
     <link rel="icon" href="../imagens/logo.png">
     <link rel="stylesheet" href="css/global.css">
@@ -122,81 +195,39 @@
                             <table>
                                 <thead>
                                     <tr>
+                                        <th>ID</th>
                                         <th>Tipo</th>
                                         <th>Produto</th>
-                                        <th>SKU</th>
                                         <th>Qnt</th>
-                                        <th>Responsável</th>
                                         <th>Data/Hora</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="tipo tp-entrada">
-                                            <i class="bi bi-arrow-down-short"></i>
-                                            <p>Entrada</p>
-                                        </td>
-                                        <td>Cimento CP II 50kg</td>
-                                        <td>CMT001</td>
-                                        <td>+50</td>
-                                        <td>Votoran</td>
-                                        <td class="data">22/05/2025<span>09:15</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="tipo tp-saida">
-                                            <i class="bi bi-arrow-up-short"></i>
-                                            <p>Saída</p>
-                                        </td>
-                                        <td>Areia Média 20kg</td>
-                                        <td>ARE002</td>
-                                        <td>-20</td>
-                                        <td>Quartzolit</td>
-                                        <td class="data">22/05/2025<span>09:15</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="tipo tp-entrada">
-                                            <i class="bi bi-arrow-down-short"></i>
-                                            <p>Entrada</p>
-                                        </td>
-                                        <td>Tijolo Cerâmico 8 Furos</td>
-                                        <td>TJL003</td>
-                                        <td>+30</td>
-                                        <td>Cerâmica União</td>
-                                        <td class="data">22/05/2025<span>09:15</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="tipo tp-saida">
-                                            <i class="bi bi-arrow-up-short"></i>
-                                            <p>Saída</p>
-                                        </td>
-                                        <td>Tinta Acrílica Branco 18L</td>
-                                        <td>TNT004</td>
-                                        <td>-100</td>
-                                        <td>Suvinil</td>
-                                        <td class="data">22/05/2025<span>09:15</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="tipo tp-entrada">
-                                            <i class="bi bi-arrow-down-short"></i>
-                                            <p>Entrada</p>
-                                        </td>
-                                        <td>Ferro CA-50 10mm</td>
-                                        <td>FER005</td>
-                                        <td>+25</td>
-                                        <td>Gerdau</td>
-                                        <td class="data">22/05/2025<span>09:15</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="tipo tp-saida">
-                                            <i class="bi bi-arrow-up-short"></i>
-                                            <p>Saída</p>
-                                        </td>
-                                        <td>Argamassa AC-II 20kg</td>
-                                        <td>ARG006</td>
-                                        <td>-8</td>
-                                        <td>Quartzolit</td>
-                                        <td class="data">22/05/2025<span>09:15</span></td>
-                                    </tr>
+                                    <?php
+                                        foreach($movimentacoes as $mov) {
+
+                                        if ($mov['tipo_movimentacao'] === 'entrada') {
+                                            $classe = 'tp-entrada';
+                                        } else {
+                                            $classe = 'tp-saida';
+                                        }
+
+                                            echo '
+                                                <tr>
+                                                    <td>'. $mov['id_movimentacao'] .'</td>
+
+                                                    <td class="tipo '. $classe .'">
+                                                        <i class="bi bi-arrow-down-short"></i>
+                                                        <p>'. $mov['tipo_movimentacao'] .'</p>
+                                                    </td>
+
+                                                    <td>'. $mov['nome_produto'] .'</td>
+                                                    <td>'. $mov['quantidade'] .'</td>
+                                                    <td class="data">'. $mov['data_movimentacao'] .'</span></td>
+                                                </tr>
+                                            ';
+                                        }
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
