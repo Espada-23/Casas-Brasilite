@@ -1,3 +1,9 @@
+<?php
+require_once "../../Crud/crud.php";
+require_once "filtro.php";
+$produtos = readAll($pdo, "produto");
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -87,9 +93,10 @@
 
             <div class="grid-produtos">
                 <?php foreach ($produtos as $produto): ?>
+
                     <div class="cartao-produto">
 
-                        <?php if (!empty($produto['desconto'])): ?>
+                        <?php if ($produto['desconto'] > 0): ?>
                             <span class="selo-desconto">
                                 -<?= $produto['desconto'] ?>%
                             </span>
@@ -97,46 +104,48 @@
 
                         <i class="fa-regular fa-heart icone-favoritar"></i>
 
-                        <div class="imagem-produto-placeholder" style="background: transparent;">
-                            <img src="<?= $produto['imagem'] ?>" alt="<?= $produto['nome'] ?>" style="max-width: 100%; object-fit: contain;">
+                        <div class="imagem-produto-placeholder">
+                            <img src="<?= $produto['imagem'] ?>"
+                                alt="<?= $produto['nome_produto'] ?>">
                         </div>
 
                         <span class="tag-estoque">
-                            <?= !empty($produto['em_estoque']) && $produto['em_estoque'] ? 'Em estoque' : 'Esgotado' ?>
+                            <?= ($produto['quantidade_atual'] > 0) ? 'Em estoque' : 'Esgotado' ?>
                         </span>
 
                         <h3 class="titulo-produto">
-                            <?= $produto['nome'] ?>
+                            <?= $produto['nome_produto'] ?>
                         </h3>
 
                         <div class="estrelas-produto">
-                            <!-- colocar a alteração das estrelas pelo banco aqui, por enquanto estão fixas -->
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                            ⭐ <?= number_format($produto['media_avaliacao'], 1) ?>
                             (<?= $produto['avaliacoes'] ?>)
                         </div>
 
-                        <?php if (!empty($produto['preco_antigo'])): ?>
+                        <?php if ($produto['desconto'] > 0): ?>
                             <span class="preco-antigo">
-                                R$ <?= number_format($produto['preco_antigo'], 2, ',', '.') ?>
+                                R$ <?= number_format($produto['preco_unitario'], 2, ',', '.') ?>
                             </span>
                         <?php endif; ?>
 
                         <div class="preco-produto">
-                            R$ <?= number_format($produto['preco'], 2, ',', '.') ?>
+                            R$
+                            <?= number_format(
+                                $produto['preco_unitario'] * (1 - $produto['desconto'] / 100),
+                                2,
+                                ',',
+                                '.'
+                            ) ?>
                         </div>
-
-                        <?php if (!empty($produto['parcelas'])): ?>
-                            <div class="parcelamento">
-                                ou <?= $produto['parcelas'] ?>x de R$ <?= number_format($produto['preco'] / $produto['parcelas'], 2, ',', '.') ?>
-                            </div>
-                        <?php endif; ?>
 
                         <button class="btn btn-laranja btn-comprar-block">
                             <i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho
                         </button>
 
                     </div>
+
                 <?php endforeach; ?>
+
             </div>
 
             <div class="paginacao">

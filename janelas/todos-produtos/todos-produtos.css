@@ -1,4 +1,3 @@
-/* --- LAYOUT DA PÁGINA  --- */
 .page-layout {
     display: flex;
     gap: 30px;
@@ -6,7 +5,7 @@
     margin-bottom: 50px;
 }
 
-/* --- SIDEBAR DE FILTROS --- */
+/* filtros */
 .sidebar-filtros {
     width: 260px;
     flex-shrink: 0;
@@ -104,7 +103,7 @@
     font-size: 0.8rem;
 }
 
-/* --- ÁREA DE PRODUTOS --- */
+/* area dos produtos */
 .conteudo-lista {
     flex: 1;
 }
@@ -133,14 +132,12 @@
     color: var(--texto-principal);
 }
 
-/* Modificador do grid base para 4 colunas */
 .grid-produtos {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 15px;
 }
 
-/* Complementos para o .cartao-produto do seu style.css */
 .icone-favoritar {
     position: absolute;
     top: 12px;
@@ -183,7 +180,6 @@
     font-size: 0.85rem;
 }
 
-/* --- PAGINAÇÃO --- */
 .paginacao {
     display: flex;
     justify-content: center;
