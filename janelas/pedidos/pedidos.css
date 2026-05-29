@@ -65,9 +65,6 @@
     color: #155724;
 }
 
-/* =========================================
-   A LINHA DE TEMPO (TIMELINE) EM CSS PURO
-   ========================================= */
 .linha-tempo {
     display: flex;
     justify-content: space-between;
@@ -76,7 +73,6 @@
     padding: 0 20px;
 }
 
-/* A linha cinza horizontal que fica atrás dos círculos */
 .linha-tempo::before {
     content: '';
     position: absolute;
@@ -119,7 +115,6 @@
     color: var(--texto-secundario);
 }
 
-/* Estado: Passo Concluído (Verde) */
 .passo.concluido .circulo-passo {
     border-color: #28a745;
     background-color: #28a745;
@@ -130,7 +125,6 @@
     color: #28a745;
 }
 
-/* Estado: Passo Ativo / Atual (Laranja da Brasilite) */
 .passo.ativo .circulo-passo {
     border-color: var(--laranja);
     color: var(--laranja);
@@ -143,15 +137,11 @@
     font-weight: 700;
 }
 
-/* =========================================
-   DROPDOWN DE ITENS (PURA INTERAÇÃO HTML)
-   ========================================= */
 .detalhes-pedido-dropdown {
     border-top: 1px solid var(--cinza-claro);
     padding-top: 15px;
 }
 
-/* Remove a setinha padrão do navegador e estiliza o botão */
 .detalhes-pedido-dropdown summary {
     list-style: none;
     outline: none;
@@ -175,7 +165,6 @@
     color: var(--azul-escuro);
 }
 
-/* Efeito de girar a seta quando o <details> estiver aberto [Abre/Fecha Nativo] */
 .detalhes-pedido-dropdown[open] .btn-ver-detalhes i {
     transform: rotate(180deg);
 }

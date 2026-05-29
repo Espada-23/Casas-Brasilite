@@ -297,8 +297,9 @@ li {
     padding: 15px;
     position: relative;
     background: var(--branco);
-    min-width: 220px;
-    max-width: 220px;
+    width: 220px;
+    height: 295px;
+    box-sizing: border-box;
 }
 
 .cartao-produtos {
@@ -307,6 +308,14 @@ li {
     padding: 15px;
     position: relative;
     background: var(--branco);
+}
+
+.cartao-produto, .cartao-produtos a button{
+    transition: 0.2s ease-in-out;   
+}
+
+.cartao-produto:hover, .cartao-produtos a button:hover {
+    transform: scale(1.05);
 }
 
 .selo-desconto {
@@ -323,14 +332,21 @@ li {
 
 .imagem-produto-placeholder {
     width: 100%;
-    height: 140px;
+    height: 150px;
     background-color: #f8fafc;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #94a3b8;
-    font-size: 0.8rem;
-    margin-bottom: 12px;
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.imagem-produto-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+    padding: 8px; 
+    box-sizing: border-box;
 }
 
 .titulo-produto {
@@ -361,25 +377,6 @@ li {
     color: var(--texto-secundario);
     margin-top: 2px;
 }
-
-.seta-carrossel-prod {
-    background-color: var(--branco);
-    text-decoration: none;
-    cursor: pointer;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1px solid var(--cinza-claro);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-    flex-shrink: 0;
-    z-index: 10;
-    color: var(--texto-secundario);
-
-}
-
 
 /* seção de ofertas */
 .secao-ofertas-semana {
@@ -694,7 +691,7 @@ li {
 }
 
 .caixa-sobre-nos {
-    background-color: (var(--branco));
+    background-color: var(--branco);
     border: 1px solid var(--cinza-claro);
     border-radius: 8px;
     padding: 35px;

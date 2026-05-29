@@ -9,7 +9,7 @@
     align-items: start;
 }
 
-/* Coluna da Esquerda - Lista de Produtos */
+/* coluna da esquerda */
 .lista-produtos-carrinho {
     background: var(--branco);
     border: 1px solid var(--cinza-claro);
@@ -74,7 +74,7 @@
     color: var(--azul-escuro);
 }
 
-/* Coluna da Direita - Resumo */
+/* coluna da direita */
 .resumo-pedido {
     background: var(--branco);
     border: 1px solid var(--cinza-claro);
@@ -108,7 +108,6 @@
     border-top: 1px solid var(--cinza-claro);
 }
 
-/* Formas de Pagamento nativas do HTML */
 .forma-pagamento {
     margin-top: 25px;
     margin-bottom: 25px;
@@ -140,7 +139,6 @@
     background-color: var(--cinza-fundo);
 }
 
-/* Escondendo o input radio padrão para focar no CSS puro */
 .opcao-pagamento input[type="radio"] {
     display: none;
 }
@@ -179,7 +177,6 @@
     font-size: 1.2rem;
 }
 
-/* Botão de Finalizar */
 .btn-finalizar {
     width: 100%;
     padding: 15px;
