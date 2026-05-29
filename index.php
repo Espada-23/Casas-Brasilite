@@ -1,7 +1,27 @@
 <?php
 require_once "Crud/crud.php";
-$produtos = readAll($pdo, "produto");
-$promocoes = readAll($pdo, "produto", "status_produto = 'ativo' AND desconto > 0");
+$sql = "
+SELECT p.*, MIN(f.caminho_imagem) as caminho_imagem
+FROM produto p
+LEFT JOIN foto_produto f 
+ON p.id_produto = f.idProduto
+GROUP BY p.id_produto
+";
+
+$stmt = $pdo->query($sql);
+$produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$sql_promo = "
+SELECT p.*, MIN(f.caminho_imagem) as caminho_imagem
+FROM produto p
+LEFT JOIN foto_produto f 
+ON p.id_produto = f.idProduto
+WHERE p.desconto IS NOT NULL AND p.desconto > 0
+GROUP BY p.id_produto
+";
+
+$stmt_promo = $pdo->query($sql_promo);
+$produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -104,7 +124,7 @@ $promocoes = readAll($pdo, "produto", "status_produto = 'ativo' AND desconto > 0
         </div>
     </section>
 
-    <section class="secao-produtos">
+    <section id="mais-vendidos" class="secao-produtos">
         <div class="container">
             <div class="cabecalho-secao">
                 <h3>Mais vendidos</h3>
@@ -116,40 +136,41 @@ $promocoes = readAll($pdo, "produto", "status_produto = 'ativo' AND desconto > 0
                     <div class="grid-produtos">
 
                         <?php foreach ($produtos as $produto): ?>
+                            <a href="janelas\janela-produto\janela-produto.php?id=<?= $produto['id_produto'] ?>" class="link-card-produto">
+                                <div class="cartao-produto">
 
-                            <div class="cartao-produto">
+                                    <?php if (!empty($produto['desconto']) && $produto['desconto'] != 0): ?>
+                                        <span class="selo-desconto">
+                                            <?= $produto['desconto'] ?>%
+                                        </span>
+                                    <?php endif; ?>
 
-                                <?php if (!empty($produto['desconto']) && $produto['desconto'] > 0): ?>
-                                    <span class="selo-desconto">
-                                        <?= $produto['desconto'] ?>%
-                                    </span>
-                                <?php endif; ?>
+                                    <div class="imagem-produto-placeholder">
+                                        <img src="<?= $produto['caminho_imagem'] ?>" alt="<?= $produto['nome_produto'] ?>">
+                                    </div>
 
-                                <div class="imagem-produto-placeholder">
-                                    <img src="imagens/produto_padrao.png" alt="<?= $produto['nome_produto'] ?>">
-                                </div>
+                                    <h4 class="titulo-produto">
+                                        <?= $produto['nome_produto'] ?>
+                                    </h4>
 
-                                <h4 class="titulo-produto">
-                                    <?= $produto['nome_produto'] ?>
-                                </h4>
-
-                                <p class="preco-produto">
-                                    R$ <?= number_format($produto['preco_unitario'], 2, ',', '.') ?>
-                                </p>
-
-                                <?php if (!empty($produto['desconto']) && $produto['desconto'] > 0): ?>
-                                    <p class="preco-antigo">
-                                        R$ <?= number_format($produto['preco_unitario'] + $produto['desconto'], 2, ',', '.') ?>
+                                    <p class="preco-produto">
+                                        R$ <?= number_format($produto['preco_unitario'], 2, ',', '.') ?>
                                     </p>
-                                <?php endif; ?>
 
-                                <p class="parcelamento">
-                                    ou 3x de R$
-                                    <?= number_format($produto['preco_unitario'] / 3, 2, ',', '.') ?>
-                                </p>
+                                    <?php if (!empty($produto['desconto']) && $produto['desconto'] > 0): ?>
+                                        <?php $precoAntigo = $produto['preco_unitario'] / (1 - ($produto['desconto'] / 100)); ?>
+                                        <p class="preco-antigo">
+                                            R$ <?= $precoAntigo = round($precoAntigo, 2); ?>
+                                        </p>
+                                    <?php endif; ?>
 
-                            </div>
+                                    <p class="parcelamento">
+                                        ou 3x de R$
+                                        <?= number_format($produto['preco_unitario'] / 3, 2, ',', '.') ?>
+                                    </p>
 
+                                </div>
+                            </a>
                         <?php endforeach; ?>
 
                     </div>
@@ -177,42 +198,44 @@ $promocoes = readAll($pdo, "produto", "status_produto = 'ativo' AND desconto > 0
                     </div>
                 </div>
 
-                <?php foreach ($promocoes as $produto): ?>
+                <?php foreach ($produtos_promo as $produto_promo): ?>
 
                     <div class="cartao-produtos cartao-oferta">
 
-                        <?php if (!empty($produto['desconto']) && $produto['desconto'] > 0): ?>
+                        <?php if (!empty($produto_promo['desconto']) && $produto_promo['desconto'] > 0): ?>
                             <span class="selo-desconto">
-                                -<?= $produto['desconto'] ?>%
+                                <?= $produto_promo['desconto'] ?>%
                             </span>
                         <?php endif; ?>
 
                         <div class="imagem-produto-placeholder">
-                            <img src="imagens/produto-sem-imagem.png" alt="<?= $produto['nome_produto'] ?>">
+                            <img src="<?= $produto_promo['caminho_imagem'] ?>" alt="<?= $produto_promo['nome_produto'] ?>">
                         </div>
 
                         <h4 class="titulo-produto">
-                            <?= $produto['nome_produto'] ?>
+                            <?= $produto_promo['nome_produto'] ?>
                         </h4>
 
                         <p class="preco-produto">
-                            R$ <?= number_format($produto['preco_unitario'], 2, ',', '.') ?>
+                            R$ <?= number_format($produto_promo['preco_unitario'], 2, ',', '.') ?>
                         </p>
 
-                        <?php if (!empty($produto['desconto']) && $produto['desconto'] > 0): ?>
+                        <?php if (!empty($produto_promo['desconto']) && $produto_promo['desconto'] > 0): ?>
+                            <?php $precoAntigo = $produto_promo['preco_unitario'] / (1 - ($produto_promo['desconto'] / 100)); ?>
                             <p class="preco-antigo">
-                                R$ <?= number_format($produto['preco_unitario'] + $produto['desconto'], 2, ',', '.') ?>
+                                R$ <?= $precoAntigo = round($precoAntigo, 2); ?>
                             </p>
                         <?php endif; ?>
 
                         <p class="parcelamento">
-                            ou 10x de R$ <?= number_format($produto['preco_unitario'] / 10, 2, ',', '.') ?>
+                            ou 10x de R$ <?= number_format($produto_promo['preco_unitario'] / 10, 2, ',', '.') ?>
                         </p>
 
-                        <button class="btn btn-laranja btn-comprar-card">
-                            Comprar
-                        </button>
-
+                        <a href="janelas\janela-produto\janela-produto.php?id=<?= $produto_promo['id_produto'] ?>" class="link-card-produto">
+                            <button class="btn btn-laranja btn-comprar-card">
+                                Ver Informações
+                            </button>
+                        </a>
                     </div>
 
                 <?php endforeach; ?>
@@ -221,7 +244,7 @@ $promocoes = readAll($pdo, "produto", "status_produto = 'ativo' AND desconto > 0
         </div>
     </section>
 
-    <section class="secao-banner-interno">
+    <section id="orcamentos" class="secao-banner-interno">
         <div class="container">
             <div class="banner-solucoes">
                 <div class="conteudo-banner-solucoes">
@@ -273,7 +296,7 @@ $promocoes = readAll($pdo, "produto", "status_produto = 'ativo' AND desconto > 0
         </div>
     </section>
 
-    <section class="secao-marcas">
+    <section id="parcerias" class="secao-marcas">
         <div class="container">
             <h3 class="titulo-marcas">Nossos Principais Parceiros</h3>
             <div class="carrossel-marcas">
@@ -331,7 +354,7 @@ $promocoes = readAll($pdo, "produto", "status_produto = 'ativo' AND desconto > 0
         </div>
     </section>
 
-    <section class="secao-depoimentos">
+    <section id="avaliaçoes" class="secao-depoimentos">
         <div class="container">
             <div class="cabecalho-secao">
                 <h3>O que nossos clientes dizem</h3>
