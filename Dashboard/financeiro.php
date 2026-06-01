@@ -1,8 +1,58 @@
-<?php 
-    require_once '../Crud/data.php'
+<?php
+require_once '../Crud/crud.php';
+require_once '../Crud/init.php';
 
+$stmt = $pdo->query("
+    SELECT SUM(valor_total) as total 
+    FROM pagamento 
+    WHERE status_pagamento = 'pago'
+    AND MONTH(data_pagamento) = MONTH(CURRENT_DATE())
+");
 
+$receita = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
+$stmt = $pdo->query("
+    SELECT COUNT(*) * 100 as total
+    FROM movimentacao
+    WHERE tipo_movimentacao = 'saida'
+");
+
+$despesas = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+
+$lucro = $receita - $despesas;
+
+$margin_lucro = ($lucro / $receita) * 100;
+
+// transações
+
+$paginaAtual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+
+if ($paginaAtual < 1) {
+    $paginaAtual = 1;
+}
+
+$limite = 4;
+$offset = ($paginaAtual - 1) * $limite;
+
+$stmt = $pdo->query("
+    SELECT 
+        p.id_pagamento,
+        p.valor_total,
+        p.status_pagamento,
+        p.data_pagamento,
+        u.nome
+    FROM pagamento p
+    JOIN usuario u ON u.id_usuario = p.idUsuario
+    ORDER BY p.data_pagamento DESC
+    LIMIT $limite OFFSET $offset
+");
+
+$transacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$stmtTotal = $pdo->query("SELECT COUNT(*) as total FROM pagamento");
+$totalRegistros = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+
+$totalPaginas = ceil($totalRegistros / $limite);
 ?>
 
 
@@ -63,7 +113,7 @@
 
                         <div>
                             <h5>Receita Mensal</h5>
-                            <h3>R$ 87.450,00</h3>
+                            <h3>R$ <?= number_format($receita, 2, ',', '.') ?></h3>
                         </div>
                     </div>
 
@@ -82,7 +132,7 @@
 
                         <div>
                             <h5>Despesas</h5>
-                            <h3>R$ 31.420,00</h3>
+                            <h3>R$ <?= number_format($despesas, 2, ',', '.') ?></h3>
                         </div>
                     </div>
 
@@ -103,13 +153,14 @@
 
                         <div>
                             <h5>Lucro Líquido</h5>
-                            <h3>R$ 56.030,00</h3>
+                            <h3>R$ <?= number_format($lucro, 2, ',', '
+                            ') ?></h3>
                         </div>
 
                     </div>
 
                     <div class="card-bottom">
-                        <span class="green">↑ 18,7%</span>
+                        <span class="green">18,5%</span>
                         <p>vs mês anterior</p>
                     </div>
 
@@ -120,20 +171,16 @@
                     <div class="card-top">
 
                         <div class="icon orange">
-                            <i class="bi bi-credit-card-fill"></i>
+                            <i class="bi bi-graph-up-arrow"></i>
                         </div>
 
                         <div>
-                            <h5>Contas a Receber</h5>
-                            <h3>R$ 24.870,00</h3>
+                            <h5>Margin de Lucro</h5>
+                            <h3><?= number_format($margin_lucro, 1, ',', '.') ?>%</h3>
                         </div>
-
                     </div>
 
-                    <div class="card-bottom">
-                        <span class="green">↑ 8,1%</span>
-                        <p>pendente</p>
-                    </div>
+                    <div class="card-bottom"></div>
 
                 </div>
 
@@ -143,120 +190,125 @@
             <div class="charts-row">
 
                 <div class="grafico-card">
-
                     <div class="grafico-header">
-
                         <div>
-                            <span>Receita x Despesas</span>
+                            <span>Receita x Despesa</span>
+                            <div class="legenda">
+                                <div class="item-legenda">
+                                    <span class="dot azul"></span>
+                                    <p>Receita</p>
+                                </div>
+                                <div class="item-legenda">
+                                    <span class="dot laranja"></span>
+                                    <p>Despesa</p>
+                                </div>
+                            </div>
                         </div>
-
                         <select>
-                            <option>2026</option>
+                            <option>Este ano</option>
                         </select>
-
                     </div>
 
                     <div class="grafico">
-
                         <div class="linha-bg l1"></div>
                         <div class="linha-bg l2"></div>
                         <div class="linha-bg l3"></div>
                         <div class="linha-bg l4"></div>
+                        <div class="linha-bg l5"></div>
+
+                        <div class="valores-esquerda">
+                            <span>16k</span>
+                            <span>12k</span>
+                            <span>8k</span>
+                            <span>4k</span>
+                            <span>0</span>
+                        </div>
+
+                        <div class="valores-direita">
+                            <span>16k</span>
+                            <span>12k</span>
+                            <span>8k</span>
+                            <span>4k</span>
+                            <span>0</span>
+                        </div>
 
                         <svg class="svg-linha" viewBox="0 0 800 300">
-
-                            <polyline
-                                fill="none"
-                                stroke="#22C55E"
-                                stroke-width="4"
-
-                                points="
-                                        40,220
-                                        100,180
-                                        160,170
-                                        220,150
-                                        280,120
-                                        340,100
-                                        400,80
-                                        460,90
-                                        520,70
-                                        580,50
-                                        640,35
-                                        700,20" />
-
+                            <polyline fill="none" stroke="#1D4ED8" stroke-width="4" points="
+                40,220 100,200 160,150 220,160 280,120
+                340,90 400,60 460,140 520,120 580,100 640,110 700,95
+            " />
+                            <circle cx="40" cy="220" r="5" fill="#1D4ED8" />
+                            <circle cx="100" cy="200" r="5" fill="#1D4ED8" />
+                            <circle cx="160" cy="150" r="5" fill="#1D4ED8" />
+                            <circle cx="220" cy="160" r="5" fill="#1D4ED8" />
+                            <circle cx="280" cy="120" r="5" fill="#1D4ED8" />
+                            <circle cx="340" cy="90" r="5" fill="#1D4ED8" />
+                            <circle cx="400" cy="60" r="5" fill="#1D4ED8" />
+                            <circle cx="460" cy="140" r="5" fill="#1D4ED8" />
+                            <circle cx="520" cy="120" r="5" fill="#1D4ED8" />
+                            <circle cx="580" cy="100" r="5" fill="#1D4ED8" />
+                            <circle cx="640" cy="110" r="5" fill="#1D4ED8" />
+                            <circle cx="700" cy="95" r="5" fill="#1D4ED8" />
                         </svg>
 
                         <svg class="svg-linha" viewBox="0 0 800 300">
-
-                            <polyline
-                                fill="none"
-                                stroke="#EF4444"
-                                stroke-width="4"
-
-                                points="
-                                    40,250
-                                    100,220
-                                    160,210
-                                    220,180
-                                    280,170
-                                    340,160
-                                    400,130
-                                    460,150
-                                    520,140
-                                    580,120
-                                    640,100
-                                    700,90" />
-
+                            <polyline fill="none" stroke="#F97316" stroke-width="4" points="
+                40,240 100,220 160,200 220,180 280,160
+                340,140 400,120 460,130 520,110 580,95 640,85 700,75
+            " />
+                            <circle cx="40" cy="240" r="5" fill="#F97316" />
+                            <circle cx="100" cy="220" r="5" fill="#F97316" />
+                            <circle cx="160" cy="200" r="5" fill="#F97316" />
+                            <circle cx="220" cy="180" r="5" fill="#F97316" />
+                            <circle cx="280" cy="160" r="5" fill="#F97316" />
+                            <circle cx="340" cy="140" r="5" fill="#F97316" />
+                            <circle cx="400" cy="120" r="5" fill="#F97316" />
+                            <circle cx="460" cy="130" r="5" fill="#F97316" />
+                            <circle cx="520" cy="110" r="5" fill="#F97316" />
+                            <circle cx="580" cy="95" r="5" fill="#F97316" />
+                            <circle cx="640" cy="85" r="5" fill="#F97316" />
+                            <circle cx="700" cy="75" r="5" fill="#F97316" />
                         </svg>
-
                     </div>
 
                     <div class="meses">
-                        <span>Jan</span>
-                        <span>Fev</span>
-                        <span>Mar</span>
-                        <span>Abr</span>
-                        <span>Mai</span>
-                        <span>Jun</span>
-                        <span>Jul</span>
-                        <span>Ago</span>
-                        <span>Set</span>
-                        <span>Out</span>
-                        <span>Nov</span>
-                        <span>Dez</span>
+                        <span>Jan</span><span>Fev</span><span>Mar</span><span>Abr</span>
+                        <span>Mai</span><span>Jun</span><span>Jul</span><span>Ago</span>
+                        <span>Set</span><span>Out</span><span>Nov</span><span>Dez</span>
                     </div>
-
                 </div>
 
 
                 <div class="r-finan">
                     <div class="top-r-finan">
                         <p>Resumo Financeiro</p>
+                        <select>
+                            <option>Este Mês</option>
+                            <option>Mês Passado</option>
+                            <option>3 Meses</option>
+                            <option>9 Meses</option>
+                            <option>1 Ano</option>
+                        </select>
                     </div>
 
                     <div class="infos-resumo">
-                        <div class="faturamento">
+                        <div class="receitas">
                             <p>Receita Total</p>
-                            <span>R$ 1.254.300</span>
+                            <span>R$ <?= number_format($receita, 2, ',', '.') ?></span>
                         </div>
-
                         <div class="custos">
                             <p>Despesas Totais</p>
-                            <span>R$ 845.700</span>
+                            <span>R$ <?= number_format($despesas, 2, ',', '.') ?></span>
                         </div>
-
                         <div class="lucro">
-                            <p>Lucro Líquido</p>
-                            <span>R$ 408.600</span>
+                            <p>Lucro Total</p>
+                            <span>R$ <?= number_format($lucro, 2, ',', '.') ?></span>
                         </div>
-
                         <div class="margin">
-                            <p>Margem</p>
-                            <span>32,5%</span>
+                            <p>Margem de Lucro</p>
+                            <span><?= number_format($margin_lucro, 1, ',', '.') ?>%</span>
                         </div>
-
                     </div>
-
                 </div>
 
             </div>
@@ -290,109 +342,58 @@
 
                             <tbody>
 
-                                <tr>
-                                    <td>Entrada</td>
-                                    <td>Venda Pedido #00024</td>
-                                    <td style="color:#22C55E">
-                                        R$ 4.500
-                                    </td>
-                                    <td>08/05</td>
-                                </tr>
+                                <?php
 
-                                <tr>
-                                    <td>Saída</td>
-                                    <td>Fornecedor ABC</td>
-                                    <td style="color:#EF4444">
-                                        R$ 2.000
-                                    </td>
-                                    <td>08/05</td>
-                                </tr>
+                                foreach ($transacoes as $t) {
+                                    echo '<tr>
 
-                                <tr>
-                                    <td>Entrada</td>
-                                    <td>Pagamento Cliente</td>
-                                    <td style="color:#22C55E">
-                                        R$ 1.200
-                                    </td>
-                                    <td>09/05</td>
-                                </tr>
+                                            <td>' . ($t['status_pagamento'] == 'pago' ? 'Pago' : 'Pendente') . '</td>
 
-                                <tr>
-                                    <td>Saída</td>
-                                    <td>Frete</td>
-                                    <td style="color:#EF4444">
-                                        R$ 650
-                                    </td>
-                                    <td>09/05</td>
-                                </tr>
+                                            <td>Venda Pedido - ' . $t['nome'] . '</td>
 
+                                            <td style="color: ' . ($t['status_pagamento'] == 'pago' ? '#22C55E' : '#F97316') . '">
+                                                R$ ' . number_format($t['valor_total'], 2, ',', '.') . '
+                                            </td>
+
+                                            <td>' . date('d/m', strtotime($t['data_pagamento'])) . '</td>
+
+                                        </tr>';
+                                }
+
+                                ?>
                             </tbody>
-
                         </table>
 
-                    </div>
+                        <div class="paginacao">
 
-                </div>
-
-
-                <div class="card">
-
-                    <div class="estoque">
-
-                        <div class="top-estoque">
-
-                            <p>Contas Pendentes</p>
-
-                            <a href="#">
-                                Ver todas
-                            </a>
-
-                        </div>
-
-
-                        <div class="produtos-critico">
-
-                            <div class="detalhes-produtos">
-
-                                <h4>Fornecedor Concreto Forte</h4>
-
-                                <p>Vencimento:
-                                    <span>15/05/2026</span>
-                                </p>
-
+                            <div class="seta">
+                                <?php if ($paginaAtual > 1): ?>
+                                    <a class="seta" href="?pagina=<?php echo $paginaAtual - 1; ?>">
+                                        <i class="bi bi-arrow-left"></i>
+                                    </a>
+                                <?php endif; ?>
                             </div>
 
-                            <p class="condicao critico">
-                                R$ 3.200
-                            </p>
-
-                        </div>
-
-
-                        <div class="produtos-critico">
-
-                            <div class="detalhes-produtos">
-
-                                <h4>Energia Elétrica</h4>
-
-                                <p>Vencimento:
-                                    <span>18/05/2026</span>
-                                </p>
-
+                            <div class="box-num">
+                                <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                                    <a href="?pagina=<?php echo $i; ?>"
+                                        class="<?php echo $i == $paginaAtual ? 'ativo' : ''; ?>">
+                                        <?php echo $i; ?>
+                                    </a>
+                                <?php endfor; ?>
                             </div>
 
-                            <p class="condicao atencao">
-                                R$ 860
-                            </p>
-
+                            <div class="seta">
+                                <?php if ($paginaAtual < $totalPaginas): ?>
+                                    <a class="seta" href="?pagina=<?php echo $paginaAtual + 1; ?>">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         </main>
     </div>
 </body>

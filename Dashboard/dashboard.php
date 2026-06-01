@@ -24,9 +24,11 @@ $stmt = $pdo->query("
 $itens_vendidos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
 $stmt = $pdo->query("
-    SELECT SUM(frete) as total 
-    FROM produto
+    SELECT COUNT(*) * 100 as total
+    FROM movimentacao
+    WHERE tipo_movimentacao = 'saida'
 ");
+
 $custos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
 $lucro = $faturamento - $custos;
@@ -134,7 +136,7 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <i class="bi bi-currency-dollar"></i>
                         </div>
                         <div>
-                            <h5>Lucro Total</h5>
+                            <h5>Lucro Líquico</h5>
                             <h3>R$ <?= number_format($lucro, 2, ',', '.') ?></h3>
                         </div>
                     </div>

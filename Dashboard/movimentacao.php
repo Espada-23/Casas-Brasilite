@@ -2,72 +2,87 @@
 require_once '../Crud/init.php';
 require_once '../Crud/crud.php';
 
-// total de entradas e saidas
 $stmt = $pdo->query("
-    SELECT SUN(quantidade) as total
-    FROM movimentacao
+    SELECT SUM(quantidade) as total 
+    FROM movimentacao 
     WHERE tipo_movimentacao = 'entrada'
 ");
-
-$entradas = $stmt->fetch(PDO::FETCH_ASSOC) ['total'] ?? 0;
+$entradas = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
 $stmt = $pdo->query("
-    SELECT SUN(quantidade) as total
-    FROM movimentacao
+    SELECT SUM(quantidade) as total 
+    FROM movimentacao 
     WHERE tipo_movimentacao = 'saida'
 ");
-
-$saidas = $stmt->fetch(PDO::FETCH_ASSOC) ['total'] ?? 0;
+$saidas = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
 $stmt = $pdo->query("
-    SELECT COUNT(*) as total
+    SELECT COUNT(*) as total 
     FROM movimentacao
 ");
-$total_mov = $stmt
+$total_mov = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+
+$saldo = $entradas - $saidas;
+
+$tipo = $_GET['tipo'] ?? '';
+$pesquisa = $_GET['pesquisa'] ?? '';
+
+$sql = "SELECT 
+            m.id_movimentacao,
+            p.nome_produto,
+            m.quantidade,
+            m.tipo_movimentacao,
+            m.data_movimentacao
+        FROM movimentacao m
+        JOIN estoque e ON e.id_estoque = m.idEstoque
+        JOIN produto p ON p.id_produto = e.idProduto
+        WHERE 1=1";
+
+$params = [];
+
+if (!empty($tipo)) {
+    $sql .= " AND m.tipo_movimentacao = :tipo";
+    $params[':tipo'] = $tipo;
+}
+
+if (!empty($pesquisa)) {
+    $sql .= " AND p.nome_produto LIKE :pesquisa";
+    $params[':pesquisa'] = "%$pesquisa%";
+}
+
+$sql .= " ORDER BY m.data_movimentacao DESC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $produto_id = $_POST['produto_id'];
-    $quantidade = (int)
-    $_POST['quantidade'];
-    $tipo = $_POST['tipo'];
+    $quantidade = (int) $_POST['quantidade'];
+    $tipoPost = $_POST['tipo'];
     $responsavel = $_POST['responsavel'];
 
-    $stmt = $pdo->query("
-        INSERT INTO movimentacoes
-         (prduto_id, quantidade, tipo, responsavel, data_movimentacao) 
-         VALUES ($produto_id, $quantidade, '$tipo', '$responsavel', NOW())
+    $pdo->query("
+        INSERT INTO movimentacao
+        (idProduto, quantidade, tipo_movimentacao, responsavel, data_movimentacao)
+        VALUES ($produto_id, $quantidade, '$tipoPost', '$responsavel', NOW())
     ");
 
-    if ($tipo === 'entrada') {
+    if ($tipoPost === 'entrada') {
         $pdo->query("
-        UPDATE produto
-        SET quantidade_atual = quantidade_atual + $quantidade
-        WHERE id = $produto_id
+            UPDATE produto
+            SET quantidade_atual = quantidade_atual + $quantidade
+            WHERE id_produto = $produto_id
         ");
     } else {
         $pdo->query("
-        UPDATE produto
-        SET quantidade_atual = quantidade_atual - $quantidade
-        WHERE id = $produto_id
+            UPDATE produto
+            SET quantidade_atual = quantidade_atual - $quantidade
+            WHERE id_produto = $produto_id
         ");
     }
 }
-
-
-$stmt = $pdo->query("
-    SELECT
-        m.id_movimentacao,
-        m.tipo_movimentacao,
-        m.quantidade,
-        m.data_movimentacao,
-        p.nome_produto
-    FROM movimentacao m
-    JOIN estoque e ON m.idEstoque = e.id_estoque
-    JOIN produto p ON e.idProduto = p.id_produto
-    ORDER BY m.data_movimentacao DESC
-");
-
-$movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -131,13 +146,9 @@ $movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <small>Movimentações do mês</small>
                                 </div>
                             </div>
-                            <span class="kpi-extra positivo">
-                                +32 hoje
-                            </span>
                         </div>
-                        <div class="kpi-valor">324</div>
+                        <div class="kpi-valor"><?= $entradas ?></div>
                     </div>
-
 
                     <div class="kpi-card">
                         <div class="kpi-header">
@@ -150,11 +161,8 @@ $movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <small>Movimentações do mês</small>
                                 </div>
                             </div>
-                            <span class="kpi-extra negativo">
-                                -15 hoje
-                            </span>
                         </div>
-                        <div class="kpi-valor">186</div>
+                        <div class="kpi-valor"><?= $saidas ?></div>
                     </div>
 
                     <div class="kpi-card">
@@ -164,29 +172,32 @@ $movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <i class="bi bi-arrow-left-right"></i>
                                 </div>
                                 <div>
-                                    <div class="kpi-label">Saldo do Período</div>
+                                    <div class="kpi-label">Movimentações</div>
                                     <small>Entradas - saídas</small>
                                 </div>
                             </div>
                         </div>
-                        <div class="kpi-valor">+62</div>
+                        <div class="kpi-valor"><?= $total_mov ?></div>
                     </div>
                 </div>
 
                 <div class="main-filtro">
-                    <div class="barra-pesquisa">
-                        <button>
-                            <i class="bi bi-search"></i>
-                        </button>
-                        <input type="text" name="pesquisa" placeholder="Buscar Pedido...">
-                    </div>
-                    <div class="status">
-                        <select>
-                            <option>Todos os Tipos</option>
-                            <option>Entrada</option>
-                            <option>Saída</option>
-                        </select>
-                    </div>
+                    <form method="GET" autocomplete="off">
+                        <div class="barra-pesquisa">
+                            <button type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                            <input type="text" name="pesquisa" placeholder="Digite o Nome do Produto que deseja verificar ..." value="<?= htmlspecialchars($pesquisa) ?>">
+                        </div>
+
+                        <div class="status">
+                            <select name="tipo" onchange="this.form.submit()">
+                                <option value="">Todos os Tipos</option>
+                                <option value="entrada" <?= $tipo == 'entrada' ? 'selected' : '' ?>>Entrada</option>
+                                <option value="saida" <?= $tipo == 'saida' ? 'selected' : '' ?>>Saída</option>
+                            </select>
+                        </div>
+                    </form>
                 </div>
 
                 <div class="container-tabela-produto">
@@ -204,35 +215,42 @@ $movimentacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </thead>
                                 <tbody>
                                     <?php
-                                        foreach($movimentacoes as $mov) {
+                                    if (count($movimentacoes) > 0) {
+                                        foreach ($movimentacoes as $mov) {
 
-                                        if ($mov['tipo_movimentacao'] === 'entrada') {
-                                            $classe = 'tp-entrada';
-                                        } else {
-                                            $classe = 'tp-saida';
-                                        }
+                                            if ($mov['tipo_movimentacao'] === 'entrada') {
+                                                $classe = 'tp-entrada';
+                                                $icone = 'bi-arrow-down-short';
+                                            } else {
+                                                $classe = 'tp-saida';
+                                                $icone = 'bi-arrow-up-short';
+                                            }
 
                                             echo '
-                                                <tr>
-                                                    <td>'. $mov['id_movimentacao'] .'</td>
+                                            <tr>
+                                                <td>' . $mov['id_movimentacao'] . '</td>
 
-                                                    <td class="tipo '. $classe .'">
-                                                        <i class="bi bi-arrow-down-short"></i>
-                                                        <p>'. $mov['tipo_movimentacao'] .'</p>
-                                                    </td>
+                                                <td class="tipo ' . $classe . '">
+                                                    <i class="bi ' . $icone . '"></i>
+                                                    <p>' . $mov['tipo_movimentacao'] . '</p>
+                                                </td>
 
-                                                    <td>'. $mov['nome_produto'] .'</td>
-                                                    <td>'. $mov['quantidade'] .'</td>
-                                                    <td class="data">'. $mov['data_movimentacao'] .'</span></td>
-                                                </tr>
+                                                <td>' . $mov['nome_produto'] . '</td>
+                                                <td>' . $mov['quantidade'] . '</td>
+                                                <td class="data">' . $mov['data_movimentacao'] . '</td>
+                                            </tr>
                                             ';
                                         }
+                                    } else {
+                                        echo '<tr><td colspan="5">Nenhum resultado encontrado</td></tr>';
+                                    }
                                     ?>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+
             </div>
         </main>
     </div>

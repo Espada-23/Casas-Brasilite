@@ -110,7 +110,7 @@ body {
 
 .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     margin-bottom: 30px;
 }
@@ -198,12 +198,6 @@ body {
     text-align: center;
 }
 
-.main-filtro {
-    display: flex;
-    gap: 10px;
-    justify-content: space-between;
-}
-
 .barra-pesquisa {
     border: 1px solid var(--border);
     padding: 10px;
@@ -215,6 +209,12 @@ body {
 .barra-pesquisa button {
     border: none;
     background: none;
+}
+
+form {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
 }
 
 input {
