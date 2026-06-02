@@ -44,14 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body class="login-cadastro">
-    <?php
-        echo '<pre>';
-        print_r($_SESSION['cadastro']);
-        echo '</pre>';
-
-        echo 'NULO: ';
-        print_r($voltar);
-    ?>
 
     <div class="painel-cadastro-duplo">
 
@@ -65,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="linha-campos-duplos">
                         <div class="grupo-campo">
                             <label>CEP</label>
-                            <input type="text" name='cep' placeholder="Ex: 11111-111" required>
+                            <input type="text" pattern="\d{5}-\d{3}" name='cep' placeholder="Ex: 11111-111" required>
                         </div>
                         <div class="grupo-campo">
                             <label>Estado</label>

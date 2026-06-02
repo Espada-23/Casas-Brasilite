@@ -1,7 +1,7 @@
 <?php
 require_once "../../Crud/crud.php";
 require_once "filtro.php";
-$produtos = readAll($pdo, "produto");
+
 ?>
 
 <!DOCTYPE html>
@@ -17,129 +17,197 @@ $produtos = readAll($pdo, "produto");
     <link rel="stylesheet" href="\Casas-Brasilite\style.css">
     <link rel="stylesheet" href="todos-produtos.css">
 
+    <style>
+        .lista-filtros label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .estrelas-filtro {
+            color: #ffc107;
+        }
+    </style>
 </head>
 
-<body>
+<?php include_once "../../partials/header.php" ?>
 
-    <?php include_once "../../partials\header.php" ?>
+<body>
 
     <main class="container page-layout">
 
         <aside class="sidebar-filtros">
+
             <h3 class="titulo-filtros">Filtros</h3>
 
-            <div class="bloco-filtro">
-                <h4>Categorias <i class="fa-solid fa-chevron-up"></i></h4>
-                <ul class="lista-filtros">
-                    <li><label><input type="checkbox"> Ferramentas Elétricas <span class="qtd">(103)</span></label></li>
-                    <li><label><input type="checkbox"> Ferramentas Manuais <span class="qtd">(62)</span></label></li>
-                    <li><label><input type="checkbox"> Acessórios <span class="qtd">(45)</span></label></li>
-                    <li><label><input type="checkbox"> Máquinas <span class="qtd">(35)</span></label></li>
-                </ul>
-            </div>
+            <form method="GET">
 
-            <div class="bloco-filtro">
-                <h4>Faixa de preço <i class="fa-solid fa-chevron-up"></i></h4>
-                <div class="filtro-preco-inputs">
-                    <input type="text" placeholder="R$ 0">
-                    <span>a</span>
-                    <input type="text" placeholder="R$ 1.000">
+                <div class="bloco-filtro">
+                    <h4>Categorias</h4>
+                    <ul class="lista-filtros">
+                        <?php foreach ($categorias as $cat): ?>
+                            <li>
+                                <label>
+                                    <input type="checkbox" name="categoria[]"
+                                        value="<?= $cat['id_categoria'] ?>"
+                                        <?= in_array($cat['id_categoria'], $categoria) ? 'checked' : '' ?>>
+                                    <?= $cat['nome_categoria'] ?>
+                                </label>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
-                <button class="btn btn-filtro-aplicar">Aplicar</button>
-            </div>
 
-            <div class="bloco-filtro">
-                <h4>Marcas <i class="fa-solid fa-chevron-up"></i></h4>
-                <ul class="lista-filtros">
-                    <li><label><input type="checkbox"> Bosch <span class="qtd">(68)</span></label></li>
-                    <li><label><input type="checkbox"> Vonder <span class="qtd">(52)</span></label></li>
-                    <li><label><input type="checkbox"> Tramontina <span class="qtd">(41)</span></label></li>
-                    <li><label><input type="checkbox"> Makita <span class="qtd">(35)</span></label></li>
-                    <li><label><input type="checkbox"> DeWalt <span class="qtd">(28)</span></label></li>
-                </ul>
-                <a href="#" class="ver-mais-link">Ver mais</a>
-            </div>
+                <div class="bloco-filtro">
+                    <h4>Marcas</h4>
+                    <ul class="lista-filtros">
+                        <?php foreach ($marcas as $m): ?>
+                            <li>
+                                <label>
+                                    <input type="checkbox" name="marca[]"
+                                        value="<?= $m['marca'] ?>"
+                                        <?= in_array($m['marca'], $marca) ? 'checked' : '' ?>>
+                                    <?= $m['marca'] ?>
+                                </label>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
 
-            <div class="bloco-filtro">
-                <h4>Avaliação <i class="fa-solid fa-chevron-up"></i></h4>
-                <ul class="lista-filtros avaliacao-filtros">
-                    <li><label><input type="checkbox"> <span class="estrelas-filtro"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
-                    <li><label><input type="checkbox"> <span class="estrelas-filtro"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></span>
-                    <li><label><input type="checkbox"> <span class="estrelas-filtro"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></span>
-                </ul>
-            </div>
+                <div class="bloco-filtro">
+                    <h4>Avaliação dos Clientes</h4>
+                    <ul class="lista-filtros">
+                        <li>
+                            <label>
+                                <input type="radio" name="avaliacao" value="" <?= empty($avaliacao) ? 'checked' : '' ?>>
+                                Todas as avaliações
+                            </label>
+                        </li>
+                        <?php for ($estrela = 5; $estrela >= 1; $estrela--): ?>
+                            <li>
+                                <label>
+                                    <input type="radio" name="avaliacao" value="<?= $estrela ?>" <?= $avaliacao == $estrela ? 'checked' : '' ?>>
+                                    <span class="estrelas-filtro">
+                                        <?php
+                                        for ($i = 1; $i <= 5; $i++) {
+                                            echo $i <= $estrela ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+                                        }
+                                        ?>
+                                    </span>
+                                </label>
+                            </li>
+                        <?php endfor; ?>
+                    </ul>
+                </div>
 
-            <div class="bloco-filtro">
-                <h4>Disponibilidade <i class="fa-solid fa-chevron-up"></i></h4>
-                <ul class="lista-filtros">
-                    <li><label><input type="checkbox"> Em estoque <span class="qtd">(198)</span></label></li>
-                    <li><label><input type="checkbox"> Promoção <span class="qtd">(53)</span></label></li>
-                </ul>
-            </div>
+                <div class="bloco-filtro">
+                    <h4>Faixa de preço</h4>
+                    <div class="filtro-preco-inputs">
+                        <input type="number" name="preco_min" value="<?= $preco_min ?>" placeholder="R$ 0">
+                        <span>a</span>
+                        <input type="number" name="preco_max" value="<?= $preco_max ?>" placeholder="R$ 1000">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-filtro-aplicar">
+                    Aplicar filtros
+                </button>
+
+            </form>
+
         </aside>
 
+
         <section class="conteudo-lista">
+
             <div class="cabecalho-resultados">
-                <h2 style="font-size: 2rem; color: var(--azul-escuro); font-weight: 800;">Ferramentas</h2>
-                <div class="ordenacao">
-                    <label>Ordenar por: </label>
-                    <select>
-                        <option>Mais vendidos</option>
-                        <option>Menor Preço</option>
-                        <option>Maior Preço</option>
+                <h2>Produtos</h2>
+
+                <form method="GET" class="ordenacao">
+
+                    <?php foreach ($categoria as $c): ?>
+                        <input type="hidden" name="categoria[]" value="<?= $c ?>">
+                    <?php endforeach; ?>
+
+                    <?php foreach ($marca as $m): ?>
+                        <input type="hidden" name="marca[]" value="<?= $m ?>">
+                    <?php endforeach; ?>
+
+                    <input type="hidden" name="preco_min" value="<?= $preco_min ?>">
+                    <input type="hidden" name="preco_max" value="<?= $preco_max ?>">
+
+                    <input type="hidden" name="avaliacao" value="<?= $avaliacao ?>">
+
+                    <select name="ordem" onchange="this.form.submit()">
+                        <option value="">Mais recentes</option>
+                        <option value="menor_preco" <?= $ordem == 'menor_preco' ? 'selected' : '' ?>>Menor preço</option>
+                        <option value="maior_preco" <?= $ordem == 'maior_preco' ? 'selected' : '' ?>>Maior preço</option>
                     </select>
-                </div>
+
+                </form>
             </div>
 
-            <div class="grid-produtos">
-                <?php foreach ($produtos as $produto): ?>
 
+            <div class="grid-produtos">
+
+                <?php if (empty($produtos)): ?>
+                    <p>Nenhum produto encontrado com os filtros selecionados.</p>
+                <?php endif; ?>
+
+                <?php foreach ($produtos as $p): ?>
                     <div class="cartao-produto">
 
-                        <?php if ($produto['desconto'] > 0): ?>
+                        <?php if ($p['desconto'] > 0): ?>
                             <span class="selo-desconto">
-                                -<?= $produto['desconto'] ?>%
+                                <?= number_format(($p['desconto'] / $p['preco_unitario']) * 100, 0) ?>%
                             </span>
                         <?php endif; ?>
 
-                        <i class="fa-regular fa-heart icone-favoritar"></i>
-
                         <div class="imagem-produto-placeholder">
-                            <img src="<?= $produto['imagem'] ?>"
-                                alt="<?= $produto['nome_produto'] ?>">
+                            <img src="../../imagens/produto-sem-imagem.png" style="max-width:100%;">
                         </div>
 
                         <span class="tag-estoque">
-                            <?= ($produto['quantidade_atual'] > 0) ? 'Em estoque' : 'Esgotado' ?>
+                            <?= ($p['quantidade_atual'] > 0) ? 'Em estoque' : 'Indisponível' ?>
                         </span>
 
                         <h3 class="titulo-produto">
-                            <?= $produto['nome_produto'] ?>
+                            <?= $p['nome_produto'] ?>
                         </h3>
 
                         <div class="estrelas-produto">
-                            ⭐ <?= number_format($produto['media_avaliacao'], 1) ?>
-                            (<?= $produto['avaliacoes'] ?>)
+                            <?php
+                            $media = round($p['media_avaliacao']);
+
+                            for ($i = 1; $i <= 5; $i++) {
+                                if ($i <= $media) {
+                                    echo '<i class="fa-solid fa-star"></i>';
+                                } else {
+                                    echo '<i class="fa-regular fa-star"></i>';
+                                }
+                            }
+                            ?>
+                            (<?= $p['total_avaliacoes'] ?>)
                         </div>
 
-                        <?php if ($produto['desconto'] > 0): ?>
+                        <?php if ($p['desconto'] > 0): ?>
                             <span class="preco-antigo">
-                                R$ <?= number_format($produto['preco_unitario'], 2, ',', '.') ?>
+                                R$ <?= number_format($p['preco_unitario'] + $p['desconto'], 2, ',', '.') ?>
                             </span>
                         <?php endif; ?>
 
                         <div class="preco-produto">
-                            R$
-                            <?= number_format(
-                                $produto['preco_unitario'] * (1 - $produto['desconto'] / 100),
-                                2,
-                                ',',
-                                '.'
-                            ) ?>
+                            R$ <?= number_format($p['preco_unitario'], 2, ',', '.') ?>
+                        </div>
+
+                        <div class="parcelamento">
+                            ou 5x de R$ <?= number_format($p['preco_unitario'] / 5, 2, ',', '.') ?>
                         </div>
 
                         <button class="btn btn-laranja btn-comprar-block">
-                            <i class="fa-solid fa-cart-plus"></i> Adicionar ao carrinho
+                            <i class="fa-solid fa-cart-plus"></i>
+                            Comprar
                         </button>
 
                     </div>
@@ -148,18 +216,8 @@ $produtos = readAll($pdo, "produto");
 
             </div>
 
-            <div class="paginacao">
-                <button class="btn-pag">&lt;</button>
-                <button class="btn-pag ativo">1</button>
-                <button class="btn-pag">2</button>
-                <button class="btn-pag">3</button>
-                <button class="btn-pag">4</button>
-                <span>...</span>
-                <button class="btn-pag">11</button>
-                <button class="btn-pag">&gt;</button>
-            </div>
-
         </section>
+
     </main>
 
 </body>

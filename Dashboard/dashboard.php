@@ -41,9 +41,11 @@ $stmt = $pdo->query("
     SELECT
         produto.nome_produto,
         estoque.quantidade_atual,
-        estoque.estoque_minimo
+        estoque.estoque_minimo,
+        foto.caminho_imagem
     FROM estoque
     JOIN produto ON produto.id_produto = estoque.idProduto
+    LEFT JOIN foto_produto foto ON foto.idProduto = produto.id_produto
     ORDER BY estoque.quantidade_atual ASC
     LIMIT 5
 ");
@@ -184,6 +186,19 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <span class="green">↑ 12,7%</span>
                         <p>vs mês anterior</p>
                     </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-top">
+                        <div class="icon orange">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <div>
+                            <h5>Número de Produtos</h5>
+                            <h3><?= $itens_vendidos ?></h3>
+                        </div>
+                    </div>
+                    <div class="card-bottom"></div>
                 </div>
 
             </section>
@@ -567,7 +582,7 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             echo '
                             <div class="produtos-critico">
                             <div class="info-produto">
-                                <img src="#" alt="produto">
+                                <img src="../' . $item['caminho_imagem'] . '" alt="produto">
                                 <div class="detalhes-produtos">
                                     <h4>' . $item['nome_produto'] . '</h4>
                                     <p>Estoque: <span>' . $item['quantidade_atual'] . ' unidades</span></p>

@@ -1,31 +1,126 @@
 <?php
-require_once "../../Crud/crud.php";
 
-if (isset($_GET['grupo'])) {
-    $grupo = $_GET['grupo'];
+$grupo = $_GET['grupo'] ?? null;
 
-    if ($grupo == 'ferramentas') {
-        $sql = "SELECT * FROM produto WHERE idCategoria IN (1, 2)";
-    } elseif ($grupo == 'materiais') {
-        $sql = "SELECT * FROM produto WHERE idCategoria IN (3, 4, 5)";
-    } elseif ($grupo == 'acabamento') {
-        $sql = "SELECT * FROM produto WHERE idCategoria IN (6, 7, 8)";
+$categoria = $_GET['categoria'] ?? [];
+
+if ($grupo == 'ferramentas') {
+    $categoria = [1, 2];
+} elseif ($grupo == 'materiais') {
+    $categoria = [3, 4, 5];
+} elseif ($grupo == 'acabamento') {
+    $categoria = [6, 7, 8];
+} elseif ($grupo == 'maquinas_equipamentos') {
+    $categoria = [6, 7, 8];
+} elseif ($grupo == 'obras_estruturas') {
+    $categoria = [6, 7, 8];
+}elseif ($grupo == 'suprimento_obras') {
+    $categoria = [6, 7, 8];
+}elseif ($grupo == 'seguranca') {
+    $categoria = [6, 7, 8];
+}
+
+$categoria = is_array($categoria) ? $categoria : [$categoria];
+
+$marca = $_GET['marca'] ?? [];
+$marca = is_array($marca) ? $marca : [$marca];
+
+$preco_min = $_GET['preco_min'] ?? null;
+$preco_max = $_GET['preco_max'] ?? null;
+$ordem = $_GET['ordem'] ?? null;
+$avaliacao = $_GET['avaliacao'] ?? null;
+$disponibilidade = $_GET['disponibilidade'] ?? null;
+
+
+
+function buscarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $ordem, $avaliacao, $disponibilidade)
+{
+    $sql = "
+        SELECT 
+            p.*,
+            e.quantidade_atual,
+            IFNULL(AVG(a.nota), 0) AS media_avaliacao,
+            COUNT(a.id_avaliacao) AS total_avaliacoes
+        FROM produto p
+        LEFT JOIN estoque e ON e.idProduto = p.id_produto
+        LEFT JOIN avaliacao a ON a.idProduto = p.id_produto
+        WHERE p.status_produto = 'ativo'
+    ";
+
+    $params = [];
+
+    // categorias
+    if (!empty($categoria)) {
+        $in = implode(',', array_fill(0, count($categoria), '?'));
+        $sql .= " AND p.idCategoria IN ($in)";
+        $params = array_merge($params, $categoria);
+    }
+
+    // marcas
+    if (!empty($marca)) {
+        $in = implode(',', array_fill(0, count($marca), '?'));
+        $sql .= " AND p.marca IN ($in)";
+        $params = array_merge($params, $marca);
+    }
+
+    // preço
+    if ($preco_min !== null && $preco_min !== '') {
+        $sql .= " AND p.preco_unitario >= ?";
+        $params[] = $preco_min;
+    }
+
+    if ($preco_max !== null && $preco_max !== '') {
+        $sql .= " AND p.preco_unitario <= ?";
+        $params[] = $preco_max;
+    }
+
+    // diposnivel/ nao disponivel
+    if ($disponibilidade == 'estoque') {
+        $sql .= " AND e.quantidade_atual > 0";
+    }
+
+    if ($disponibilidade == 'promocao') {
+        $sql .= " AND p.desconto > 0";
+    }
+
+    // agrupamento
+    $sql .= " GROUP BY p.id_produto";
+
+    // estrelas de avaliação
+    if ($avaliacao !== null && $avaliacao !== '') {
+        $sql .= " HAVING ROUND(media_avaliacao) = ?";
+        $params[] = $avaliacao;
+    }
+
+    // Ordenação dos produtos
+    if ($ordem == 'menor_preco') {
+        $sql .= " ORDER BY p.preco_unitario ASC";
+    } elseif ($ordem == 'maior_preco') {
+        $sql .= " ORDER BY p.preco_unitario DESC";
     } else {
-        $sql = "SELECT * FROM produto";
+        $sql .= " ORDER BY p.id_produto DESC";
     }
 
     $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->execute($params);
 
-} elseif (isset($_GET['categoria'])) {
-    $idCategoria = $_GET['categoria'];
-
-    $sql = "SELECT * FROM produto WHERE idCategoria = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$idCategoria]);
-    $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-} else {
-    $produtos = readAll($pdo, "produto");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function buscarCategorias($pdo)
+{
+    $sql = "SELECT * FROM categoria";
+    $stmt = $pdo->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function buscarMarcas($pdo)
+{
+    $sql = "SELECT DISTINCT marca FROM produto WHERE marca IS NOT NULL";
+    $stmt = $pdo->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+$produtos = buscarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $ordem, $avaliacao, $disponibilidade);
+$categorias = buscarCategorias($pdo);
+$marcas = buscarMarcas($pdo);

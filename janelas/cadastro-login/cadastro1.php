@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                     <div class="grupo-campo">
                         <label>CPF</label>
-                        <input type="text" name='cpf' placeholder="Ex: 213.333.123-55" required>
+                        <input type="text" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" name='cpf' placeholder="Ex: 213.333.123-55" required>
                     </div>
 
                     <div>

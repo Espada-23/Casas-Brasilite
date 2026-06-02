@@ -237,6 +237,8 @@ input {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 25px;
+    max-width: 1500px;
+    margin: 0 auto;
 }
 
 .card-cliente {
@@ -325,8 +327,48 @@ input {
     background: var(--background-color);
     font-size: .9rem;
     color: var(--title);
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
 .cep p {
+    width: 100%;
+}
+
+.main-resultados {
+    display: flex;
+    gap: 10px;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    width: 590px;
+}
+
+.resultados-busca {
+    border: 1px solid var(--border);
+    padding: 10px;
+    border-radius: 6px;
+    gap: 10px;
+    width: 100%;
+}
+
+.item-resultado {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.item-resultado:last-child {
+    border-bottom: none;
+}
+
+.link-resultado {
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+
+.info-resultado {
+    display: grid;
+    grid-template-columns: repeat(2, 300px);
+    align-items: center;
     width: 100%;
 }

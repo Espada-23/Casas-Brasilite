@@ -1,23 +1,3 @@
-
-
-:root {
-    --primary-blue: #0A1F3C;
-    --accent-orange: #F28C07;
-    --accent-green: #25D366;
-    --bg-light: #F9FAFB;
-    --bg-white: #FFFFFF;
-    --text-gray: #6B7280;
-    --border-color: #E5E7EB;
-    --font-main: 'Arial', sans-serif;
-}
-
-
-
-
-
-
-
-
 *,
 *::before,
 *::after {
@@ -39,6 +19,8 @@ body {
     display: flex;
     overflow-x: hidden;
 }
+
+ /* header  */
 
 .topbar {
     background: var(--background-color);
@@ -151,10 +133,16 @@ body {
     padding: 22px;
     max-width: 1550px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: -1rem;
 }
 
+/* Tabela */
+
 .container-tabela-produto {
-    margin-top: 16px;
+    max-width: 1500px;
+    margin: 0 auto;
 }
 
 .tabela-wrapper {
@@ -238,6 +226,8 @@ body {
     font-size: .88rem;
 }
 
+/* filtro */
+
 .main-filtro {
     display: flex;
     gap: 10px;
@@ -268,4 +258,363 @@ select {
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 10px;
+}
+
+
+.card-cadastro-produto {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 30px;
+    background: var(--text-color);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.main-card-cadastro {
+    margin-top: 20px;
+}
+
+form {
+    width: 100%;
+    padding: 30px 20px;
+    border-radius: 15px;
+    justify-content: center;
+}
+
+.top-card-cadastro {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.top-card-cadastro img {
+    height: 3vh;
+}
+
+.top-form {
+    display: flex;
+    gap: 15px;
+}
+
+.top-form input {
+    min-width: 410px;
+    width: 100%;
+    outline: none;
+    border: 1px solid var(--border);
+    font-family: 'Inter', sans-serif;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.campo label span {
+    color: var(--red);
+    font-weight: bold;
+    gap: 10px;
+}
+
+select {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    min-width: 200px;
+    outline: none;
+}
+
+input {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    max-width: 1200px;
+    width: 100%;
+    outline: none;
+}
+
+.main-form {
+    margin-top: 50px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.main-form input {
+    min-width: 410px;
+    width: 100%;
+    outline: none;
+    border: 1px solid var(--border);
+    font-family: 'Inter', sans-serif;
+}
+
+.financas {
+    margin-top: 50px;
+    display: flex;
+    gap: 20px;
+}
+
+.arquivo-imagem {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.arquivo-imagem label span {
+    color:  var(--red);
+    font-weight: bold;
+}
+
+.descricao {
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+    gap: 5px;
+}
+
+.descricao textarea {
+    resize: none;
+    border-radius: 6px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    outline: none;
+    min-height: 20vh;
+    font-family: 'Inter' sans-serif;
+}
+
+.botoes {
+    border-top: 0.5px solid var(--border-fraca);
+    padding: 20px 0;
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: end;
+}
+
+.botoes a {
+    text-decoration: none;
+    color: var(--title);
+    border: 1px solid var(--border);
+    padding: 10px 30px;
+    border-radius: 8px;
+}
+
+.botoes button {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 0 20px;
+    border-radius: 8px;
+    background: var(--orange);
+    color: var(--text-color);
+    outline: none;
+    border: none;
+    font-size: 1em;
+    font-weight: 500;
+}
+
+/* Cadastro de Produto */
+
+.card-cadastro-produto {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 30px;
+    background: var(--text-color);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 1200px; 
+    box-sizing: border-box;
+}
+
+.top-card-cadastro {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.top-card-cadastro img {
+    height: 40px; 
+    object-fit: contain;
+}
+
+.main-card-cadastro {
+    margin-top: 20px;
+}
+
+form {
+    width: 100%;
+    border-radius: 15px;
+}
+
+
+.cadastros-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; 
+}
+
+.top-form, 
+.main-form, 
+.financas {
+    display: flex;
+    gap: 20px;
+    max-width: 100%;
+    flex-wrap: wrap; 
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1; 
+    min-width: 220px; 
+    max-width: 100%;
+    height: 100%;
+}
+
+.campo label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--title);
+}
+
+.campo label span {
+    color: var(--red);
+    font-weight: bold;
+        max-width: 100%;
+
+}
+
+
+input, select, textarea {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 11px 14px;
+    width: 100%;
+        max-width: 100%;
+
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--title);
+    background-color: var(--background-color);
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--orange); }
+
+textarea {
+    resize: none;
+    min-height: 120px;
+}
+
+.arquivo-imagem {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+
+.botoes {
+    border-top: 1px solid var(--border);
+    padding: 20px 0;
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.botoes a {
+    text-decoration: none;
+    color: var(--title);
+    border: 1px solid var(--border);
+    padding: 10px 30px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.botoes a:hover {
+    background: var(--background-color);
+}
+
+.botoes button {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 25px;
+    border-radius: 8px;
+    background: var(--orange);
+    color: #ffffff; 
+    outline: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.botoes button:hover {
+    opacity: 0.9;
+}
+
+/* Filtro */
+
+.main-filtro {
+    display: flex;
+    gap: 10px;
+}
+
+.pesquisa-filtro {
+
+}
+
+/* Resultados Pesquisas */
+
+.main-resultados {
+    display: flex;
+    gap: 10px;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: 18px;
+}
+
+.resultados-busca {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    gap: 10px;
+    padding: 10px;
+    min-width: 200px;
+    width: 100%;
+}
+
+.item-resultado {
+    /* padding: 12px 15px; */
+    border-bottom: 1px solid #e5e7eb;
+    /* width: 100%; */
+}
+
+.item-resultado:last-child {
+    border-bottom: none;
+}
+
+.link-resultado {
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+
+.info-resultado {
+    display: grid;
+    grid-template-columns: repeat(3, 220px);
+    align-items: center;
+    /* width: 100%; */
 }

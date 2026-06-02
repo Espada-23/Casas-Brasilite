@@ -6,7 +6,7 @@
         $_SESSION['logado'] = $_SESSION['login'];
         unset($_SESSION['login']);
 
-        header ("../../index.php");
+        header ("../../index.php?#=1");
         exit;
     }
 ?>

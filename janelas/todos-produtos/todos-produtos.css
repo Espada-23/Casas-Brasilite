@@ -138,19 +138,6 @@
     gap: 15px;
 }
 
-.icone-favoritar {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    font-size: 1.2rem;
-    color: var(--texto-secundario);
-    cursor: pointer;
-}
-
-.icone-favoritar:hover {
-    color: var(--laranja);
-}
-
 .tag-estoque {
     font-size: 0.7rem;
     color: #10b981; 

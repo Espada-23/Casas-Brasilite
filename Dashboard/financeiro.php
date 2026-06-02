@@ -2,14 +2,20 @@
 require_once '../Crud/crud.php';
 require_once '../Crud/init.php';
 
+
 $stmt = $pdo->query("
     SELECT SUM(valor_total) as total 
     FROM pagamento 
     WHERE status_pagamento = 'pago'
-    AND MONTH(data_pagamento) = MONTH(CURRENT_DATE())
 ");
 
-$receita = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+$faturamento = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+
+$stmt = $pdo->query("
+    SELECT SUM(quantidade) as total 
+    FROM item_pedido
+");
+$itens_vendidos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
 $stmt = $pdo->query("
     SELECT COUNT(*) * 100 as total
@@ -17,11 +23,32 @@ $stmt = $pdo->query("
     WHERE tipo_movimentacao = 'saida'
 ");
 
-$despesas = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+$custos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
-$lucro = $receita - $despesas;
+$lucro = $faturamento - $custos;
 
-$margin_lucro = ($lucro / $receita) * 100;
+$margin_lucro = $faturamento > 0 ? ($lucro / $faturamento) * 100 : 0;
+
+// $stmt = $pdo->query("
+//     SELECT SUM(valor_total) as total 
+//     FROM pagamento 
+//     WHERE status_pagamento = 'pago'
+//     AND MONTH(data_pagamento) = MONTH(CURRENT_DATE())
+// ");
+
+// $receita = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+
+// $stmt = $pdo->query("
+//     SELECT COUNT(*) * 100 as total
+//     FROM movimentacao
+//     WHERE tipo_movimentacao = 'saida'
+// ");
+
+// $despesas = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+
+// $lucro = $receita - $despesas;
+
+// $margin_lucro = ($lucro / $receita) * 100;
 
 // transações
 
@@ -107,63 +134,46 @@ $totalPaginas = ceil($totalRegistros / $limite);
 
                 <div class="card">
                     <div class="card-top">
-                        <div class="icon green-bg">
+                        <div class="icon blue">
                             <i class="bi bi-cash-stack"></i>
                         </div>
-
                         <div>
-                            <h5>Receita Mensal</h5>
-                            <h3>R$ <?= number_format($receita, 2, ',', '.') ?></h3>
+                            <h5>Faturamento Total</h5>
+                            <h3>R$ <?= number_format($faturamento, 2, ',', '.') ?></h3>
                         </div>
                     </div>
-
                     <div class="card-bottom">
-                        <span class="green">↑ 12,3%</span>
+                        <span class="green">↑ 18,6%</span>
                         <p>vs mês anterior</p>
                     </div>
                 </div>
 
                 <div class="card">
+                    <div class="card-top">
+                        <div class="icon green-bg">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+                        <div>
+                            <h5>Lucro Líquico</h5>
+                            <h3>R$ <?= number_format($lucro, 2, ',', '.') ?></h3>
+                        </div>
+                    </div>
+                    <div class="card-bottom">
+                        <span class="green">↑ 14,2%</span>
+                        <p>vs mês anterior</p>
+                    </div>
+                </div>
 
+                <div class="card">
                     <div class="card-top">
                         <div class="icon red">
-                            <i class="bi bi-wallet2"></i>
+                            <i class="bi bi-arrow-down-circle"></i>
                         </div>
-
                         <div>
-                            <h5>Despesas</h5>
-                            <h3>R$ <?= number_format($despesas, 2, ',', '.') ?></h3>
+                            <h5>Total de Custos</h5>
+                            <h3><?= number_format($custos, 2, ',', '.') ?></h3>
                         </div>
                     </div>
-
-                    <div class="card-bottom">
-                        <span class="red-text">↑ 5,2%</span>
-                        <p>vs mês anterior</p>
-                    </div>
-
-                </div>
-
-                <div class="card">
-
-                    <div class="card-top">
-
-                        <div class="icon blue">
-                            <i class="bi bi-graph-up-arrow"></i>
-                        </div>
-
-                        <div>
-                            <h5>Lucro Líquido</h5>
-                            <h3>R$ <?= number_format($lucro, 2, ',', '
-                            ') ?></h3>
-                        </div>
-
-                    </div>
-
-                    <div class="card-bottom">
-                        <span class="green">18,5%</span>
-                        <p>vs mês anterior</p>
-                    </div>
-
                 </div>
 
                 <div class="card">
@@ -282,23 +292,23 @@ $totalPaginas = ceil($totalRegistros / $limite);
                 <div class="r-finan">
                     <div class="top-r-finan">
                         <p>Resumo Financeiro</p>
-                        <select>
+                        <!-- <select>
                             <option>Este Mês</option>
                             <option>Mês Passado</option>
                             <option>3 Meses</option>
                             <option>9 Meses</option>
                             <option>1 Ano</option>
-                        </select>
+                        </select> -->
                     </div>
 
                     <div class="infos-resumo">
                         <div class="receitas">
-                            <p>Receita Total</p>
-                            <span>R$ <?= number_format($receita, 2, ',', '.') ?></span>
+                            <p>Faturamento Total</p>
+                            <span>R$ <?= number_format($faturamento, 2, ',', '.') ?></span>
                         </div>
                         <div class="custos">
-                            <p>Despesas Totais</p>
-                            <span>R$ <?= number_format($despesas, 2, ',', '.') ?></span>
+                            <p>Custo Total</p>
+                            <span>R$ <?= number_format($custos, 2, ',', '.') ?></span>
                         </div>
                         <div class="lucro">
                             <p>Lucro Total</p>

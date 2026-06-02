@@ -1,7 +1,60 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once "../../Crud/crud.php";
+require_once "../../Crud/init.php";
 $id_produto = $_GET['id'];
-require_once "filtro.php";
+
+$sql = "
+    SELECT p.*, f.caminho_imagem, e.quantidade_atual AS estoque_atual
+    FROM produto p
+    LEFT JOIN foto_produto f ON p.id_produto = f.idProduto
+    LEFT JOIN estoque e ON p.id_produto = e.idProduto
+    WHERE p.id_produto = $id_produto
+    LIMIT 1
+";
+
+$stmt = $pdo->query($sql);
+$produto = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$produto) {
+    echo "Produto não encontrado.";
+    exit;
+}
+
+$sql_fotos = "SELECT caminho_imagem FROM foto_produto WHERE idProduto = $id_produto";
+$stmt_fotos = $pdo->query($sql_fotos);
+$fotos = $stmt_fotos->fetchAll(PDO::FETCH_ASSOC);
+
+if (empty($fotos)) {
+    $fotos[] = ['caminho_imagem' => '../../uploads/sem-foto.webp'];
+}
+
+$preco_atual = $produto['preco_unitario'];
+$desconto_porcentagem = (int)$produto['desconto'];
+if ($desconto_porcentagem > 0) {
+    $preco_antigo = $preco_atual / (1 - ($desconto_porcentagem / 100));
+} else {
+    $preco_antigo = $preco_atual;
+}
+
+$sql_avaliacoes = "SELECT nota FROM avaliacao WHERE idProduto = $id_produto";
+$stmt_av = $pdo->query($sql_avaliacoes);
+$avaliacoes = $stmt_av->fetchAll(PDO::FETCH_ASSOC);
+$total_avaliacoes = count($avaliacoes);
+
+if ($total_avaliacoes > 0) {
+    $soma_notas = 0;
+    foreach ($avaliacoes as $av) {
+        $soma_notas += $av['nota'];
+    }
+    $media_nota = round($soma_notas / $total_avaliacoes);
+    $media_exibicao = number_format($soma_notas / $total_avaliacoes, 1, '.', '');
+} else {
+    $media_nota = 0;
+    $media_exibicao = "0.0";
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -39,6 +92,11 @@ require_once "filtro.php";
                         <?php endforeach; ?>
                     </div>
                     <div class="imagem-principal-produto">
+                        <a href="/Casas-Brasilite/janelas/janela-favoritos/favoritar.php?id=<?= $produto['id_produto'] ?>" class="icone-favoritar">
+                            <i class="<?= in_array($produto['id_produto'], $_SESSION['favoritos'])
+                                            ? 'fa-solid fa-heart'
+                                            : 'fa-regular fa-heart' ?>"></i>
+                        </a>
                         <img src="../../<?= $produto['caminho_imagem'] ?>" alt="<?= $produto['nome_produto'] ?>">
                     </div>
 
@@ -114,7 +172,7 @@ require_once "filtro.php";
 
                         <div class="quantidade-produto">
                             <label for="campo-quantidade">Quantidade:</label>
-                            <input type="number" name="quantidade" id="campo-quantidade" value="1" min="1" max="<= $" step="1" required>
+                            <input type="number" name="quantidade" id="campo-quantidade" value="1" min="1" max="<?= isset($produto['estoque_atual']) ? $produto['estoque_atual'] : 10 ?>" step="1" required>
                         </div>
                         <button type="submit" name="acao" value="comprar" class="btn-comprar-agora">
                             Comprar agora

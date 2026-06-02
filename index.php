@@ -1,5 +1,9 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once "Crud/crud.php";
+require_once "Crud/init.php";
 $sql = "
 SELECT p.*, MIN(f.caminho_imagem) as caminho_imagem
 FROM produto p
@@ -18,10 +22,12 @@ LEFT JOIN foto_produto f
 ON p.id_produto = f.idProduto
 WHERE p.desconto IS NOT NULL AND p.desconto > 0
 GROUP BY p.id_produto
+LIMIT 4
 ";
 
 $stmt_promo = $pdo->query($sql_promo);
 $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -30,7 +36,7 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="\Casas-Brasilite\imagens\icon.png" type="image/x-icon">
+    <link rel="icon" href="/Casas-Brasilite/imagens/icon.png" type="image/x-icon">
     <title>Casas Brasilite</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -39,7 +45,7 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
 
 <body>
 
-    <?php include_once "partials\header.php" ?>
+    <?php include_once "partials/header.php" ?>
 
     <section class="banner-principal">
         <div class="container banner-conteudo">
@@ -86,37 +92,37 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
             <div class="grid-categorias-circulos">
                 <div class="item-categoria-circulo">
                     <div class="fundo-imagem-cat">
-                        <img src="imagens\materiais.png">
+                        <img src="imagens/materiais.png">
                         <span>Materiais</span>
                     </div>
                 </div>
                 <div class="item-categoria-circulo">
                     <div class="fundo-imagem-cat">
-                        <img src="imagens\ferramentas.png">
+                        <img src="imagens/ferramentas.png">
                         <span>Ferramentas</span>
                     </div>
                 </div>
                 <div class="item-categoria-circulo">
                     <div class="fundo-imagem-cat">
-                        <img src="imagens\acabamento.webp">
+                        <img src="imagens/acabamento.webp">
                         <span>Acabamento</span>
                     </div>
                 </div>
                 <div class="item-categoria-circulo">
                     <div class="fundo-imagem-cat">
-                        <img src="imagens\estruturas.webp">
+                        <img src="imagens/estruturas.webp">
                         <span>Estruturas</span>
                     </div>
                 </div>
                 <div class="item-categoria-circulo">
                     <div class="fundo-imagem-cat">
-                        <img src="imagens\epi.png">
+                        <img src="imagens/epi.png">
                         <span>EPI</span>
                     </div>
                 </div>
                 <div class="item-categoria-circulo">
                     <div class="fundo-imagem-cat">
-                        <img src="imagens\ofertas.png">
+                        <img src="imagens/ofertas.png">
                         <span>Ofertas</span>
                     </div>
                 </div>
@@ -136,15 +142,21 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
                     <div class="grid-produtos">
 
                         <?php foreach ($produtos as $produto): ?>
-                            <a href="janelas\janela-produto\janela-produto.php?id=<?= $produto['id_produto'] ?>" class="link-card-produto">
-                                <div class="cartao-produto">
+                            <div class="cartao-produto">
 
-                                    <?php if (!empty($produto['desconto']) && $produto['desconto'] != 0): ?>
-                                        <span class="selo-desconto">
-                                            <?= $produto['desconto'] ?>%
-                                        </span>
-                                    <?php endif; ?>
+                                <?php if (!empty($produto['desconto']) && $produto['desconto'] != 0): ?>
+                                    <span class="selo-desconto">
+                                        <?= round($produto['desconto'], 0) ?>%
+                                    </span>
+                                <?php endif; ?>
 
+                                <a href="janelas/janela-favoritos/favoritar.php?id=<?= $produto['id_produto'] ?>" class="icone-favoritar">
+                                    <i class="<?= in_array($produto['id_produto'], $_SESSION['favoritos'])
+                                                    ? 'fa-solid fa-heart'
+                                                    : 'fa-regular fa-heart' ?>"></i>
+                                </a>
+
+                                <a href="janelas/janela-produto/janela-produto.php?id=<?= $produto['id_produto'] ?>">
                                     <div class="imagem-produto-placeholder">
                                         <img src="<?= $produto['caminho_imagem'] ?>" alt="<?= $produto['nome_produto'] ?>">
                                     </div>
@@ -158,7 +170,11 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
                                     </p>
 
                                     <?php if (!empty($produto['desconto']) && $produto['desconto'] > 0): ?>
-                                        <?php $precoAntigo = $produto['preco_unitario'] / (1 - ($produto['desconto'] / 100)); ?>
+                                        <?php if ($produto['desconto'] < 100) {
+                                            $precoAntigo = $produto['preco_unitario'] / (1 - ($produto['desconto'] / 100));
+                                        } else {
+                                            $precoAntigo = $produto['preco_unitario'];
+                                        } ?>
                                         <p class="preco-antigo">
                                             R$ <?= $precoAntigo = round($precoAntigo, 2); ?>
                                         </p>
@@ -168,9 +184,8 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
                                         ou 3x de R$
                                         <?= number_format($produto['preco_unitario'] / 3, 2, ',', '.') ?>
                                     </p>
-
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         <?php endforeach; ?>
 
                     </div>
@@ -204,9 +219,15 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
 
                         <?php if (!empty($produto_promo['desconto']) && $produto_promo['desconto'] > 0): ?>
                             <span class="selo-desconto">
-                                <?= $produto_promo['desconto'] ?>%
+                                <?= round($produto_promo['desconto'], 0) ?>%
                             </span>
                         <?php endif; ?>
+
+                        <a href="janelas/janela-favoritos/favoritar.php?id=<?= $produto_promo['id_produto'] ?>" class="icone-favoritar">
+                            <i class="<?= in_array($produto_promo['id_produto'], $_SESSION['favoritos'])
+                                            ? 'fa-solid fa-heart'
+                                            : 'fa-regular fa-heart' ?>"></i>
+                        </a>
 
                         <div class="imagem-produto-placeholder">
                             <img src="<?= $produto_promo['caminho_imagem'] ?>" alt="<?= $produto_promo['nome_produto'] ?>">
@@ -221,7 +242,11 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
                         </p>
 
                         <?php if (!empty($produto_promo['desconto']) && $produto_promo['desconto'] > 0): ?>
-                            <?php $precoAntigo = $produto_promo['preco_unitario'] / (1 - ($produto_promo['desconto'] / 100)); ?>
+                            <?php if ($produto['desconto'] < 100) {
+                                $precoAntigo = $produto['preco_unitario'] / (1 - ($produto['desconto'] / 100));
+                            } else {
+                                $precoAntigo = $produto['preco_unitario'];
+                            } ?>
                             <p class="preco-antigo">
                                 R$ <?= $precoAntigo = round($precoAntigo, 2); ?>
                             </p>
@@ -231,7 +256,7 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
                             ou 10x de R$ <?= number_format($produto_promo['preco_unitario'] / 10, 2, ',', '.') ?>
                         </p>
 
-                        <a href="janelas\janela-produto\janela-produto.php?id=<?= $produto_promo['id_produto'] ?>" class="link-card-produto">
+                        <a href="janelas/janela-produto/janela-produto.php?id=<?= $produto_promo['id_produto'] ?>" class="link-card-produto">
                             <button class="btn btn-laranja btn-comprar-card">
                                 Ver Informações
                             </button>
@@ -324,7 +349,7 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
                     <h3>Sobre a Casas Brasilite</h3>
                     <p>Somos especialistas em materiais para construção civil e fundação. Aqui você encontra qualidade,
                         variedade e os melhores preços para sua obra avançar com segurança e eficiência.</p>
-                    <a href="janelas\sobre\sobre.php" class="btn btn-azul-escuro">Saiba mais</a>
+                    <a href="janelas/sobre/sobre.php" class="btn btn-azul-escuro">Saiba mais</a>
                 </div>
                 <div class="beneficios-sobre">
                     <div class="grid-beneficios-sobre">

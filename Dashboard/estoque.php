@@ -2,9 +2,35 @@
 
 require_once '../Crud/init.php';
 require_once '../Crud/data.php';
+require_once '../Crud/crud.php';
 
+$mensagem_erro = "";
+$registros_pesquisa = 0;
+
+$id_filtrado = isset($_GET['id_filtrado']) ? (int)$_GET['id_filtrado'] : null;
+$marca_filtrado = isset($_GET['marca_filtrado']) ? trim($_GET['marca_filtrado']) : null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $pesquisa = isset($_POST['pesquisa']) ? trim($_POST['pesquisa']) : '';
+
+    $id_categoria_selecionada = (isset($_POST['id_categoria']) && $_POST['id_categoria'] !== '') ? $_POST['id_categoria'] : '';
+
+    if (empty($pesquisa)) {
+        $mensagem_erro = "Por favor, digite um nome ou e-mail para realizar a busca.";
+    } else {
+        $registros = readAll($pdo, 'produto', "nome_produto LIKE '%$pesquisa%' OR sku LIKE '%$pesquisa%' OR marca LIKE '%$pesquisa%'");
+
+        if (count($registros) > 0) {
+            foreach ($registros as $usuario => $value) {
+                $resultados[$usuario] = is_array($value) ? $value : $usuario;
+            }
+        } else {
+            $mensagem_pesquisa = "Nenhum Produto encontrado.";
+        }
+
+        $registros_pesquisa = 1;
+    }
 
     if (isset($_POST['acao']) && $_POST['acao'] === 'entrada') {
 
@@ -126,15 +152,18 @@ if (isset($_POST['acao']) && $_POST['acao'] === 'excluir') {
 
                 <div class="main-filtro">
                     <div class="barra-pesquisa">
-                        <button>
-                            <i class="bi bi-search"></i>
-                        </button>
-                        <input type="text" name="pesquisa" placeholder="Buscar Produto...">
+                        <form method="POST" action="estoque.php">
+                            <button type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                            <input type="text" name="pesquisa" placeholder="<?php echo ((isset($mensagem_erro) && $mensagem_erro != '') ? $mensagem_erro : 'Buscar Produto...'); $mensagem_erro = ''; ?>">
+                        </form>
                     </div>
                     <div class="selects">
                         <div class="status">
                             <select>
                                 <option>Todos os status</option>
+                                <?php $status = read($pdo, 'estoque', 'status_estoque'); ?>
                                 <option>Normal</option>
                                 <option>Crítico</option>
                                 <option>Atenção</option>
@@ -151,6 +180,40 @@ if (isset($_POST['acao']) && $_POST['acao'] === 'excluir') {
                         </div>
                     </div>
                 </div>
+                <?php if ($registros_pesquisa == 1): ?>
+                        <div class="main-resultados">
+                            <div class="resultados-busca">
+                                <?php if (!empty($resultados)):
+                                    foreach ($resultados as $res):
+                                ?>
+                                        <div class="item-resultado">
+                                            <div class="info-resultado">
+                                                <a href="produtos.php?id_filtrado=<?= $res['id_produto']; ?>" class="link-resultado">
+                                                    <span>
+                                                        <i class="bi bi-person"></i>
+                                                        <span class="nome-resultado"><?= htmlspecialchars($res['nome_produto']); ?></span>
+                                                    </span>
+                                                    <span>
+                                                        <span class="sku-resultado"><?= htmlspecialchars($res['sku']); ?></span>
+                                                    </span>
+                                                </a>
+                                                <a href="produtos.php?marca_filtrado=<?= $res['marca']; ?>" class="link-resultado">
+                                                    <span>
+                                                        <span class="marca-resultado"><?= htmlspecialchars($res['marca']); ?></span>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                            </div>
+
+                        <?php else: ?>
+                            <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
+                                <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
+                                <?= !empty($mensagem_pesquisa) ? $mensagem_pesquisa : "Nenhum usuário encontrado."; ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
 
                 <div class="container-tabela-produto">
                     <div class="tabela-wrapper">

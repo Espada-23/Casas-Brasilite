@@ -17,16 +17,26 @@ $novos_dia = (read($pdo, 'usuario', '*', 'data_cadastro = '.$hoje) == 0) ? '0' :
 $novos_mes = count(read($pdo, 'usuario', '*', 'data_cadastro >= NOW() - INTERVAL 1 MONTH'));
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $pesquisa = $_POST['pesquisa'];
+    if (isset($_POST['id_apagar'])) {
+        $id_para_deletar = $_POST['id_apagar'];
 
-    if (empty(trim($pesquisa))) {
+        $stmt = delete($pdo, 'usuario', 'id_usuario="'.$id_para_deletar.'"');
+
+        // Recarrega a própria página limpa para atualizar a lista na tela
+        header("Location: clientes.php");
+        exit;
+    } else {
+
+    $pesquisa = trim($_POST['pesquisa']);
+
+    if (empty($pesquisa)) {
         $mensagem_erro = "Por favor, digite um nome ou e-mail para realizar a busca."; 
     } else {
-        $registros = read($pdo, 'usuario', '*', "nome LIKE '%$pesquisa%' OR email LIKE '%$pesquisa%'");
+        $registros = readAll($pdo, 'usuario', "nome LIKE '%$pesquisa%' OR email LIKE '%$pesquisa%'");
         
         if (count($registros) > 0) {
             foreach ($registros as $usuario => $value) {
-                $resultados[$usuario] = is_array($value) ? $value['nome'] : $registros['nome'];
+                $resultados[$usuario] = is_array($value) ? $value : $usuario;
             }
         } else {
             $mensagem_pesquisa = "Nenhum usuário encontrado.";
@@ -34,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $registros_pesquisa = 1;
     }
+}
 }
 
 ?>
@@ -49,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="icon" href="../imagens/logo.png">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/clientes.css">
+    <link rel="stylesheet" href="css/clientes.css?v=3">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
@@ -131,20 +142,64 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <input type="text" name="pesquisa" placeholder="<?php echo ((isset($mensagem_erro) && $mensagem_erro != '') ? $mensagem_erro : 'Buscar Cliente...'); $mensagem_erro = '';?>">
                         </form>
                     </div>
-                    <div>
-                        <p>Olá</p>
+                    <a href="clientes.php" class="btn-limpar-pesquisa" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background-color: #6b7280; color: #ffffff; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: 500; height: 100%; transition: background-color 0.2s ease;">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        Limpar
+                    </a>
+                </div>
+                <?php if($registros_pesquisa == 1 ): ?>
+                <div class="main-resultados">
+                    <div class="resultados-busca">
+                        <?php if (!empty($resultados)):
+                            foreach ($resultados as $res): ?>
+                                <div class="item-resultado">
+                                    <div class="info-resultado">
+                                        <a href="clientes.php?id_filtrado=<?= $res['id_usuario']; ?>" class="link-resultado">
+                                            <div class="info-resultado">
+                                                <span>
+                                                    <i class="bi bi-person"></i>
+                                                    <span class="nome-resultado"><?= htmlspecialchars($res['nome']); ?></span>
+                                                </span>
+                                                <span>
+                                                    <span class="email-resultado"><?= htmlspecialchars($res['email']); ?></span>
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
+                                <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
+                                <?= !empty($mensagem_pesquisa) ? $mensagem_pesquisa : "Nenhum usuário encontrado."; ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
+                </div>
+                <?php endif; ?>
                 </div>
 
                 <div class="grid-clientes">
-                    <?php
-                    
-                    foreach ($cadastrados as $usuario) {
-                    ?>
+                    <?php foreach ($cadastrados as $usuario) { 
+                        $id_filtrado = isset($_GET['id_filtrado']) ? $_GET['id_filtrado'] : null;
+                        if ($id_filtrado !== null) {
+                            if ($usuario['id_usuario'] != $id_filtrado) {
+                                continue;
+                            }  
+                        }
+                        ?>
                         <div class="card-cliente">
                             <div class="perfil">
                                 <div class="nome">
-                                    <p><?=  htmlspecialchars($usuario['nome']);  ?></p>
+                                    <p><?= ($usuario['nome'] != 'NULL') ? htmlspecialchars($usuario['nome']) : 'NULL';  ?></p>
+                                    <form method="POST" action="clientes.php" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');" style="display: inline;">
+                                        <input type="hidden" name="action" value="deletar_usuario">
+                                        <input type="hidden" name="id_apagar" value="<?= $usuario['id_usuario']; ?>">
+                                        
+                                        <button type="submit" style="background-color: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px;">
+                                            Deletar
+                                        </button>
+                                    </form>
                                     <span>Pessoa Física</span>
                                 </div>
                             </div>
@@ -152,7 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <div class="info-geral">
                                 <div class="info">
                                     <div class="fone">
-                                        <label><?= var_dump($resultados); ?></label>
+                                        <label>Telefone</label>
                                         <p><?= htmlspecialchars($usuario['telefone']); ?></p>
                                     </div>
                                     <div class="cpf">
@@ -167,7 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     </div>
                                     <div class="senha">
                                         <label>Senha</label>
-                                        <p style="font-size: 11px; max-width: 150px; overflow: hidden; text-overflow: ellipsis;"><?= htmlspecialchars(($usuario['senha'])) ?></p>
+                                        <p>Protegida por Hash</p>
                                     </div>
                                 </div>
                                 <div class="localizacao">
@@ -189,7 +244,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <div class="complemento">
                                         <div class="bairro">
                                             <label>Bairro</label>
-                                            <p><?=  htmlspecialchars($usuario['bairro']); ?></p>
+                                            <p><?php $bairro_limpo = trim($usuario['bairro']);
+                                                    $bairro_minusculo = strtolower($bairro_limpo);
+                                            echo (empty($bairro_limpo) || $bairro_minusculo === 'null' || strlen($bairro_limpo) === 0 ? 'Não informado' : htmlspecialchars($bairro_limpo)); ?></p>
                                         </div>
                                         <div class="numero">
                                             <label>Número</label>

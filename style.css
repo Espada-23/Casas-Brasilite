@@ -298,7 +298,9 @@ li {
     position: relative;
     background: var(--branco);
     width: 220px;
-    height: 295px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
 }
 
@@ -316,6 +318,19 @@ li {
 
 .cartao-produto:hover, .cartao-produtos a button:hover {
     transform: scale(1.05);
+}
+
+.icone-favoritar {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 1.2rem;
+    color: var(--texto-secundario);
+    cursor: pointer;
+}
+
+.icone-favoritar:hover {
+    color: var(--laranja);
 }
 
 .selo-desconto {
@@ -363,6 +378,7 @@ li {
     font-size: 1.2rem;
     font-weight: 800;
     color: var(--azul-escuro);
+    margin-top: auto;
 }
 
 .preco-antigo {
