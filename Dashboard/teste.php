@@ -194,7 +194,7 @@ if ($acao === 'excluir' && $id) {
                         <form action="<?= $url_post ?>" method="POST" enctype="multipart/form-data">
 
                         </div>
-                        <i class="bi bi-plus-lg"></i> Adicionar Produto
+                        <a href ="?acao=novo" class = "btn" ><i class="bi bi-plus-lg"></i> Adicionar Produto
                         </a>
                     </div>
 

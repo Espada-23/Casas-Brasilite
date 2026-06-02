@@ -59,7 +59,7 @@
             <h4>Institucional</h4>
 
             <ul>
-                <li><a href="#">Sobre nós</a></li>
+                <li><a href="">Sobre nós</a></li>
                 <li><a href="#">Trabalhe conosco</a></li>
                 <li><a href="#">Política de privacidade</a></li>
                 <li><a href="#">Termos de uso</a></li>
@@ -81,10 +81,13 @@
             <h4>Categorias</h4>
 
             <ul>
-                <li><a href="#">Materiais</a></li>
                 <li><a href="#">Ferramentas</a></li>
-                <li><a href="#">Estruturas</a></li>
-                <li><a href="#">EPI</a></li>
+                <li><a href="#">Materias de Construção</a></li>
+                <li><a href="#">Acabamento</a></li>
+                <li><a href="#">Maquinas e Equipamentos</a></li>
+                <li><a href="#">Obras e Estruturas</a></li>
+                <li><a href="#">Suprimentos de Obra</a></li>
+                <li><a href="#">Segurança (EPIs)</a></li>
                 <li><a href="#">Ofertas</a></li>
             </ul>
         </div>

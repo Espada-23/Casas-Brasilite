@@ -1,3 +1,36 @@
+<?php
+require_once '../../Crud/init.php';
+require_once '../../Crud/crud.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['logado'])) {
+    header("Location: /Casas-Brasilite/janelas/cadastro-login/login.php");
+    exit;
+}
+
+$id_usuario_logado = $_SESSION['logado']['id'];
+
+//  Consulta dos pedidos
+$queryPedidos = "
+    SELECT 
+        p.id_pedido, 
+        p.status_pedido, 
+        pag.valor_total, 
+        pag.forma_pagamento, 
+        pag.data_pagamento
+    FROM pedido p
+    LEFT JOIN pagamento pag ON p.idPagamento = pag.id_pagamento
+    WHERE p.idUsuario = :id_usuario
+    ORDER BY p.id_pedido DESC
+";
+
+$stmtPedidos = $pdo->prepare($queryPedidos);
+$stmtPedidos->execute(['id_usuario' => $id_usuario_logado]);
+$pedidos = $stmtPedidos->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -19,134 +52,130 @@
     <section class="secao-pedidos">
         <div class="container main-pedidos-container">
 
-            <div class="card-pedido">
-                <div class="topo-card-pedido">
-                    <div class="info-geral-pedido">
-                        <div>
-                            <span class="label-pedido">Pedido</span>
-                            <strong>#48291</strong>
-                        </div>
-                        <div>
-                            <span class="label-pedido">Data</span>
-                            <strong>23/05/2026</strong>
-                        </div>
-                        <div>
-                            <span class="label-pedido">Total</span>
-                            <strong>R$ 935,00</strong>
-                        </div>
-                        <div>
-                            <span class="label-pedido">Pagamento</span>
-                            <strong>Pix</strong>
-                        </div>
-                    </div>
-                    <span class="status-tag status-transito">Em transporte</span>
-                </div>
+            <?php if (count($pedidos) === 0): ?>
+                <p>Você ainda não possui nenhum pedido.</p>
+            <?php else: ?>
 
-                <div class="linha-tempo">
-                    <div class="passo concluido">
-                        <div class="circulo-passo"><i class="fas fa-check"></i></div>
-                        <span class="texto-passo">Pedido Recebido</span>
-                    </div>
-                    <div class="passo concluido">
-                        <div class="circulo-passo"><i class="fas fa-check"></i></div>
-                        <span class="texto-passo">Pagamento Aprovado</span>
-                    </div>
-                    <div class="passo ativo">
-                        <div class="circulo-passo"><i class="fas fa-truck"></i></div>
-                        <span class="texto-passo">Em Transporte</span>
-                    </div>
-                    <div class="passo">
-                        <div class="circulo-passo"><i class="fas fa-home"></i></div>
-                        <span class="texto-passo">Entregue</span>
-                    </div>
-                </div>
+                <?php foreach ($pedidos as $pedido):
+                    $dataFormatada = date('d/m/Y', strtotime($pedido['data_pagamento']));
+                    $valorFormatado = number_format($pedido['valor_total'], 2, ',', '.');
+                    $formaPagamento = ucfirst($pedido['forma_pagamento']);
 
-                <details class="detalhes-pedido-dropdown">
-                    <summary class="btn-ver-detalhes">
-                        Exibir itens do pedido <i class="fas fa-chevron-down"></i>
-                    </summary>
-                    <div class="conteudo-detalhes">
-                        <div class="produto-pedido-mini">
-                            <div class="img-mini-placeholder"><i class="fas fa-hammer"></i></div>
-                            <div class="nome-mini">
-                                <h5>Furadeira de Impacto Vonder</h5>
-                                <span>Qtd: 1</span>
+                    $status = $pedido['status_pedido'];
+
+                    $passo1 = 'concluido';
+                    $passo2 = '';
+                    $passo3 = '';
+                    $passo4 = '';
+
+                    $tagClasse = '';
+                    $tagTexto = '';
+
+                    if ($status === 'processando') {
+                        $passo2 = 'ativo';
+                        $tagClasse = 'status-transito';
+                        $tagTexto = 'Processando';
+                    } elseif ($status === 'enviado') {
+                        $passo2 = 'concluido';
+                        $passo3 = 'ativo';
+                        $tagClasse = 'status-transito';
+                        $tagTexto = 'Em Transporte';
+                    } elseif ($status === 'entregue') {
+                        $passo2 = 'concluido';
+                        $passo3 = 'concluido';
+                        $passo4 = 'concluido';
+                        $tagClasse = 'status-entregue';
+                        $tagTexto = 'Entregue';
+                    } elseif ($status === 'cancelado') {
+                        $tagClasse = 'status-cancelado';
+                        $tagTexto = 'Cancelado';
+                    }
+                ?>
+
+                    <div class="card-pedido">
+                        <div class="topo-card-pedido">
+                            <div class="info-geral-pedido">
+                                <div>
+                                    <span class="label-pedido">Pedido</span>
+                                    <strong>#<?= htmlspecialchars($pedido['id_pedido']) ?></strong>
+                                </div>
+                                <div>
+                                    <span class="label-pedido">Data</span>
+                                    <strong><?= $dataFormatada ?></strong>
+                                </div>
+                                <div>
+                                    <span class="label-pedido">Total</span>
+                                    <strong>R$ <?= $valorFormatado ?></strong>
+                                </div>
+                                <div>
+                                    <span class="label-pedido">Pagamento</span>
+                                    <strong><?= htmlspecialchars($formaPagamento) ?></strong>
+                                </div>
                             </div>
-                            <div class="preco-mini">R$ 350,00</div>
+                            <span class="status-tag <?= $tagClasse ?>"><?= $tagTexto ?></span>
                         </div>
-                        <div class="produto-pedido-mini">
-                            <div class="img-mini-placeholder"><i class="fas fa-paint-roller"></i></div>
-                            <div class="nome-mini">
-                                <h5>Tinta Acrílica Fosca Coral 18L</h5>
-                                <span>Qtd: 2</span>
+
+                        <?php if ($status !== 'cancelado'): ?>
+                            <div class="linha-tempo">
+                                <div class="passo <?= $passo1 ?>">
+                                    <div class="circulo-passo"><i class="fas fa-check"></i></div>
+                                    <span class="texto-passo">Pedido Recebido</span>
+                                </div>
+                                <div class="passo <?= $passo2 ?>">
+                                    <div class="circulo-passo"><i class="fas fa-money-bill-wave"></i></div>
+                                    <span class="texto-passo">Pagamento</span>
+                                </div>
+                                <div class="passo <?= $passo3 ?>">
+                                    <div class="circulo-passo"><i class="fas fa-truck"></i></div>
+                                    <span class="texto-passo">Em Transporte</span>
+                                </div>
+                                <div class="passo <?= $passo4 ?>">
+                                    <div class="circulo-passo"><i class="fas fa-home"></i></div>
+                                    <span class="texto-passo">Entregue</span>
+                                </div>
                             </div>
-                            <div class="preco-mini">R$ 540,00</div>
-                        </div>
-                        <div class="resumo-entrega-mini">
-                            <p><strong>Endereço de Entrega:</strong> Av. Paulista, 1000 - Bela Vista, São Paulo - SP</p>
-                        </div>
-                    </div>
-                </details>
-            </div>
+                        <?php endif; ?>
 
-            <div class="card-pedido">
-                <div class="topo-card-pedido">
-                    <div class="info-geral-pedido">
-                        <div>
-                            <span class="label-pedido">Pedido</span>
-                            <strong>#47102</strong>
-                        </div>
-                        <div>
-                            <span class="label-pedido">Data</span>
-                            <strong>10/04/2026</strong>
-                        </div>
-                        <div>
-                            <span class="label-pedido">Total</span>
-                            <strong>R$ 120,50</strong>
-                        </div>
-                        <div>
-                            <span class="label-pedido">Pagamento</span>
-                            <strong>Cartão</strong>
-                        </div>
-                    </div>
-                    <span class="status-tag status-entregue">Entregue</span>
-                </div>
+                        <details class="detalhes-pedido-dropdown">
+                            <summary class="btn-ver-detalhes">
+                                Exibir itens do pedido <i class="fas fa-chevron-down"></i>
+                            </summary>
+                            <div class="conteudo-detalhes">
 
-                <div class="linha-tempo">
-                    <div class="passo concluido">
-                        <div class="circulo-passo"><i class="fas fa-check"></i></div>
-                        <span class="texto-passo">Pedido Recebido</span>
-                    </div>
-                    <div class="passo concluido">
-                        <div class="circulo-passo"><i class="fas fa-check"></i></div>
-                        <span class="texto-passo">Pagamento Aprovado</span>
-                    </div>
-                    <div class="passo concluido">
-                        <div class="circulo-passo"><i class="fas fa-check"></i></div>
-                        <span class="texto-passo">Em Transporte</span>
-                    </div>
-                    <div class="passo concluido">
-                        <div class="circulo-passo"><i class="fas fa-check"></i></div>
-                        <span class="texto-passo">Entregue</span>
-                    </div>
-                </div>
+                                <?php
+                                $queryItens = "
+                                SELECT 
+                                    ip.quantidade, 
+                                    ip.subtotal, 
+                                    prod.nome_produto
+                                FROM item_pedido ip
+                                JOIN item_carrinho ic ON ip.idItem_Carrinho = ic.id_item_carrinho
+                                JOIN produto prod ON ic.idProduto = prod.id_produto
+                                WHERE ip.idPedido = :id_pedido
+                            ";
+                                $stmtItens = $pdo->prepare($queryItens);
+                                $stmtItens->execute(['id_pedido' => $pedido['id_pedido']]);
+                                $itens = $stmtItens->fetchAll(PDO::FETCH_ASSOC);
 
-                <details class="detalhes-pedido-dropdown">
-                    <summary class="btn-ver-detalhes">
-                        Exibir itens do pedido <i class="fas fa-chevron-down"></i>
-                    </summary>
-                    <div class="conteudo-detalhes">
-                        <div class="produto-pedido-mini">
-                            <div class="img-mini-placeholder"><i class="fas fa-screwdriver"></i></div>
-                            <div class="nome-mini">
-                                <h5>Jogo de Chaves Fenda e Philips (6 peças)</h5>
-                                <span>Qtd: 1</span>
+                                foreach ($itens as $item):
+                                    $subtotalItem = number_format($item['subtotal'], 2, ',', '.');
+                                ?>
+                                    <div class="produto-pedido-mini">
+                                        <div class="img-mini-placeholder"><i class="fas fa-box"></i></div>
+                                        <div class="nome-mini">
+                                            <h5><?= htmlspecialchars($item['nome_produto']) ?></h5>
+                                            <span>Qtd: <?= htmlspecialchars($item['quantidade']) ?></span>
+                                        </div>
+                                        <div class="preco-mini">R$ <?= $subtotalItem ?></div>
+                                    </div>
+                                <?php endforeach; ?>
+
                             </div>
-                            <div class="preco-mini">R$ 120,50</div>
-                        </div>
+                        </details>
                     </div>
-                </details>
-            </div>
+
+                <?php endforeach; ?>
+            <?php endif; ?>
 
         </div>
     </section>

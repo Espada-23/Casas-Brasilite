@@ -4,16 +4,11 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once "Crud/crud.php";
 require_once "Crud/init.php";
-$sql = "
-SELECT p.*, MIN(f.caminho_imagem) as caminho_imagem
-FROM produto p
-LEFT JOIN foto_produto f 
-ON p.id_produto = f.idProduto
-GROUP BY p.id_produto
-";
 
-$stmt = $pdo->query($sql);
-$produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$_SESSION['cep_index'] = isset($_GET['a']) ? $_GET['a'] : null;
+
+$registros_pesquisa = 0;
 
 $sql_promo = "
 SELECT p.*, MIN(f.caminho_imagem) as caminho_imagem
@@ -25,11 +20,28 @@ GROUP BY p.id_produto
 LIMIT 4
 ";
 
-$stmt_promo = $pdo->query($sql_promo);
-$produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
+$stmt = $pdo->query($sql_promo);
+$produtos_promo = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+$sql_melhores = "
+SELECT 
+    p.*, 
+    MIN(f.caminho_imagem) AS caminho_imagem,
+    AVG(a.nota) AS media_avaliacao
+FROM produto p
+INNER JOIN avaliacao a 
+    ON p.id_produto = a.idProduto
+LEFT JOIN foto_produto f 
+    ON p.id_produto = f.idProduto
+GROUP BY p.id_produto
+HAVING ROUND(AVG(a.nota)) IN (5, 4)
+ORDER BY media_avaliacao DESC
+LIMIT 5
+";
+
+$stmt_melhores = $pdo->query($sql_melhores);
+$melhoresAvaliados = $stmt_melhores->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -45,7 +57,40 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
 
 <body>
 
-    <?php include_once "partials/header.php" ?>
+
+    <?php include_once "partials/header.php"; ?>
+
+    <?php if($registros_pesquisa == 1 ): ?>
+                <div class="main-resultados">
+                    <div class="resultados-busca">
+                        <?php if (!empty($resultados)):
+                            foreach ($resultados as $res): ?>
+                                <div class="item-resultado">
+                                    <div class="info-resultado">
+                                        <a href="clientes.php?id_filtrado=<?= $res['id_usuario']; ?>" class="link-resultado">
+                                            <div class="info-resultado">
+                                                <span>
+                                                    <i class="bi bi-person"></i>
+                                                    <span class="nome-resultado"><?= htmlspecialchars($res['nome']); ?></span>
+                                                </span>
+                                                <span>
+                                                    <span class="email-resultado"><?= htmlspecialchars($res['email']); ?></span>
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
+                                <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
+                                <?= !empty($mensagem_pesquisa) ? $mensagem_pesquisa : "Nenhum usuário encontrado."; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
 
     <section class="banner-principal">
         <div class="container banner-conteudo">
@@ -89,43 +134,51 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
     <section class="secao-categorias-topo">
         <div class="container">
             <h3 class="titulo-secao-esquerda">Categorias em destaque</h3>
+
             <div class="grid-categorias-circulos">
-                <div class="item-categoria-circulo">
+
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=materiais" class="item-categoria-circulo">
                     <div class="fundo-imagem-cat">
                         <img src="imagens/materiais.png">
                         <span>Materiais</span>
                     </div>
-                </div>
-                <div class="item-categoria-circulo">
+                </a>
+
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=ferramentas" class="item-categoria-circulo">
                     <div class="fundo-imagem-cat">
                         <img src="imagens/ferramentas.png">
                         <span>Ferramentas</span>
                     </div>
-                </div>
-                <div class="item-categoria-circulo">
+                </a>
+
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=acabamento" class="item-categoria-circulo">
                     <div class="fundo-imagem-cat">
                         <img src="imagens/acabamento.webp">
                         <span>Acabamento</span>
                     </div>
-                </div>
-                <div class="item-categoria-circulo">
+                </a>
+
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=obras_estruturas" class="item-categoria-circulo">
                     <div class="fundo-imagem-cat">
                         <img src="imagens/estruturas.webp">
                         <span>Estruturas</span>
                     </div>
-                </div>
-                <div class="item-categoria-circulo">
+                </a>
+
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=seguranca" class="item-categoria-circulo">
                     <div class="fundo-imagem-cat">
                         <img src="imagens/epi.png">
                         <span>EPI</span>
                     </div>
-                </div>
-                <div class="item-categoria-circulo">
+                </a>
+
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?disponibilidade=promocao" class="item-categoria-circulo">
                     <div class="fundo-imagem-cat">
                         <img src="imagens/ofertas.png">
                         <span>Ofertas</span>
                     </div>
-                </div>
+                </a>
+
             </div>
         </div>
     </section>
@@ -133,15 +186,15 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
     <section id="mais-vendidos" class="secao-produtos">
         <div class="container">
             <div class="cabecalho-secao">
-                <h3>Mais vendidos</h3>
-                <a href="#" class="link-ver-todos">Ver todos <i class="fas fa-arrow-right"></i></a>
+                <h3>Melhores avaliados</h3>
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?avaliacao%5B%5D=5&avaliacao%5B%5D=4&preco_min=&preco_max=" class="link-ver-todos">Ver todos <i class="fas fa-arrow-right"></i></a>
             </div>
 
             <div class="produtos-container">
                 <div class="wrapper">
                     <div class="grid-produtos">
 
-                        <?php foreach ($produtos as $produto): ?>
+                        <?php foreach ($melhoresAvaliados as $produto): ?>
                             <div class="cartao-produto">
 
                                 <?php if (!empty($produto['desconto']) && $produto['desconto'] != 0): ?>
@@ -198,7 +251,7 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
         <div class="container">
             <div class="cabecalho-secao">
                 <h3>Ofertas da semana</h3>
-                <a href="#" class="link-ver-todos">Ver todas <i class="fas fa-arrow-right"></i></a>
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?disponibilidade=promocao" class="link-ver-todos">Ver todas <i class="fas fa-arrow-right"></i></a>
             </div>
 
             <div class="bloco-ofertas">
@@ -285,7 +338,7 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
         <div class="container">
             <div class="cabecalho-secao">
                 <h3>Produtos por categoria</h3>
-                <a href="#" class="link-ver-todos">Ver todas <i class="fas fa-arrow-right"></i></a>
+                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php" class="link-ver-todos">Ver todas <i class="fas fa-arrow-right"></i></a>
             </div>
 
             <div class="grid-categorias-destaque">
@@ -293,28 +346,28 @@ $produtos_promo = $stmt_promo->fetchAll(PDO::FETCH_ASSOC);
                     <div class="conteudo-cat-img">
                         <h4>Estruturas</h4>
                         <p>Tudo para fundação<br>e estrutura da sua obra</p>
-                        <button class="btn-branco">Ver produtos</button>
+                        <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=obras_estruturas" class="btn-branco">Ver produtos</a>
                     </div>
                 </div>
                 <div class="cartao-categoria-img materiais-bg">
                     <div class="conteudo-cat-img">
                         <h4>Materiais</h4>
                         <p>Materiais básicos<br>com qualidade garantida</p>
-                        <button class="btn-branco">Ver produtos</button>
+                        <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=materiais" class="btn-branco">Ver produtos</a>
                     </div>
                 </div>
                 <div class="cartao-categoria-img ferramentas-bg">
                     <div class="conteudo-cat-img">
                         <h4>Ferramentas</h4>
                         <p>Ferramentas para todos<br>os tipos de trabalho</p>
-                        <button class="btn-branco">Ver produtos</button>
+                        <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=ferramentas" class="btn-branco">Ver produtos</a>
                     </div>
                 </div>
                 <div class="cartao-categoria-img epi-bg">
                     <div class="conteudo-cat-img">
                         <h4>EPI</h4>
                         <p>Segurança em primeiro<br>lugar na sua obra</p>
-                        <button class="btn-branco">Ver produtos</button>
+                        <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=seguranca" class="btn-branco">Ver produtos</a>
                     </div>
                 </div>
             </div>

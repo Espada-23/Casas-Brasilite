@@ -4,9 +4,12 @@
 
     if (isset($_SESSION['login'])){
         $_SESSION['logado'] = $_SESSION['login'];
+        
+        $leitura = read($pdo, 'usuario', '*', "email='".$_SESSION['logado']['email']."'");
+
         unset($_SESSION['login']);
 
-        header ("../../index.php?#=1");
+        header ("Location: ../../index.php?a=".$leitura['cep']);
         exit;
     }
 ?>

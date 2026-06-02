@@ -103,6 +103,58 @@
     font-size: 0.8rem;
 }
 
+/* ver mais */
+.toggle-filtro {
+    display: none;
+}
+
+.lista-filtros.limitada {
+    max-height: 180px;
+    overflow: hidden;
+    position: relative;
+    transition: max-height 0.3s ease;
+}
+
+.toggle-filtro:checked~.lista-filtros {
+    max-height: 1000px;
+}
+
+.lista-filtros.limitada::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--cinza-fundo));
+}
+
+.toggle-filtro:checked~.lista-filtros::after {
+    display: none;
+}
+
+.btn-ver-mais {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--azul-escuro);
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-ver-mais::after {
+    content: "Ver mais";
+}
+
+.toggle-filtro:checked+.lista-filtros+.btn-ver-mais::after {
+    content: "Ver menos";
+}
+
+.btn-ver-mais:hover {
+    text-decoration: underline;
+}
+
+
 /* area dos produtos */
 .conteudo-lista {
     flex: 1;
@@ -140,7 +192,7 @@
 
 .tag-estoque {
     font-size: 0.7rem;
-    color: #10b981; 
+    color: #10b981;
     font-weight: 700;
     display: block;
     margin-bottom: 5px;

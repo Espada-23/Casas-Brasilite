@@ -150,39 +150,35 @@
               <line x1="12" x2="12" y1="22" y2="12" />
             </svg>
           </div>
-          <h3>Entregas e frete</h3>
+          <h3>Orçamento</h3>
         </div>
         <div class="info-item">
-          <strong>Regiões atendidas</strong>
+          <strong>Entrega</strong>
           <p>Entregamos para todo o Brasil.</p>
         </div>
         <div class="info-item">
-          <strong>Prazos de entrega</strong>
-          <p>Prazos variam conforme a região e o produto.</p>
+          <strong>Valores</strong>
+          <p>valores variam conforme a região o produto e a quantidade.</p>
         </div>
-        <div class="info-item">
-          <strong>Rastreamento</strong>
-          <p>Acompanhe seu pedido em tempo real.</p>
-        </div>
-        <button>Saber mais sobre entregas</button>
+      <button ><a href = "https://google.com">Fale conosco sobre orçamentos.</a></button>
       </div>
       <div class="info-box">
         <div class="info-top">
           <div class="info-top-icon">
             <svg></svg>
           </div>
-          <h3>Trocas e devoluções</h3>
+          <h3> </h3>
         </div>
         <div class="info-item">
-          <strong>Regras para troca</strong>
-          <p>Veja as condições para solicitar uma troca.</p>
+       <strong>Regras de Proteção</strong>
+          <p>Veja as condições para identificar e evitar fraudes.</p>
         </div>
         <div class="info-item">
-          <strong>Reembolso</strong>
-          <p>Entenda como funciona o processo de reembolso.</p>
+          <strong>Análise de Risco</strong>
+          <p>Entenda como os golpistas agem.</p>
         </div>
-        <button class="btn">Ver política completa</button>
-      </div>
+        <button class="btn"><a href = "https://google.com">Ver como evitar golpes.</a></button>
+    </div>
       <div class="info-box orange">
         <div class="info-top">
           <div class="info-top-icon">
@@ -201,7 +197,7 @@
           <strong>Envie seu currículo</strong>
           <p>Cadastre seu currículo em nosso banco de talentos.</p>
         </div>
-        <button>Ver vagas disponíveis</button>
+        <button><a href = "https://google.com">Ver vagas disponíveis</a></button>
       </div>
     </section>
 

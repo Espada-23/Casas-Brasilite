@@ -192,8 +192,7 @@ if ($acao === 'excluir' && $id) {
                             <h1>Produtos</h1>
                             <p>Gerencie e acompanhe os produtos do estoque</p>
                         </div>
-                        <a href="#">
-                            <i class="bi bi-plus-lg"></i> Adicionar Produto
+                        <a href="?acao=novo" class="btn"><i class="bi bi-plus-lg"></i> Adicionar Produto
                         </a>
                     </div>
 
@@ -204,12 +203,12 @@ if ($acao === 'excluir' && $id) {
                                     <i class="bi bi-search"></i>
                                 </button>
                                 <input class="pesquisa-filtro" type="text" name="pesquisa" placeholder="<?php echo ((isset($mensagem_erro) && $mensagem_erro != '') ? $mensagem_erro : 'Buscar Produto...');
-                                                                                $mensagem_erro = ''; ?>">
+                                                                                                        $mensagem_erro = ''; ?>">
                             </form>
                         </div>
                         <div class="categorias">
                             <form action="produtos.php" method="POST">
-                                <select name="id_categoria" onchange="this.form.submit()">
+                                <select class="select-categorias" name="id_categoria" onchange="this.form.submit()">
                                     <?php
                                     $categorias = readAll($pdo, 'categoria');
 
@@ -237,16 +236,16 @@ if ($acao === 'excluir' && $id) {
                                         <div class="item-resultado">
                                             <div class="info-resultado">
                                                 <a href="produtos.php?id_filtrado=<?= $res['id_produto']; ?>" class="link-resultado">
-                                                    <span>
+                                                    <span class="resultado">
                                                         <i class="bi bi-person"></i>
                                                         <span class="nome-resultado"><?= htmlspecialchars($res['nome_produto']); ?></span>
                                                     </span>
-                                                    <span>
+                                                    <span class="resultado">
                                                         <span class="sku-resultado"><?= htmlspecialchars($res['sku']); ?></span>
                                                     </span>
                                                 </a>
                                                 <a href="produtos.php?marca_filtrado=<?= $res['marca']; ?>" class="link-resultado">
-                                                    <span>
+                                                    <span class="resultado" style= "border-right: none;">
                                                         <span class="marca-resultado"><?= htmlspecialchars($res['marca']); ?></span>
                                                     </span>
                                                 </a>
@@ -254,86 +253,87 @@ if ($acao === 'excluir' && $id) {
                                         </div>
                                     <?php endforeach; ?>
                             </div>
-
-                        <?php else: ?>
-                            <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
-                                <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
-                                <?= !empty($mensagem_pesquisa) ? $mensagem_pesquisa : "Nenhum usuário encontrado."; ?>
-                            </div>
-                        <?php endif; ?>
-                    <?php endif; ?>
-                </div>
-
-                        <div class="container-tabela-produto">
-                            <div class="tabela-wrapper">
-                                <div class="tabela">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Foto</th>
-                                                <th>SKU</th>
-                                                <th>Nome</th>
-                                                <th>Marca</th>
-                                                <th class="preco-produtos">Preço</th>
-                                                <th class="estoque-produtos">Qtd. Estoque</th>
-                                                <th class="acao">Ações</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($produtos as $p):
-                                                if ($id_filtrado !== null && $p['id_produto'] != $id_filtrado) {
-                                                    continue;
-                                                }
-
-                                                if ($marca_filtrado !== null && trim($p['marca']) !== $marca_filtrado) {
-                                                    continue;
-                                                }
-
-                                                if ($id_categoria_selecionada !== '' && $p['idCategoria'] != $id_categoria_selecionada) {
-                                                    continue;
-                                                }
-                                            ?>
-                                                <tr>
-                                                    <td>
-                                                        <?php if (!empty($p['caminho_imagem'])): ?>
-                                                            <img src="../<?= htmlspecialchars($p['caminho_imagem']) ?>" alt="Foto" width="50" style="border-radius: 5px;">
-                                                        <?php else: ?>
-                                                            <i class="bi bi-image" style="font-size: 24px; color: #ccc;"></i>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td><?= htmlspecialchars($p['sku']) ?></td>
-                                                    <td><?= htmlspecialchars($p['nome_produto']) ?></td>
-                                                    <td><?= htmlspecialchars($p['marca']) ?></td>
-                                                    <td>R$ <?= number_format($p['preco_unitario'], 2, ',', '.') ?></td>
-                                                    <td><?= number_format($p['quantidade_atual'] ?? 0) ?></td>
-                                                    <td>
-                                                        <a href="?acao=editar&id=<?= $p['id_produto'] ?>" class="btn">Editar</a>
-                                                        <a href="?acao=excluir&id=<?= $p['id_produto'] ?>" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir?');">Excluir</a>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
                         </div>
+
+                    <?php else: ?>
+                        <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
+                            <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
+                            <?= !empty($mensagem_pesquisa) ? $mensagem_pesquisa : "Nenhum usuário encontrado."; ?>
+                        </div>
+                    <?php endif; ?>
+                <?php endif; ?>
+
+
+                <div class="container-tabela-produto">
+                    <div class="tabela-wrapper">
+                        <div class="tabela">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Foto</th>
+                                        <th>SKU</th>
+                                        <th>Nome</th>
+                                        <th>Marca</th>
+                                        <th class="preco-produtos">Preço</th>
+                                        <th class="estoque-produtos">Qtd. Estoque</th>
+                                        <th class="acao">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($produtos as $p):
+                                        if ($id_filtrado !== null && $p['id_produto'] != $id_filtrado) {
+                                            continue;
+                                        }
+
+                                        if ($marca_filtrado !== null && trim($p['marca']) !== $marca_filtrado) {
+                                            continue;
+                                        }
+
+                                        if ($id_categoria_selecionada !== '' && $p['idCategoria'] != $id_categoria_selecionada) {
+                                            continue;
+                                        }
+                                    ?>
+                                        <tr>
+                                            <td>
+                                                <?php if (!empty($p['caminho_imagem'])): ?>
+                                                    <img src="../<?= htmlspecialchars($p['caminho_imagem']) ?>" alt="Foto" width="50" style="border-radius: 5px;">
+                                                <?php else: ?>
+                                                    <i class="bi bi-image" style="font-size: 24px; color: #ccc;"></i>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><?= htmlspecialchars($p['sku']) ?></td>
+                                            <td><?= htmlspecialchars($p['nome_produto']) ?></td>
+                                            <td><?= htmlspecialchars($p['marca']) ?></td>
+                                            <td>R$ <?= number_format($p['preco_unitario'], 2, ',', '.') ?></td>
+                                            <td style="text-align: center;"><?= number_format($p['quantidade_atual'] ?? 0) ?></td>
+                                            <td>
+                                                <a href="?acao=editar&id=<?= $p['id_produto'] ?>" class="btn">Editar</a>
+                                                <a href="?acao=excluir&id=<?= $p['id_produto'] ?>" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir?');">Excluir</a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </main>
         </div>
 
-    <?php
-    elseif ($acao === 'novo' || $acao === 'editar'):
-        $produto = null;
-        $estoque = null;
-        $url_post = "?acao=salvar_novo";
+        <?php
+            elseif ($acao === 'novo' || $acao === 'editar'):
+                $produto = null;
+                $estoque = null;
+                $url_post = "?acao=salvar_novo";
 
-        if ($acao === 'editar' && $id) {
-            $produto = read($pdo, 'produto', '*', "id_produto = " . (int)$id);
-            $estoque = read($pdo, 'estoque', '*', "idProduto = " . (int)$id);
+                if ($acao === 'editar' && $id) {
+                    $produto = read($pdo, 'produto', '*', "id_produto = " . (int)$id);
+                    $estoque = read($pdo, 'estoque', '*', "idProduto = " . (int)$id);
 
-            $url_post = "?acao=salvar_edicao&id=" . (int)$id;
-        }
-    ?>
+                    $url_post = "?acao=salvar_edicao&id=" . (int)$id;
+                }
+                ?>
 <div class="content">
         <header class="topbar">
             <div class="topbar-left">
@@ -360,7 +360,7 @@ if ($acao === 'excluir' && $id) {
                     <h2>Dados do Produto</h2>
                 </div>
             <div class="main-card-cadastro">
-                <form action="<?= $url_post ?>" method="POST" enctype="multipart/form-data">
+                <form action="<?= $url_post ?>" method="POST" enctype="multipart/form-data" class="form-cadastro-produto">
                     <div class="cadastros-form">
                         
                         <div class="top-form">

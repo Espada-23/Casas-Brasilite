@@ -5,19 +5,19 @@ $grupo = $_GET['grupo'] ?? null;
 $categoria = $_GET['categoria'] ?? [];
 
 if ($grupo == 'ferramentas') {
-    $categoria = [1, 2];
+    $categoria = [1, 2, 10];
 } elseif ($grupo == 'materiais') {
-    $categoria = [3, 4, 5];
+    $categoria = [3, 4, 5, 16, 23];
 } elseif ($grupo == 'acabamento') {
     $categoria = [6, 7, 8];
 } elseif ($grupo == 'maquinas_equipamentos') {
-    $categoria = [6, 7, 8];
+    $categoria = [12, 11, 9];
 } elseif ($grupo == 'obras_estruturas') {
-    $categoria = [6, 7, 8];
-}elseif ($grupo == 'suprimento_obras') {
-    $categoria = [6, 7, 8];
-}elseif ($grupo == 'seguranca') {
-    $categoria = [6, 7, 8];
+    $categoria = [19, 20, 21, 17];
+} elseif ($grupo == 'suprimento_obras') {
+    $categoria = [14, 13, 22];
+} elseif ($grupo == 'seguranca') {
+    $categoria = [32, 33, 34, 35];
 }
 
 $categoria = is_array($categoria) ? $categoria : [$categoria];
@@ -28,7 +28,8 @@ $marca = is_array($marca) ? $marca : [$marca];
 $preco_min = $_GET['preco_min'] ?? null;
 $preco_max = $_GET['preco_max'] ?? null;
 $ordem = $_GET['ordem'] ?? null;
-$avaliacao = $_GET['avaliacao'] ?? null;
+$avaliacao = $_GET['avaliacao'] ?? [];
+$avaliacao = is_array($avaliacao) ? $avaliacao : [$avaliacao];
 $disponibilidade = $_GET['disponibilidade'] ?? null;
 
 
@@ -36,12 +37,14 @@ $disponibilidade = $_GET['disponibilidade'] ?? null;
 function buscarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $ordem, $avaliacao, $disponibilidade)
 {
     $sql = "
-        SELECT 
+        SELECT
             p.*,
             e.quantidade_atual,
             IFNULL(AVG(a.nota), 0) AS media_avaliacao,
-            COUNT(a.id_avaliacao) AS total_avaliacoes
+            COUNT(a.id_avaliacao) AS total_avaliacoes,
+            MIN(f.caminho_imagem) as caminho_imagem
         FROM produto p
+        LEFT JOIN foto_produto f ON f.idProduto = p.id_produto
         LEFT JOIN estoque e ON e.idProduto = p.id_produto
         LEFT JOIN avaliacao a ON a.idProduto = p.id_produto
         WHERE p.status_produto = 'ativo'
@@ -87,10 +90,13 @@ function buscarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $ordem
     $sql .= " GROUP BY p.id_produto";
 
     // estrelas de avaliação
-    if ($avaliacao !== null && $avaliacao !== '') {
-        $sql .= " HAVING ROUND(media_avaliacao) = ?";
-        $params[] = $avaliacao;
+    if (!empty($avaliacao)) {
+        $placeholders = implode(',', array_fill(0, count($avaliacao), '?'));
+        $sql .= " HAVING ROUND(media_avaliacao) IN ($placeholders)";
+        $params = array_merge($params, $avaliacao);
     }
+
+
 
     // Ordenação dos produtos
     if ($ordem == 'menor_preco') {

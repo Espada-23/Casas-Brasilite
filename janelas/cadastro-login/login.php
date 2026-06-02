@@ -3,6 +3,10 @@
 require_once '../../Crud/init.php';
 require_once '../../Crud/crud.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $mensagem = "";
 $classe = "";
 
@@ -14,15 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($email ===  "" || $senha === "") {
         $mensagem = "Informe o e-mail e a senha.";
     } else {
-    $senha_criptografada = md5($senha);
     $registros=read($pdo, 'usuario', '*', "email = '$email'");
 
     if ($registros) {
-        if ($senha_criptografada == $registros['senha']) {
+        if (password_verify($senha, $registros['senha'])) {
             $_SESSION['login']['usuario'] = $registros['nome'];
+            $_SESSION['login']['email'] = $registros['email'];
             $_SESSION['login']['id'] = $registros['id_usuario'];
 
-            header("Location: /Casas-Brasilite/index.php");
+            header("Location: login_processo.php");
         } else {
             $mensagem = "Senha incorreta.";
             $classe = "erro";
@@ -81,7 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="submit" class="btn btn-azul btn-bloco">Entrar &rarr;</button>
         </form>
 
-        <?php echo (isset($registros) ? var_dump($registros) : '');?>
     </div>
 
 </body>

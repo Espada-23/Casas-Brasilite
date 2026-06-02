@@ -4,11 +4,47 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $total_itens_carrinho = 0;
+$registros_pesquisa = 0;
+
+$res = isset($_GET['res']) ? $_GET['res'] : null;
 
 if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
     $total_itens_carrinho = count($_SESSION['carrinho']);
 }
 
+/*
+<?php if($registros_pesquisa == 1 ): ?>
+                <div class="main-resultados">
+                    <div class="resultados-busca">
+                        <?php if (!empty($resultados)):
+                            foreach ($resultados as $res): ?>
+                                <div class="item-resultado">
+                                    <div class="info-resultado">
+                                        <a href="clientes.php?id_filtrado=<?= $res['id_usuario']; ?>" class="link-resultado">
+                                            <div class="info-resultado">
+                                                <span>
+                                                    <i class="bi bi-person"></i>
+                                                    <span class="nome-resultado"><?= htmlspecialchars($res['nome']); ?></span>
+                                                </span>
+                                                <span>
+                                                    <span class="email-resultado"><?= htmlspecialchars($res['email']); ?></span>
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
+                                <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
+                                <?= !empty($mensagem_pesquisa) ? $mensagem_pesquisa : "Nenhum usuário encontrado."; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+                </div>
+*/
 ?>
 <link rel="stylesheet" href="/Casas-Brasilite/partials-css/header.css">
 
@@ -34,10 +70,41 @@ if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
             <img src="/Casas-Brasilite/imagens/logo1.png">
         </a>
 
-        <form class="barra-pesquisa" action="pesquisa.php" method="GET">
-            <input type="text" name="busca" placeholder="O que você procura?" required>
+        <form class="barra-pesquisa" action="/Casas-Brasilite/partials/pesquisa.php" method="POST">
+            <input type="text" name="pesquisa" placeholder="O que você procura?" required>
             <button class="btn-pesquisa" type="submit"><i class="fas fa-search"></i></button>
         </form>
+
+        <?php if ($res !== null): ?>
+            <div class="main-resultados">
+                <div class="resultados-busca">
+                    <?php if (!empty($_SESSION['resultados'])):
+                        foreach ($_SESSION['resultados'] as $res): ?>
+                            <div class="item-resultado">
+                                <div class="info-resultado">
+                                    <a href="clientes.php?id_filtrado=<?= $res['id_usuario']; ?>" class="link-resultado">
+                                        <div class="info-resultado">
+                                            <span>
+                                                <i class="bi bi-person"></i>
+                                                <span class="nome-resultado"><?= htmlspecialchars($res['nome']); ?></span>
+                                            </span>
+                                            <span>
+                                                <span class="email-resultado"><?= htmlspecialchars($res['email']); ?></span>
+                                            </span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
+                            <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
+                            <?= !empty($mensagem_pesquisa) ? $mensagem_pesquisa : "Nenhum usuário encontrado."; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <div class="acoes-usuario">
 
@@ -71,12 +138,12 @@ if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
             </div>
 
             <div class="dropdown-departamentos">
-
-                <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php" class="link-todas">
-                    <i class="fa-solid fa-cart-flatbed-suitcase"></i>
-                    Todas Categorias
-                </a>
-
+                <div class="titulo-grupo">
+                    <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php">
+                        Todas Categorias
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
                 <div class="grupo-dropdown">
 
                     <div class="titulo-grupo">
@@ -193,10 +260,10 @@ if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
 
                     <div class="submenu-lateral">
 
-                        <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=3">Luvas</a>
-                        <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=4">Capacetes</a>
-                        <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=5">Botas</a>
-                        <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=5">Óculos</a>
+                        <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=32">Luvas</a>
+                        <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=33">Capacetes</a>
+                        <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=34">Botas</a>
+                        <a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?categoria=35">Óculos</a>
                     </div>
                 </div>
 
@@ -216,16 +283,12 @@ if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
             <i class="fas fa-map-marker-alt"></i>
             <div class="texto-local">
                 <span>Enviar para:</span>
-                <?php
-                $_SESSION['cep_index'] = (isset($_GET['#'])) ? $_GET['#'] : null;
-
-                if ($_SESSION['cep_index']) { 
-                ?>
-                <span><?= $_SESSION['cep_index']; ?></span>
+                <?php if (isset($_SESSION['cep_index']) && $_SESSION['cep_index'] !== null) { ?>
+                    <span style="color: black;"><strong>CEP: <?= $_SESSION['cep_index']; ?></strong></span>
                 <?php } else { ?>
-                <span style="color: black;"><strong>Informe seu CEP: </strong></span>
+                    <span style="color: black;"><strong>Informe seu CEP</strong></span>
                 <?php } ?>
             </div>
         </div>
     </div>
-</nav>  
+</nav>

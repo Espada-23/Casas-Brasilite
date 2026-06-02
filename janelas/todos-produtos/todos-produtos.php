@@ -1,7 +1,6 @@
 <?php
 require_once "../../Crud/crud.php";
 require_once "filtro.php";
-
 ?>
 
 <!DOCTYPE html>
@@ -16,19 +15,6 @@ require_once "filtro.php";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="\Casas-Brasilite\style.css">
     <link rel="stylesheet" href="todos-produtos.css">
-
-    <style>
-        .lista-filtros label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-        }
-
-        .estrelas-filtro {
-            color: #ffc107;
-        }
-    </style>
 </head>
 
 <?php include_once "../../partials/header.php" ?>
@@ -43,25 +29,27 @@ require_once "filtro.php";
 
             <form method="GET">
 
-                <div class="bloco-filtro">
-                    <h4>Categorias</h4>
-                    <ul class="lista-filtros">
-                        <?php foreach ($categorias as $cat): ?>
-                            <li>
-                                <label>
-                                    <input type="checkbox" name="categoria[]"
-                                        value="<?= $cat['id_categoria'] ?>"
-                                        <?= in_array($cat['id_categoria'], $categoria) ? 'checked' : '' ?>>
-                                    <?= $cat['nome_categoria'] ?>
-                                </label>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
+                <h4>Categorias</h4>
+
+                <input type="checkbox" id="toggleCategorias" class="toggle-filtro">
+
+                <div class="lista-filtros limitada">
+                    <?php foreach ($categorias as $c): ?>
+                        <label>
+                            <input type="checkbox" name="categoria[]" value="<?= $c['id_categoria'] ?>">
+                            <?= $c['nome_categoria'] ?>
+                        </label>
+                    <?php endforeach; ?>
                 </div>
+
+                <label for="toggleCategorias" class="btn-ver-mais"></label>
 
                 <div class="bloco-filtro">
                     <h4>Marcas</h4>
-                    <ul class="lista-filtros">
+
+                    <input type="checkbox" id="toggleMarcas" class="toggle-filtro">
+
+                    <ul class="lista-filtros limitada">
                         <?php foreach ($marcas as $m): ?>
                             <li>
                                 <label>
@@ -75,29 +63,29 @@ require_once "filtro.php";
                     </ul>
                 </div>
 
+                <label for="toggleMarcas" class="btn-ver-mais"></label>
+
                 <div class="bloco-filtro">
                     <h4>Avaliação dos Clientes</h4>
                     <ul class="lista-filtros">
-                        <li>
-                            <label>
-                                <input type="radio" name="avaliacao" value="" <?= empty($avaliacao) ? 'checked' : '' ?>>
-                                Todas as avaliações
-                            </label>
-                        </li>
+
                         <?php for ($estrela = 5; $estrela >= 1; $estrela--): ?>
                             <li>
                                 <label>
-                                    <input type="radio" name="avaliacao" value="<?= $estrela ?>" <?= $avaliacao == $estrela ? 'checked' : '' ?>>
+                                    <input type="checkbox" name="avaliacao[]" value="<?= $estrela ?>">
                                     <span class="estrelas-filtro">
                                         <?php
                                         for ($i = 1; $i <= 5; $i++) {
-                                            echo $i <= $estrela ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+                                            echo $i <= $estrela
+                                                ? '<i class="fa-solid fa-star"></i>'
+                                                : '<i class="fa-regular fa-star"></i>';
                                         }
                                         ?>
                                     </span>
                                 </label>
                             </li>
                         <?php endfor; ?>
+
                     </ul>
                 </div>
 
@@ -137,7 +125,9 @@ require_once "filtro.php";
                     <input type="hidden" name="preco_min" value="<?= $preco_min ?>">
                     <input type="hidden" name="preco_max" value="<?= $preco_max ?>">
 
-                    <input type="hidden" name="avaliacao" value="<?= $avaliacao ?>">
+                    <?php foreach ($avaliacao as $a): ?>
+                        <input type="hidden" name="avaliacao[]" value="<?= $a ?>">
+                    <?php endforeach; ?>
 
                     <select name="ordem" onchange="this.form.submit()">
                         <option value="">Mais recentes</option>
@@ -164,8 +154,14 @@ require_once "filtro.php";
                             </span>
                         <?php endif; ?>
 
+                        <a href="../../janelas/janela-favoritos/favoritar.php?id=<?= $p['id_produto'] ?>" class="icone-favoritar">
+                            <i class="<?= in_array($p['id_produto'], $_SESSION['favoritos'])
+                                            ? 'fa-solid fa-heart'
+                                            : 'fa-regular fa-heart' ?>"></i>
+                        </a>
+
                         <div class="imagem-produto-placeholder">
-                            <img src="../../imagens/produto-sem-imagem.png" style="max-width:100%;">
+                            <img src="../../<?= $p['caminho_imagem'] ?>" alt="<?= $p['nome_produto'] ?>">
                         </div>
 
                         <span class="tag-estoque">
@@ -205,14 +201,17 @@ require_once "filtro.php";
                             ou 5x de R$ <?= number_format($p['preco_unitario'] / 5, 2, ',', '.') ?>
                         </div>
 
-                        <button class="btn btn-laranja btn-comprar-block">
-                            <i class="fa-solid fa-cart-plus"></i>
-                            Comprar
-                        </button>
-
+                        <a href="../../janelas/janela-produto/janela-produto.php?id=<?= $p['id_produto'] ?>" class="link-card-produto">
+                            <button class="btn btn-laranja btn-comprar-block">
+                                <i class="fa-solid fa-cart-plus"></i>
+                                Comprar
+                            </button>
+                        </a>
                     </div>
 
                 <?php endforeach; ?>
+
+                </div>
 
             </div>
 
