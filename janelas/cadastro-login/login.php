@@ -18,27 +18,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($email ===  "" || $senha === "") {
         $mensagem = "Informe o e-mail e a senha.";
     } else {
-    $registros=read($pdo, 'usuario', '*', "email = '$email'");
+        $query = "SELECT * FROM usuario WHERE email = '$email' LIMIT 1";
+        
+        $stmt = $pdo->query($query);
+        $registros = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($registros) {
-        if (password_verify($senha, $registros['senha'])) {
-            $_SESSION['login']['usuario'] = $registros['nome'];
-            $_SESSION['login']['email'] = $registros['email'];
-            $_SESSION['login']['id'] = $registros['id_usuario'];
+        if ($registros) {
+            $senhaValida = password_verify($senha, $registros['senha']) || hash_equals($registros['senha'], $senha);
 
-            header("Location: login_processo.php");
+            if ($senhaValida) {
+                if (!password_get_info($registros['senha'])['algo']) {
+                    $novaSenhaHash = password_hash($senha, PASSWORD_DEFAULT);
+                    $stmtAtualizaSenha = $pdo->prepare("UPDATE usuario SET senha = ? WHERE id_usuario = ?");
+                    $stmtAtualizaSenha->execute([$novaSenhaHash, $registros['id_usuario']]);
+                }
+
+                $_SESSION['login']['usuario'] = $registros['nome'];
+                $_SESSION['login']['email'] = $registros['email'];
+                $_SESSION['login']['id'] = $registros['id_usuario'];
+
+                header("Location: login_processo.php");
+                exit;
+            } else {
+                $mensagem = "Senha incorreta.";
+                $classe = "erro";
+            }
         } else {
-            $mensagem = "Senha incorreta.";
+            $mensagem = "Email não encontrado.";
             $classe = "erro";
         }
-    } else {
-        $mensagem = "Email não encontrado.";
-        $classe = "erro";
     }
 }
-}
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -83,6 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <button type="submit" class="btn btn-azul btn-bloco">Entrar &rarr;</button>
+
+            <div class="linha-links-autenticacao" style="justify-content: center; margin-top: 20px; margin-bottom: 0;">
+                <a href="../../index.php">Voltar à página inicial</a>
+            </div>
         </form>
 
     </div>

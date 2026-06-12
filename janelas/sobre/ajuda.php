@@ -9,8 +9,10 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/Casas-Brasilite/style.css">
+  <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/ajuda.css">
+  <link rel="stylesheet" href="\Casas-Brasilite\partials-css\footer.css">
 </head>
 
 <body>
@@ -25,7 +27,7 @@
         <p>Encontre respostas rápidas para as dúvidas mais comuns ou navegue pelos temas abaixo.</p>
       </div>
       <div class="hero-img">
-        <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1200&auto=format&fit=crop" alt="">
+        <img src="https://images.unsplash.com/photo-1592925411437-e1990c4f1b02?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjI3fHxjb25zdHVyY3R8ZW58MHx8MHx8fDA%3D" alt="">
       </div>
     </section>
 
@@ -140,67 +142,6 @@
       </div>
     </section>
 
-    <section class="info-grid">
-      <div class="info-box">
-        <div class="info-top">
-          <div class="info-top-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-              <polyline points="3.29 7 12 12 20.71 7" />
-              <line x1="12" x2="12" y1="22" y2="12" />
-            </svg>
-          </div>
-          <h3>Orçamento</h3>
-        </div>
-        <div class="info-item">
-          <strong>Entrega</strong>
-          <p>Entregamos para todo o Brasil.</p>
-        </div>
-        <div class="info-item">
-          <strong>Valores</strong>
-          <p>valores variam conforme a região o produto e a quantidade.</p>
-        </div>
-      <button ><a href = "https://google.com">Fale conosco sobre orçamentos.</a></button>
-      </div>
-      <div class="info-box">
-        <div class="info-top">
-          <div class="info-top-icon">
-            <svg></svg>
-          </div>
-          <h3> </h3>
-        </div>
-        <div class="info-item">
-       <strong>Regras de Proteção</strong>
-          <p>Veja as condições para identificar e evitar fraudes.</p>
-        </div>
-        <div class="info-item">
-          <strong>Análise de Risco</strong>
-          <p>Entenda como os golpistas agem.</p>
-        </div>
-        <button class="btn"><a href = "https://google.com">Ver como evitar golpes.</a></button>
-    </div>
-      <div class="info-box orange">
-        <div class="info-top">
-          <div class="info-top-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
-              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-            </svg>
-          </div>
-          <h3>Trabalhe conosco</h3>
-        </div>
-        <div class="info-item">
-          <strong>Vagas abertas</strong>
-          <p>Confira nossas oportunidades atuais.</p>
-        </div>
-        <div class="info-item">
-          <strong>Envie seu currículo</strong>
-          <p>Cadastre seu currículo em nosso banco de talentos.</p>
-        </div>
-        <button><a href = "https://google.com">Ver vagas disponíveis</a></button>
-      </div>
-    </section>
-
     <section class="cta-ajuda">
       <div class="cta-left">
         <div class="cta-icon">
@@ -213,7 +154,7 @@
           <p>Nossa equipe está pronta para te atender pelos nossos canais de atendimento.</p>
         </div>
       </div>
-      <button>Falar com a equipe</button>
+      <button><a href="https://api.whatsapp.com/send/?phone=5511930569806&text&type=phone_number&app_absent=0"> Falar com a equipe</a></button>
     </section>
 
   </div>

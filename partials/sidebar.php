@@ -1,3 +1,6 @@
+<?php 
+$nome_usuario = $_SESSION['login_admin']['usuario'] ?? 'Admin';
+?>
 <input type="checkbox" id="menu-toggle">
 
 <aside class="sidebar">
@@ -5,8 +8,9 @@
     <div class="logo">
 
         <div class="logo-left">
-
+            <a href = "/Casas-Brasilite/">
             <img src="../imagens/logo-tri.png" alt="logo">
+            </a>
 
             <div class="logo-text">
                 <h2>Brasilite</h2>
@@ -52,20 +56,6 @@
 
         </div>
 
-
-        <div class="lista-sidebar">
-
-            <a href="../Dashboard/estoque.php"
-                class="<?= ($pagina == "estoque") ? "active" : "" ?>">
-
-                <i class="bi bi-grid-fill"></i>
-                <p>Estoque</p>
-
-            </a>
-
-        </div>
-
-
         <div class="lista-sidebar">
 
             <a href="../Dashboard/pedidos.php"
@@ -91,6 +81,15 @@
 
         </div>
 
+        <div class="lista-sidebar">
+            <a href="/Casas-Brasilite/Dashboard/trocar_site.php"
+                target="_blank"
+                class="<?= ($pagina == "site") ? "active" : "" ?>">
+                <i class="bi bi-globe"></i>
+                <p>Ir para o Site</p>
+            </a>
+        </div>
+
 
         <span class="menu-title">
             GESTÃO
@@ -109,28 +108,12 @@
 
         </div>
 
-
         <div class="lista-sidebar">
-
             <a href="../Dashboard/financeiro.php"
                 class="<?= ($pagina == "financeiro") ? "active" : "" ?>">
 
                 <i class="bi bi-cash-stack"></i>
                 <p>Financeiro</p>
-
-            </a>
-
-        </div>
-
-
-        <div class="lista-sidebar">
-
-            <a href="../Dashboard/configuracoes.php"
-                class="<?= ($pagina == "configuracoes") ? "active" : "" ?>">
-
-                <i class="bi bi-gear-fill"></i>
-                <p>Configurações</p>
-
             </a>
 
         </div>
@@ -145,8 +128,7 @@
             <i class="bi bi-person-circle"></i>
 
             <div class="user-name">
-
-                <p>$Nome</p>
+                <p><?= $nome_usuario ?></p>
                 <span>Administrador</span>
 
             </div>
@@ -156,7 +138,7 @@
 
         <div class="exit">
 
-            <a href="#">
+            <a href="/Casas-Brasilite/Dashboard/logout-dashboard.php">
 
                 <i class="bi bi-box-arrow-right"></i>
                 <p>Sair</p>

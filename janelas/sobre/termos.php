@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="/Casas-Brasilite/style.css">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/termos.css">
+  <link rel="stylesheet" href="\Casas-Brasilite\partials-css\footer.css">
 </head>
 
 <body>

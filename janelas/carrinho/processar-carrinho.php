@@ -1,63 +1,66 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once '../../Crud/init.php';
+require_once '../../Crud/crud.php';
+require_once '../../Crud/sessions.php';
 
-if (!isset($_SESSION['carrinho'])) {
-    $_SESSION['carrinho'] = [];
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['acao'] === 'remover_item') {
-    $id_produto = intval($_POST['id_produto']);
-    
-    if (isset($_SESSION['carrinho'][$id_produto])) {
-        unset($_SESSION['carrinho'][$id_produto]);
-    }
-    
-    header("Location: carrinho.php");
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header("Location: /Casas-Brasilite/index.php");
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_produto'])) {
+$acao = $_POST['acao'] ?? '';
+$url_origem = $_POST['url_origem'] ?? '/Casas-Brasilite/index.php';
 
-    $id_produto = intval($_POST['id_produto']);
-    $quantidade = intval($_POST['quantidade']);
-    $acao = $_POST['acao'];
-    $url_origem = $_POST['url_origem'];
+try {
+    if ($acao === 'remover_item') {
+        $id_produto = (int) ($_POST['id_produto'] ?? 0);
 
-    if (isset($_SESSION['carrinho'][$id_produto])) {
-        $_SESSION['carrinho'][$id_produto] += $quantidade;
-    } else {
-        $_SESSION['carrinho'][$id_produto] = $quantidade;
-    }
+        if (usuarioLogado()) {
+            removerProdutoCarrinhoBanco($pdo, idUsuarioLogado(), $id_produto);
+        } else {
+            unset($_SESSION['carrinho'][$id_produto]);
+        }
 
-    if ($acao === 'comprar') {
         header("Location: carrinho.php");
         exit;
-    } else if ($acao === 'adicionar') {
-        header("Location: " . $url_origem);
+    }
+
+    if (($acao === 'comprar' || $acao === 'adicionar') && isset($_POST['id_produto'])) {
+        $id_produto = (int) $_POST['id_produto'];
+        $quantidade = max(1, (int) ($_POST['quantidade'] ?? 1));
+
+        if (usuarioLogado()) {
+            adicionarProdutoCarrinhoBanco($pdo, idUsuarioLogado(), $id_produto, $quantidade);
+        } else {
+            if (!isset($_SESSION['carrinho'])) {
+                $_SESSION['carrinho'] = [];
+            }
+            $_SESSION['carrinho'][$id_produto] = ($_SESSION['carrinho'][$id_produto] ?? 0) + $quantidade;
+        }
+
+        header("Location: " . ($acao === 'comprar' ? 'carrinho.php' : $url_origem));
         exit;
     }
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $acao = $_POST['acao'];
 
     if ($acao === 'mover_todos_para_carrinho') {
         $favoritos = $_SESSION['favoritos'] ?? [];
 
-        foreach ($favoritos as $id) {
-            if (isset($_SESSION['carrinho'][$id])) {
-                $_SESSION['carrinho'][$id]++; 
+        foreach ($favoritos as $idProduto) {
+            if (usuarioLogado()) {
+                adicionarProdutoCarrinhoBanco($pdo, idUsuarioLogado(), (int) $idProduto, 1);
             } else {
-                $_SESSION['carrinho'][$id] = 1; 
+                $_SESSION['carrinho'][(int) $idProduto] = ($_SESSION['carrinho'][(int) $idProduto] ?? 0) + 1;
             }
         }
 
         header("Location: carrinho.php");
         exit;
     }
+} catch (Exception $e) {
+    $_SESSION['erro_carrinho'] = $e->getMessage();
+    header("Location: carrinho.php");
+    exit;
 }
 
-header("Location: index.php");
+header("Location: /Casas-Brasilite/index.php");
 exit;

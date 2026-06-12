@@ -1,17 +1,18 @@
 <?php
 require_once '../../Crud/init.php';
 require_once '../../Crud/crud.php';
+require_once '../../Crud/sessions.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['logado'])) {
+if (!usuarioLogado()) {
     header("Location: /Casas-Brasilite/janelas/cadastro-login/login.php");
     exit;
 }
 
-$id_usuario_logado = $_SESSION['logado']['id'];
+$id_usuario_logado = idUsuarioLogado();
 
 //  Consulta dos pedidos
 $queryPedidos = "

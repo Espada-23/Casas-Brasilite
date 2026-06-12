@@ -15,6 +15,7 @@ require_once "filtro.php";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="\Casas-Brasilite\style.css">
     <link rel="stylesheet" href="todos-produtos.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <?php include_once "../../partials/header.php" ?>
@@ -150,7 +151,7 @@ require_once "filtro.php";
 
                         <?php if ($p['desconto'] > 0): ?>
                             <span class="selo-desconto">
-                                <?= number_format(($p['desconto'] / $p['preco_unitario']) * 100, 0) ?>%
+                                <?= number_format(($p['desconto']), 0) ?>%
                             </span>
                         <?php endif; ?>
 
@@ -187,18 +188,42 @@ require_once "filtro.php";
                             (<?= $p['total_avaliacoes'] ?>)
                         </div>
 
-                        <?php if ($p['desconto'] > 0): ?>
-                            <span class="preco-antigo">
-                                R$ <?= number_format($p['preco_unitario'] + $p['desconto'], 2, ',', '.') ?>
-                            </span>
+                        <?php if (!empty($p['desconto']) && $p['desconto'] > 0): ?>
+                            <?php if ($p['desconto'] < 100) {
+                                $precoAntigo = $p['preco_unitario'] / (1 - ($p['desconto'] / 100));
+                            } else {
+                                $precoAntigo = $p['preco_unitario'];
+                            } ?>
+                            <p class="preco-antigo">
+                                R$ <?= number_format(round($precoAntigo, 2), 2, ',', '.') ?>
+                            </p>
                         <?php endif; ?>
 
                         <div class="preco-produto">
                             R$ <?= number_format($p['preco_unitario'], 2, ',', '.') ?>
                         </div>
 
+                        <?php
+                        if ($p['preco_unitario'] <= 50) {
+                            $parcelas = 2;
+                        } elseif ($p['preco_unitario'] <= 100) {
+                            $parcelas = 4;
+                        } elseif ($p['preco_unitario'] <= 200) {
+                            $parcelas = 5;
+                        } elseif ($p['preco_unitario'] <= 500) {
+                            $parcelas = 6;
+                        } elseif ($p['preco_unitario'] <= 1000) {
+                            $parcelas = 8;
+                        } else {
+                            $parcelas = 10;
+                        }
+
+                        $valorParcela = $p['preco_unitario'] / $parcelas;
+                        ?>
+
                         <div class="parcelamento">
-                            ou 5x de R$ <?= number_format($p['preco_unitario'] / 5, 2, ',', '.') ?>
+                            ou <?= $parcelas ?>x de R$
+                            <?= number_format($valorParcela, 2, ',', '.') ?>
                         </div>
 
                         <a href="../../janelas/janela-produto/janela-produto.php?id=<?= $p['id_produto'] ?>" class="link-card-produto">
@@ -211,6 +236,38 @@ require_once "filtro.php";
 
                 <?php endforeach; ?>
 
+            </div>
+
+            <?php $query = $_GET; ?>
+
+            <div class="paginacao">
+
+                <div class="seta">
+                    <?php if ($paginaAtual > 1): ?>
+                        <?php $query['pagina'] = $paginaAtual - 1; ?>
+                        <a class="seta" href="?<?= http_build_query($query) ?>">
+                            <i class="bi bi-arrow-left"></i>
+                        </a>
+                    <?php endif; ?>
+                </div>
+
+                <div class="box-num">
+                    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                        <?php $query['pagina'] = $i; ?>
+                        <a href="?<?= http_build_query($query) ?>"
+                            class="<?= $i == $paginaAtual ? 'ativo' : ''; ?>">
+                            <?= $i; ?>
+                        </a>
+                    <?php endfor; ?>
+                </div>
+
+                <div class="seta">
+                    <?php if ($paginaAtual < $totalPaginas): ?>
+                        <?php $query['pagina'] = $paginaAtual + 1; ?>
+                        <a class="seta" href="?<?= http_build_query($query) ?>">
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    <?php endif; ?>
                 </div>
 
             </div>

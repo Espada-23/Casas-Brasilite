@@ -46,7 +46,8 @@
     margin-bottom: 6px;
 }
 
-.grupo-campo input {
+.grupo-campo input,
+.grupo-campo select {
     width: 100%;
     padding: 12px 14px;
     border: 1px solid var(--cinza-claro);
@@ -57,7 +58,8 @@
     transition: border-color 0.2s;
 }
 
-.grupo-campo input:focus {
+.grupo-campo input:focus,
+.grupo-campo select:focus {
     outline: none;
     border-color: var(--azul-escuro);
 }
@@ -132,7 +134,7 @@
 .lado-informativo {
     background-color: var(--azul-escuro);
     color: var(--branco);
-    width: 50%;
+    width: 40%;
     padding: 45px;
     display: flex;
     flex-direction: column;
@@ -168,9 +170,17 @@
     padding: 12px 6px;
     font-size: 1.3rem;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     aspect-ratio: 1;
+}
+
+.bloco-icone-lateral img {
+    overflow: hidden;
+    object-fit: contain;
+    height: 100px;
+    width: 100px;
 }
 
 .texto-icone-lateral {

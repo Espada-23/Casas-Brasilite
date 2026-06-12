@@ -8,6 +8,11 @@
 
 a {
     font-size: .9em;
+    color: var(--title);
+}
+
+a:hover {
+    color: var(--orange);
 }
 
 body {
@@ -114,7 +119,9 @@ body {
 }
 
 .card:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+        transform: translateY(-6px);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, .08);
 }
 
 .card-top {
@@ -136,19 +143,19 @@ body {
 }
 
 .blue {
-    background: var(--primary);
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
 }
 
 .green-bg {
-    background: var(--green);
+    background: linear-gradient(135deg, #16a34a, #4ade80);
 }
 
 .red {
-    background: var(--red);
+    background: linear-gradient(135deg, #dc2626, #f87171);
 }
 
 .orange {
-    background: var(--orange);
+    background: linear-gradient(135deg, #ea580c, #fb923c);
 }
 
 .card h5 {
@@ -187,10 +194,6 @@ body {
     color: var(--red);
     font-weight: 600;
 }
-
-/* =========================
-   CHARTS ROW
-========================= */
 
 .charts-row {
     margin-top: 10px;
@@ -538,10 +541,6 @@ body {
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
 }
-
-/* =========================
-   DONUT PRODUTOS
-========================= */
 
 .card-title {
     font-size: 1.2rem;

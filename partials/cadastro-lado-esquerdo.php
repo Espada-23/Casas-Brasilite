@@ -9,19 +9,19 @@
 
      <div class="grade-blocos-laterais">
          <div>
-             <div class="bloco-icone-lateral"><img src="#"></div>
+             <div class="bloco-icone-lateral"><img src="/Casas-Brasilite/imagens/img1.png"></div>
              <div class="texto-icone-lateral">Materiais</div>
          </div>
          <div>
-             <div class="bloco-icone-lateral"><img src="#"></div>
+             <div class="bloco-icone-lateral"><img src="/Casas-Brasilite/imagens/img2.png"></div>
              <div class="texto-icone-lateral">Ferramentas</div>
          </div>
          <div>
-             <div class="bloco-icone-lateral"><img src="#"></div>
+             <div class="bloco-icone-lateral"><img src="/Casas-Brasilite/imagens/img3.png"></div>
              <div class="texto-icone-lateral">EPIs</div>
          </div>
          <div>
-             <div class="bloco-icone-lateral"><img src="#"></div>
+             <div class="bloco-icone-lateral"><img src="/Casas-Brasilite/imagens/img4.png"></div>
              <div class="texto-icone-lateral">Acabamentos</div>
          </div>
      </div>

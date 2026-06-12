@@ -19,5 +19,5 @@ if (in_array($id, $_SESSION['favoritos'])) {
 }
 
 // volta pra página anterior
-header('Location: ' . $_SERVER['HTTP_REFERER']);
+header('Location: ' . $_SERVER['HTTP_REFERER'] . '#mais-vendidos');
 exit;

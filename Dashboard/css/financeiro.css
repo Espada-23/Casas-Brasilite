@@ -183,35 +183,6 @@ body {
     margin-bottom: 30px;
 }
 
-.r-finan {
-    background: white;
-    border-radius: 22px;
-    padding: 25px;
-    border: 1px solid var(--border);
-    box-shadow:
-        0 2px 10px rgba(0, 0, 0, .03);
-}
-
-.top-r-finan {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.top-r-finan p {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--title);
-}
-
-select {
-    border: none;
-    outline: none;
-    background: #f8fafc;
-    padding: 10px 14px;
-    border-radius: 10px;
-}
-
 .grafico-card {
     background: #fff;
     border-radius: 16px;
@@ -325,18 +296,37 @@ select {
 
 .svg-linha {
     position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
 }
 
 .meses {
     display: flex;
+    justify-content: space-evenly;
+    margin-top: 12px;
+    color: #6b7280;
+    font-size: .82rem;
+}
+
+.r-finan {
+    background: white;
+    border-radius: 22px;
+    padding: 25px;
+    border: 1px solid var(--border);
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, .03);
+}
+
+.top-r-finan {
+    display: flex;
     justify-content: space-between;
-    margin-top: 10px;
-    font-size: 12px;
-    color: #777;
+    align-items: center;
+}
+
+.top-r-finan p {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--title);
 }
 
 .infos-resumo {
@@ -426,61 +416,6 @@ tbody tr {
 
 tbody tr:hover {
     background: #f8fafc;
-}
-
-.produtos-critico {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    border-radius: 14px;
-    margin-bottom: 12px;
-    background: #f8fafc;
-    transition: .3s;
-}
-
-.produtos-critico:hover {
-    transform: translateY(-3px);
-    box-shadow:
-        0 10px 20px rgba(0, 0, 0, .05);
-}
-
-.detalhes-produtos h4 {
-    color: var(--title);
-    margin-bottom: 5px;
-}
-
-.detalhes-produtos p {
-    color: var(--text-info);
-}
-
-.top-estoque {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-}
-
-.top-estoque p {
-    color: var(--title);
-    font-size: 1.15em;
-    font-weight: bold;
-}
-
-.condicao {
-    padding: 8px 14px;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: .78rem;
-}
-
-.critico {
-    background: rgba(239, 68, 68, .12);
-    color: #dc2626;
-}
-
-.atencao {
-    background: rgba(245, 158, 11, .15);
-    color: #ca8a04;
 }
 
 .paginacao {

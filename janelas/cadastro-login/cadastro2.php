@@ -3,8 +3,7 @@ require_once '../../Crud/init.php';
 
 $voltar = $_GET['voltar'] ?? null;
 
-if ($voltar !== null)
-{
+if ($voltar !== null) {
     unset($_SESSION['cadastro']['nome']);
     unset($_SESSION['cadastro']['cpf']);
     unset($_SESSION['cadastro']['cep']);
@@ -61,9 +60,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </div>
                         <div class="grupo-campo">
                             <label>Estado</label>
-                            <input type="text" name='estado' placeholder="Ex: São Paulo" required>
+                            <select name="estado" required>
+                                <option value="" disabled selected>Selecione um estado</option>
+                                <option value="AC">Acre (AC)</option>
+                                <option value="AL">Alagoas (AL)</option>
+                                <option value="AP">Amapá (AP)</option>
+                                <option value="AM">Amazonas (AM)</option>
+                                <option value="BA">Bahia (BA)</option>
+                                <option value="CE">Ceará (CE)</option>
+                                <option value="DF">Distrito Federal (DF)</option>
+                                <option value="ES">Espírito Santo (ES)</option>
+                                <option value="GO">Goiás (GO)</option>
+                                <option value="MA">Maranhão (MA)</option>
+                                <option value="MT">Mato Grosso (MT)</option>
+                                <option value="MS">Mato Grosso do Sul (MS)</option>
+                                <option value="MG">Minas Gerais (MG)</option>
+                                <option value="PA">Pará (PA)</option>
+                                <option value="PB">Paraíba (PB)</option>
+                                <option value="PR">Paraná (PR)</option>
+                                <option value="PE">Pernambuco (PE)</option>
+                                <option value="PI">Piauí (PI)</option>
+                                <option value="RJ">Rio de Janeiro (RJ)</option>
+                                <option value="RN">Rio Grande do Norte (RN)</option>
+                                <option value="RS">Rio Grande do Sul (RS)</option>
+                                <option value="RO">Rondônia (RO)</option>
+                                <option value="RR">Roraima (RR)</option>
+                                <option value="SC">Santa Catarina (SC)</option>
+                                <option value="SP">São Paulo (SP)</option>
+                                <option value="SE">Sergipe (SE)</option>
+                                <option value="TO">Tocantins (TO)</option>
+                            </select>
                         </div>
                     </div>
+
+
 
                     <div class="linha-campos-duplos">
                         <div class="grupo-campo">
@@ -72,13 +102,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </div>
                         <div class="grupo-campo">
                             <label>Número</label>
-                            <input type="text" name='numero'  placeholder="Ex: 398" required>
+                            <input type="text" name='numero' placeholder="Ex: 398" required>
                         </div>
                     </div>
 
                     <div class="grupo-campo">
                         <label>Bairro</label>
-                        <input type="text" name='bairro'  placeholder="Ex: Santa Maria" required>
+                        <input type="text" name='bairro' placeholder="Ex: Santa Maria" required>
                     </div>
 
                     <a href="#" class="link-suporte-ajuda">Precisa de ajuda? Contate o suporte.</a>

@@ -100,18 +100,13 @@
 
     .submenu-lateral {
         display: none;
-
         position: absolute;
         left: 100%;
         top: -50px;
-
         min-width: 220px;
-
         background: white;
-        border: 1px solid #ddd;
-
+        border: 1px solid var(--branco);
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-
         z-index: 999;
     }
 
@@ -150,6 +145,7 @@
         border: 1px solid #cbd5e1;
         overflow: hidden;
         transition: 0.3s;
+        position: relative;
     }
 
     .barra-pesquisa:focus-within {
@@ -249,6 +245,7 @@
         color: var(--azul-escuro);
         cursor: pointer;
         padding: 10px 0;
+        padding-right: 30px;
     }
 
     .departamentos i {
@@ -380,20 +377,38 @@
         gap: 10px;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 18px;
-        width: 590px;
+        position: absolute;
+        margin-top: 290px;
+        background-color: var(--branco);
+        left: 656px;
+        top: -170px;
+        border-radius: 8px;
+        z-index: 10;
     }
 
     .resultados-busca {
-        border: 1px solid var(--border);
-        padding: 10px;
+        border: 1px solid var(--laranja);
         border-radius: 6px;
         gap: 10px;
-        width: 100%;
+        width: 630px;
+        max-height: 300px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        padding: 10px;
+        position: absolute;
+        z-index: 10;
+        background: var(--branco);
     }
 
     .item-resultado {
         padding: 12px 15px;
         border-bottom: 1px solid #e5e7eb;
+        transition: 0.2s ease-in-out;
+    }
+
+    .item-resultado:hover {
+        background-color: #f1f5f9;
+        scale: 1.02;
     }
 
     .item-resultado:last-child {

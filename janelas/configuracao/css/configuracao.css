@@ -1,0 +1,50 @@
+:root {
+    --primary: #1D4ED8;
+    --green: #22C55E;
+    --red: #EF4444;
+    --orange: #F97316;
+    --orange-hover: #c05000;
+    --primary-color: #074880;
+    --secondary-color: #C26931;
+    --orange-grafico: #ff7700;
+    --blue-grafico: #2b09ec;
+    --background-color: #fdfdfd;
+    --title: #04196B;
+    --top-header: #032949e3;
+    --text-color: #FFFFFF;
+    --border: #e5e7eb;
+    --border-fraca: #e9ebee46;
+    --detalhes: #032949;
+    --icon-box: #aaaaaa;
+    --text-info: #707070b4;
+    --box-critico: #fa3e3e71;
+    --box-atencao: #f9c74f71;
+    --text-atencao: #ffd902;
+    --text-critico: #ff0000;
+    --border-lista: #e5e7eb34;
+    --footer-sidebar: #031349;
+    
+    --primary-blue: #0A1F3C;
+    --accent-orange: #F28C07;
+    --accent-green: #25D366;
+    --bg-light: #F9FAFB;
+    --bg-white: #FFFFFF;
+    --text-gray: #6B7280;
+    --border-color: #E5E7EB;
+    --font-main: 'Arial', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--background-color);
+    color: var(--detalhes);
+    font-size: 14px;
+    line-height: 1.5;
+    display: flex;
+}

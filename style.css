@@ -362,6 +362,7 @@ li {
     object-fit: contain; 
     padding: 8px; 
     box-sizing: border-box;
+    background-color: var(--branco);
 }
 
 .titulo-produto {

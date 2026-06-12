@@ -1,7 +1,6 @@
 <?php
 
 $grupo = $_GET['grupo'] ?? null;
-
 $categoria = $_GET['categoria'] ?? [];
 
 if ($grupo == 'ferramentas') {
@@ -32,9 +31,13 @@ $avaliacao = $_GET['avaliacao'] ?? [];
 $avaliacao = is_array($avaliacao) ? $avaliacao : [$avaliacao];
 $disponibilidade = $_GET['disponibilidade'] ?? null;
 
+$limite = 18;
 
+$paginaAtual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+if ($paginaAtual < 1) $paginaAtual = 1;
+$offset = ($paginaAtual - 1) * $limite;
 
-function buscarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $ordem, $avaliacao, $disponibilidade)
+function buscarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $ordem, $avaliacao, $disponibilidade, $limite, $offset)
 {
     $sql = "
         SELECT
@@ -50,34 +53,25 @@ function buscarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $ordem
         WHERE p.status_produto = 'ativo'
     ";
 
-    $params = [];
 
-    // categorias
     if (!empty($categoria)) {
-        $in = implode(',', array_fill(0, count($categoria), '?'));
+        $in = implode(',', $categoria);
         $sql .= " AND p.idCategoria IN ($in)";
-        $params = array_merge($params, $categoria);
     }
 
-    // marcas
     if (!empty($marca)) {
-        $in = implode(',', array_fill(0, count($marca), '?'));
+        $in = "'" . implode("', '", $marca) . "'";
         $sql .= " AND p.marca IN ($in)";
-        $params = array_merge($params, $marca);
     }
 
-    // preço
     if ($preco_min !== null && $preco_min !== '') {
-        $sql .= " AND p.preco_unitario >= ?";
-        $params[] = $preco_min;
+        $sql .= " AND p.preco_unitario >= '$preco_min'";
     }
 
     if ($preco_max !== null && $preco_max !== '') {
-        $sql .= " AND p.preco_unitario <= ?";
-        $params[] = $preco_max;
+        $sql .= " AND p.preco_unitario <= '$preco_max'";
     }
 
-    // diposnivel/ nao disponivel
     if ($disponibilidade == 'estoque') {
         $sql .= " AND e.quantidade_atual > 0";
     }
@@ -86,17 +80,13 @@ function buscarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $ordem
         $sql .= " AND p.desconto > 0";
     }
 
-    // agrupamento
     $sql .= " GROUP BY p.id_produto";
 
     // estrelas de avaliação
     if (!empty($avaliacao)) {
-        $placeholders = implode(',', array_fill(0, count($avaliacao), '?'));
-        $sql .= " HAVING ROUND(media_avaliacao) IN ($placeholders)";
-        $params = array_merge($params, $avaliacao);
+        $inAvaliacao = implode(',', $avaliacao);
+        $sql .= " HAVING ROUND(media_avaliacao) IN ($inAvaliacao)";
     }
-
-
 
     // Ordenação dos produtos
     if ($ordem == 'menor_preco') {
@@ -107,8 +97,9 @@ function buscarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $ordem
         $sql .= " ORDER BY p.id_produto DESC";
     }
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
+    $sql .= " LIMIT $limite OFFSET $offset";
+
+    $stmt = $pdo->query($sql);
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -127,6 +118,61 @@ function buscarMarcas($pdo)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$produtos = buscarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $ordem, $avaliacao, $disponibilidade);
+function contarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $avaliacao, $disponibilidade)
+{
+    $sql = "
+        SELECT COUNT(*) as total FROM (
+            SELECT p.id_produto
+            FROM produto p
+            LEFT JOIN estoque e ON e.idProduto = p.id_produto
+            LEFT JOIN avaliacao a ON a.idProduto = p.id_produto
+            WHERE p.status_produto = 'ativo'
+    ";
+
+    if (!empty($categoria)) {
+        $in = implode(',', $categoria);
+        $sql .= " AND p.idCategoria IN ($in)";
+    }
+
+    if (!empty($marca)) {
+        $in = "'" . implode("', '", $marca) . "'";
+        $sql .= " AND p.marca IN ($in)";
+    }
+
+    if ($preco_min !== null && $preco_min !== '') {
+        $sql .= " AND p.preco_unitario >= '$preco_min'";
+    }
+
+    if ($preco_max !== null && $preco_max !== '') {
+        $sql .= " AND p.preco_unitario <= '$preco_max'";
+    }
+    // diposnivel/ nao disponivel
+
+    if ($disponibilidade == 'estoque') {
+        $sql .= " AND e.quantidade_atual > 0";
+    }
+
+    if ($disponibilidade == 'promocao') {
+        $sql .= " AND p.desconto > 0";
+    }
+
+    $sql .= " GROUP BY p.id_produto";
+
+    if (!empty($avaliacao)) {
+        $inAvaliacao = implode(',', $avaliacao);
+        $sql .= " HAVING ROUND(IFNULL(AVG(a.nota),0)) IN ($inAvaliacao)";
+    }
+
+    $sql .= ") as subquery";
+
+    $stmt = $pdo->query($sql);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+}
+
+$produtos = buscarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $ordem, $avaliacao, $disponibilidade, $limite, $offset);
 $categorias = buscarCategorias($pdo);
 $marcas = buscarMarcas($pdo);
+
+$totalProdutos = contarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $avaliacao, $disponibilidade);
+$totalPaginas = ceil($totalProdutos / $limite);

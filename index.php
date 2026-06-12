@@ -4,9 +4,11 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once "Crud/crud.php";
 require_once "Crud/init.php";
+require_once "Crud/sessions.php";
 
-
-$_SESSION['cep_index'] = isset($_GET['a']) ? $_GET['a'] : null;
+if (isset($_GET['a']) && trim($_GET['a']) !== '') {
+    $_SESSION['cep_index'] = trim($_GET['a']);
+}
 
 $registros_pesquisa = 0;
 
@@ -36,7 +38,7 @@ LEFT JOIN foto_produto f
 GROUP BY p.id_produto
 HAVING ROUND(AVG(a.nota)) IN (5, 4)
 ORDER BY media_avaliacao DESC
-LIMIT 5
+LIMIT 7
 ";
 
 $stmt_melhores = $pdo->query($sql_melhores);
@@ -59,38 +61,6 @@ $melhoresAvaliados = $stmt_melhores->fetchAll(PDO::FETCH_ASSOC);
 
 
     <?php include_once "partials/header.php"; ?>
-
-    <?php if($registros_pesquisa == 1 ): ?>
-                <div class="main-resultados">
-                    <div class="resultados-busca">
-                        <?php if (!empty($resultados)):
-                            foreach ($resultados as $res): ?>
-                                <div class="item-resultado">
-                                    <div class="info-resultado">
-                                        <a href="clientes.php?id_filtrado=<?= $res['id_usuario']; ?>" class="link-resultado">
-                                            <div class="info-resultado">
-                                                <span>
-                                                    <i class="bi bi-person"></i>
-                                                    <span class="nome-resultado"><?= htmlspecialchars($res['nome']); ?></span>
-                                                </span>
-                                                <span>
-                                                    <span class="email-resultado"><?= htmlspecialchars($res['email']); ?></span>
-                                                </span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
-                                <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
-                                <?= !empty($mensagem_pesquisa) ? $mensagem_pesquisa : "Nenhum usuário encontrado."; ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <?php endif; ?>
-            </div>
 
     <section class="banner-principal">
         <div class="container banner-conteudo">
@@ -117,7 +87,7 @@ $melhoresAvaliados = $stmt_melhores->fetchAll(PDO::FETCH_ASSOC);
             <div class="item-vantagem">
                 <i class="fas fa-shield-alt"></i>
                 <div>
-                    <strong>Compra Secura</strong>
+                    <strong>Compra Segura</strong>
                     <p>Seus dados protegidos</p>
                 </div>
             </div>
@@ -229,13 +199,31 @@ $melhoresAvaliados = $stmt_melhores->fetchAll(PDO::FETCH_ASSOC);
                                             $precoAntigo = $produto['preco_unitario'];
                                         } ?>
                                         <p class="preco-antigo">
-                                            R$ <?= $precoAntigo = round($precoAntigo, 2); ?>
+                                            R$ <?= number_format(round($precoAntigo, 2), 2, ',', '.') ?>
                                         </p>
                                     <?php endif; ?>
 
+                                    <?php
+                                    if ($produto['preco_unitario'] <= 50) {
+                                        $parcelas = 2;
+                                    } elseif ($produto['preco_unitario'] <= 100) {
+                                        $parcelas = 4;
+                                    } elseif ($produto['preco_unitario'] <= 200) {
+                                        $parcelas = 5;
+                                    } elseif ($produto['preco_unitario'] <= 500) {
+                                        $parcelas = 6;
+                                    } elseif ($produto['preco_unitario'] <= 1000) {
+                                        $parcelas = 8;
+                                    } else {
+                                        $parcelas = 10;
+                                    }
+
+                                    $valorParcela = $produto['preco_unitario'] / $parcelas;
+                                    ?>
+
                                     <p class="parcelamento">
-                                        ou 3x de R$
-                                        <?= number_format($produto['preco_unitario'] / 3, 2, ',', '.') ?>
+                                        ou <?= $parcelas ?>x de R$
+                                        <?= number_format($valorParcela, 2, ',', '.') ?>
                                     </p>
                                 </a>
                             </div>
@@ -258,12 +246,6 @@ $melhoresAvaliados = $stmt_melhores->fetchAll(PDO::FETCH_ASSOC);
                 <div class="cartao-cronometro">
                     <h3>OFERTAS POR<br>TEMPO LIMITADO!</h3>
                     <p>Aproveite enquanto dura.</p>
-                    <div class="cronometro">
-                        <div class="tempo"><strong>02</strong><span>DIAS</span></div>
-                        <div class="tempo"><strong>14</strong><span>HORAS</span></div>
-                        <div class="tempo"><strong>36</strong><span>MIN</span></div>
-                        <div class="tempo"><strong>48</strong><span>SEG</span></div>
-                    </div>
                 </div>
 
                 <?php foreach ($produtos_promo as $produto_promo): ?>
@@ -295,18 +277,37 @@ $melhoresAvaliados = $stmt_melhores->fetchAll(PDO::FETCH_ASSOC);
                         </p>
 
                         <?php if (!empty($produto_promo['desconto']) && $produto_promo['desconto'] > 0): ?>
-                            <?php if ($produto['desconto'] < 100) {
-                                $precoAntigo = $produto['preco_unitario'] / (1 - ($produto['desconto'] / 100));
+                            <?php if ($produto_promo['desconto'] < 100) {
+                                $precoAntigo = $produto_promo['preco_unitario'] / (1 - ($produto_promo['desconto'] / 100));
                             } else {
-                                $precoAntigo = $produto['preco_unitario'];
+                                $precoAntigo = $produto_promo['preco_unitario'];
                             } ?>
                             <p class="preco-antigo">
-                                R$ <?= $precoAntigo = round($precoAntigo, 2); ?>
+                                R$ <?= number_format(round($precoAntigo, 2), 2, ',', '.') ?>
                             </p>
                         <?php endif; ?>
 
+                        <?php
+                        if ($produto_promo['preco_unitario'] <= 50) {
+                            $parcelas = 2;
+                        } elseif ($produto_promo['preco_unitario'] <= 100) {
+                            $parcelas = 4;
+                        } elseif ($produto_promo['preco_unitario'] <= 200) {
+                            $parcelas = 5;
+                        } elseif ($produto_promo['preco_unitario'] <= 500) {
+                            $parcelas = 6;
+                        } elseif ($produto_promo['preco_unitario'] <= 1000) {
+                            $parcelas = 8;
+                        } else {
+                            $parcelas = 10;
+                        }
+
+                        $valorParcela = $produto_promo['preco_unitario'] / $parcelas;
+                        ?>
+
                         <p class="parcelamento">
-                            ou 10x de R$ <?= number_format($produto_promo['preco_unitario'] / 10, 2, ',', '.') ?>
+                            ou <?= $parcelas ?>x de R$
+                            <?= number_format($valorParcela, 2, ',', '.') ?>
                         </p>
 
                         <a href="janelas/janela-produto/janela-produto.php?id=<?= $produto_promo['id_produto'] ?>" class="link-card-produto">
@@ -328,7 +329,7 @@ $melhoresAvaliados = $stmt_melhores->fetchAll(PDO::FETCH_ASSOC);
                 <div class="conteudo-banner-solucoes">
                     <h2>Soluções completas<br>para sua obra.</h2>
                     <p>Qualidade, segurança e os melhores<br>materiais para cada etapa.</p>
-                    <button class="btn btn-laranja">Faça seu orçamento</button>
+                    <button class="btn btn-laranja"><a href="https://api.whatsapp.com/send/?phone=5511930569806&text&type=phone_number&app_absent=0" target="_blank">Faça seu orçamento</a></button>
                 </div>
             </div>
         </div>

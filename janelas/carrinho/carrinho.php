@@ -1,38 +1,32 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once '../../Crud/init.php';
+require_once '../../Crud/crud.php';
+require_once '../../Crud/sessions.php';
 
-include_once "../../Crud/crud.php";
-include_once "../../Crud/init.php";
-
-$carrinho_sessao = $_SESSION['carrinho'] ?? [];
-$produtos_carrinho = [];
+$produtos_carrinho = buscarItensCarrinhoAtual($pdo);
 $subtotal = 0;
 $frete = 0;
 
-if (!empty($carrinho_sessao)) {
-    $ids = implode(',', array_keys($carrinho_sessao));
+$editar = isset($_GET['#editar']) ? [
+    'codigo' => 'OPA GALERA',
+] : null;
 
-    $sql = "
-    SELECT p.*, MIN(f.caminho_imagem) as caminho_imagem
-    FROM produto p
-    LEFT JOIN foto_produto f 
-    ON p.id_produto = f.idProduto
-    WHERE p.id_produto IN ($ids)
-    GROUP BY p.id_produto
-    ";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id_produto = (int) $_POST['id_produto'] ?? null;
+    $qtd_atual = (int) $_POST['qtd'] ?? null;
 
-    $stmt = $pdo->query($sql);
-    $produtos_carrinho = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    foreach ($produtos_carrinho as $produto) {
-        $id_prod = $produto['id_produto'];
-        $qtd = $carrinho_sessao[$id_prod];
-        $subtotal += $produto['preco_unitario'] * $qtd;
+    if ($qtd_atual > 0) {
+        adicionarProdutoCarrinhoBanco($pdo, usuarioLogado(), $id_produto, $qtd_atual);
     }
+}
 
-    $frete = ($subtotal > 200) ? 0.00 : 45.00;
+foreach ($produtos_carrinho as $produto) {
+    $subtotal += (float) $produto['subtotal'];
+    $frete += (float) $produto['frete'];
+}
+
+if ($subtotal > 200) {
+    $frete = 0;
 }
 ?>
 <!DOCTYPE html>
@@ -47,6 +41,7 @@ if (!empty($carrinho_sessao)) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/Casas-Brasilite/style.css">
     <link rel="stylesheet" href="carrinho.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -55,6 +50,12 @@ if (!empty($carrinho_sessao)) {
 
     <section class="secao-carrinho">
         <div class="container">
+            <?php if (!empty($_SESSION['erro_carrinho'])): ?>
+                <div class="lista-produtos-vazia" style="margin-bottom: 20px; color: #b91c1c;">
+                    <?= htmlspecialchars($_SESSION['erro_carrinho']); unset($_SESSION['erro_carrinho']); ?>
+                </div>
+            <?php endif; ?>
+
             <?php if (empty($produtos_carrinho)): ?>
                 <div class="lista-produtos-vazia">
                     <i class="fas fa-shopping-cart"></i>
@@ -73,20 +74,31 @@ if (!empty($carrinho_sessao)) {
                         </div>
 
                         <?php foreach ($produtos_carrinho as $produto):
-                            $id_prod = $produto['id_produto'];
-                            $qtd = $carrinho_sessao[$id_prod];
-                            $preco_total_item = $produto['preco_unitario'] * $qtd;
+                            $id_prod = (int) $produto['id_produto'];
+                            isset($_GET['editar']) ? $editar[
+                                'id_produto' => $id_prod,
+                            ] : null;
+                            $qtd = (int) $produto['quantidade'];
+                            $preco_total_item = (float) $produto['subtotal'];
+                            $imagem = !empty($produto['caminho_imagem']) ? '../../' . $produto['caminho_imagem'] : '../../uploads/sem-foto.webp';
+
                         ?>
                             <div class="item-carrinho">
                                 <div class="info-produto-carrinho">
                                     <div class="img-carrinho">
-                                        <img src="../../<?= $produto['caminho_imagem'] ?>" width="60" style="border-radius: 6px;">
+                                        <img src="<?= htmlspecialchars($imagem) ?>" width="60" style="border-radius: 6px;">
                                     </div>
                                     <div>
-                                        <a href="/Casas-Brasilite/janelas/janela-produto/janela-produto.php?id=<?= $produto['id_produto'] ?>">
-                                            <h4><?= $produto['nome_produto'] ?></h4>
+                                        <a href="/Casas-Brasilite/janelas/janela-produto/janela-produto.php?id=<?= $id_prod ?>">
+                                            <h4><?= htmlspecialchars($produto['nome_produto']) ?></h4>
                                         </a>
-                                        <p class="ref-produto">Qtd: <?= $qtd ?></p>
+                                        <p class="ref-produto">Qtd: <?php echo (!empty($editar) && isset($editar['codigo']) ? $editar['codigo'] : $qtd); ?> <a href="?editar=<?= $id_prod ?>"><span style="padding-left: 10px"><i class="fas fa-pencil-alt"></i></span></a></p>
+
+                                        <!-- <form action="carrinho.php" method="post">
+                                            <input type="hidden" name="id_produto" value="<?= $id_prod ?>">
+                                            <input type="number" name="qtd" id="qtd" min="1"  value="<?= $qtd ?>" style=" all: unset; width: 30px;">
+                                        </form>
+                                        <i class="fas fa-pencil-alt"></i> -->
                                     </div>
                                 </div>
 
@@ -128,6 +140,12 @@ if (!empty($carrinho_sessao)) {
                             <span>Total:</span>
                             <span>R$ <?= number_format($subtotal + $frete, 2, ',', '.') ?></span>
                         </div>
+
+                        <?php if (!usuarioLogado()): ?>
+                            <p style="font-size: 14px; margin: 12px 0; color: #b45309;">
+                                Faça login para finalizar a compra e salvar o pedido no sistema.
+                            </p>
+                        <?php endif; ?>
 
                         <div class="forma-pagamento">
                             <h4>Forma de Pagamento</h4>

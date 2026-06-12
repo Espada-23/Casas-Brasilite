@@ -34,7 +34,7 @@
                     </svg>
                 </a>
 
-                <a href="#" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                <a href="https://api.whatsapp.com/send/?phone=5511930569806&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.16 5.348 5.497 0 12.048 0c3.179.001 6.164 1.24 8.409 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.907-11.89 11.907-2.013-.001-3.993-.513-5.747-1.49L0 24zm6.611-3.619c1.613.957 3.197 1.462 4.819 1.463 5.419 0 9.827-4.416 9.83-9.85.001-2.632-1.022-5.105-2.883-6.97C16.53 3.159 14.062 2.13 11.432 2.13c-5.425 0-9.833 4.417-9.836 9.853-.001 1.764.464 3.49 1.345 5.02l-.997 3.642 3.724-.964zm11.196-4.996c-.3-.152-1.78-.883-2.056-.984-.275-.101-.476-.151-.676.152-.199.303-.775.984-.95 1.186-.175.203-.35.228-.65.076-.3-.152-1.267-.468-2.415-1.496-.893-.799-1.496-1.786-1.671-2.09-.175-.303-.019-.467.132-.618.136-.135.301-.354.452-.531.15-.177.2-.303.3-.506.1-.202.05-.379-.025-.531-.075-.152-.676-1.644-.926-2.25-.244-.587-.49-.508-.676-.517-.175-.008-.376-.01-.576-.01-.201 0-.527.076-.802.379-.275.303-1.053 1.037-1.053 2.53 0 1.493 1.077 2.933 1.227 3.136.15.202 2.122 3.24 5.141 4.545.718.311 1.278.497 1.714.637.722.23 1.378.197 1.897.12.577-.087 1.78-.73 2.031-1.436.25-.706.25-1.312.175-1.436-.075-.124-.275-.201-.576-.352z" />
                     </svg>
@@ -59,10 +59,9 @@
             <h4>Institucional</h4>
 
             <ul>
-                <li><a href="">Sobre nós</a></li>
-                <li><a href="#">Trabalhe conosco</a></li>
-                <li><a href="#">Política de privacidade</a></li>
-                <li><a href="#">Termos de uso</a></li>
+                <li><a href="/Casas-Brasilite/janelas/sobre/sobre.php">Sobre nós</a></li>
+                <li><a href="/Casas-Brasilite/janelas/sobre/ajuda.php">Trabalhe conosco</a></li>
+                <li><a href="/Casas-Brasilite/janelas/sobre/termos.php">Política de privacidade e Termos de uso</a></li>
             </ul>
         </div>
 
@@ -70,10 +69,9 @@
             <h4>Atendimento</h4>
 
             <ul>
-                <li><a href="#">Central de ajuda</a></li>
-                <li><a href="#">Fale conosco</a></li>
-                <li><a href="#">Trocas e devoluções</a></li>
-                <li><a href="#">WhatsApp</a></li>
+                <li><a href="/Casas-Brasilite/janelas/sobre/ajuda.php">Central de ajuda</a></li>
+                <li><a href="/Casas-Brasilite/janelas/sobre/contato.php">Fale conosco</a></li>
+                <li><a href="/Casas-Brasilite/janelas/sobre/ajuda.php">Trocas e devoluções</a></li>
             </ul>
         </div>
 
@@ -81,14 +79,10 @@
             <h4>Categorias</h4>
 
             <ul>
-                <li><a href="#">Ferramentas</a></li>
-                <li><a href="#">Materias de Construção</a></li>
-                <li><a href="#">Acabamento</a></li>
-                <li><a href="#">Maquinas e Equipamentos</a></li>
-                <li><a href="#">Obras e Estruturas</a></li>
-                <li><a href="#">Suprimentos de Obra</a></li>
-                <li><a href="#">Segurança (EPIs)</a></li>
-                <li><a href="#">Ofertas</a></li>
+                <li><a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=obras_estruturas">Obras e Estruturas</a></li>
+                <li><a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=materiais">Materias de Construção</a></li>
+                <li><a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=ferramentas">Ferramentas</a></li>
+                <li><a href="/Casas-Brasilite/janelas/todos-produtos/todos-produtos.php?grupo=seguranca">Segurança (EPIs)</a></li>
             </ul>
         </div>
 
@@ -96,11 +90,12 @@
             <h4>Formas de pagamento</h4>
 
             <div class="icones-pagamento">
-                <span class="cartao-falso">VISA</span>
-                <span class="cartao-falso">MASTER</span>
-                <span class="cartao-falso">ELO</span>
-                <span class="cartao-falso">HIPER</span>
-                <span class="cartao-falso pix">PIX</span>
+                <img src="https://cdn.simpleicons.org/visa" alt="Visa">
+                <img src="https://cdn.simpleicons.org/mastercard" alt="Mastercard">
+                <img src="https://cdn.simpleicons.org/americanexpress/2E77BC" alt="American Express">
+                <img src="https://cdn.simpleicons.org/paypal/00457C" alt="PayPal">
+                <img src="https://img.icons8.com/?size=100&id=gjCwHrMX83X5&format=png&color=000000" alt="pix">
+                <img src="https://www.escoteirossp.org.br/wp/wp-content/uploads/2014/06/Boleto-1.jpg" alt="Boleto">
             </div>
         </div>
 

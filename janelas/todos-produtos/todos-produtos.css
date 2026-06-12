@@ -252,3 +252,52 @@
     background: var(--cinza-fundo);
     color: var(--azul-escuro);
 }
+
+/* Paginação */
+
+.paginacao {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+    margin: 30px 0;
+}
+
+.box-num {
+    display: flex;
+    gap: 10px;
+}
+
+.box-num a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    
+    border: 2px solid #ff6b00;
+    border-radius: 10px;
+    
+    color: #ff6b00;
+    text-decoration: none;
+    font-weight: 600;
+
+    transition: all 0.3s ease;
+}
+
+.box-num a:hover {
+    background: #ff6b00;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.paginacao a.ativo {
+    background: #ff6b00;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(255, 107, 0, 0.3);
+}
+
+.paginacao i {
+    color: var(--navy);
+    font-size: 20px;
+}

@@ -192,7 +192,7 @@
 }
 
 .preco-atual {
-    font-size: 2.7rem;
+    font-size: 2.5rem;
     color: var(--texto-principal);
 }
 
@@ -321,4 +321,284 @@
     width: 100%;
     height: 140px;
     object-fit: contain;
+}
+
+.secao-avaliacoes {
+    margin-top: 55px;
+    padding-top: 45px;
+    border-top: 2px solid var(--cinza-claro);
+}
+
+.cabecalho-avaliacoes {
+    margin-bottom: 22px;
+}
+
+.cabecalho-avaliacoes h3 {
+    color: var(--azul-escuro);
+    font-size: 1.4rem;
+}
+
+/* feedbacks */
+
+.alerta-avaliacao {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 22px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.alerta-sucesso {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #86efac;
+}
+
+.alerta-erro {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+}
+
+
+/* comentarios */
+
+.lista-comentarios {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 38px;
+}
+
+.cartao-comentario {
+    border: 1px solid var(--cinza-claro);
+    border-radius: 12px;
+    padding: 20px 22px;
+    transition: box-shadow 0.2s;
+}
+
+.cartao-comentario:hover {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.cabecalho-comentario {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.avatar-usuario {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--azul-escuro);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.info-comentario {
+    flex: 1;
+}
+
+.info-comentario h4 {
+    font-size: 0.95rem;
+    color: var(--texto-principal);
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.estrelas-comentario {
+    color: #f59e0b;
+    font-size: 0.82rem;
+    gap: 2px;
+    display: flex;
+}
+
+.data-comentario {
+    color: var(--texto-secundario);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    margin-top: 2px;
+}
+
+.texto-comentario {
+    color: var(--texto-principal);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* sem comentários */
+.sem-comentarios {
+    text-align: center;
+    padding: 36px 20px;
+    color: var(--texto-secundario);
+    border: 1px dashed var(--cinza-claro);
+    border-radius: 12px;
+}
+
+.sem-comentarios i {
+    font-size: 2.2rem;
+    display: block;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.sem-comentarios p {
+    font-size: 0.95rem;
+}
+
+.aviso-avaliacao {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 22px;
+    border-radius: 10px;
+    font-size: 0.93rem;
+}
+
+.aviso-login {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+}
+
+.aviso-login a {
+    color: #2563eb;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.aviso-login a:hover {
+    text-decoration: underline;
+}
+
+.aviso-ja-avaliou {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    color: #15803d;
+}
+
+.form-avaliacao {
+    background: #f8fafc;
+    border: 1px solid var(--cinza-claro);
+    border-radius: 14px;
+    padding: 28px 30px;
+}
+
+.form-avaliacao h4 {
+    color: var(--azul-escuro);
+    font-size: 1.1rem;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.campo-form-avaliacao {
+    margin-bottom: 22px;
+}
+
+.label-form {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+    margin-bottom: 10px;
+}
+
+.obrigatorio {
+    color: #ef4444;
+}
+
+.estrelas-interativas {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: 4px;
+}
+
+.estrelas-interativas input[type="radio"] {
+    display: none;
+}
+
+.estrelas-interativas label {
+    font-size: 2rem;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: color 0.12s, transform 0.12s;
+    margin: 0;
+    line-height: 1;
+}
+
+.estrelas-interativas label:hover,
+.estrelas-interativas label:hover ~ label {
+    color: #f59e0b;
+    transform: scale(1.15);
+}
+
+.estrelas-interativas input:checked ~ label {
+    color: #f59e0b;
+}
+
+.campo-form-avaliacao textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--cinza-claro);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--texto-principal);
+    background: #fff;
+    resize: vertical;
+    min-height: 100px;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.campo-form-avaliacao textarea:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.contador-chars {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--texto-secundario);
+    margin-top: 5px;
+    text-align: right;
+}
+
+.btn-enviar-avaliacao {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 48px;
+    padding: 0 28px;
+    border: none;
+    border-radius: 8px;
+    background: var(--azul-escuro);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-enviar-avaliacao:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
+.btn-enviar-avaliacao:active {
+    transform: translateY(0);
 }

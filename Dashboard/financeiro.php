@@ -2,10 +2,9 @@
 require_once '../Crud/crud.php';
 require_once '../Crud/init.php';
 
-
 $stmt = $pdo->query("
-    SELECT SUM(valor_total) as total 
-    FROM pagamento 
+    SELECT SUM(valor_total) AS total
+    FROM pagamento
     WHERE status_pagamento = 'pago'
 ");
 
@@ -17,38 +16,24 @@ $stmt = $pdo->query("
 ");
 $itens_vendidos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
+// Cusos
+
 $stmt = $pdo->query("
-    SELECT COUNT(*) * 100 as total
-    FROM movimentacao
-    WHERE tipo_movimentacao = 'saida'
+    SELECT SUM(m.quantidade * p.custo_produto) AS total
+    FROM movimentacao m
+    JOIN estoque e ON m.idEstoque = e.id_estoque
+    JOIN produto p ON e.idProduto = p.id_produto
+    WHERE m.tipo_movimentacao = 'saida'
+      AND m.idPagamento IS NOT NULL
 ");
 
 $custos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
-$lucro = $faturamento - $custos;
+// Lucro
 
-$margin_lucro = $faturamento > 0 ? ($lucro / $faturamento) * 100 : 0;
+$lucroLiquido = $faturamento - $custos;
 
-// $stmt = $pdo->query("
-//     SELECT SUM(valor_total) as total 
-//     FROM pagamento 
-//     WHERE status_pagamento = 'pago'
-//     AND MONTH(data_pagamento) = MONTH(CURRENT_DATE())
-// ");
-
-// $receita = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
-
-// $stmt = $pdo->query("
-//     SELECT COUNT(*) * 100 as total
-//     FROM movimentacao
-//     WHERE tipo_movimentacao = 'saida'
-// ");
-
-// $despesas = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
-
-// $lucro = $receita - $despesas;
-
-// $margin_lucro = ($lucro / $receita) * 100;
+$margin_lucro = $faturamento > 0 ? ($lucroLiquido / $faturamento) * 100 : 0;
 
 // transações
 
@@ -96,7 +81,7 @@ $totalPaginas = ceil($totalRegistros / $limite);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="\Casas-Brasilite\imagens\icon.png" type="image/x-icon">
     <title>Dashboard - Financeiro</title>
-    <link rel="icon" href="../imagens/logo.png">
+    <link rel="icon" href="\Casas-Brasilite\imagens\icon.png" type="image/x-icon">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/financeiro.css">
@@ -155,7 +140,7 @@ $totalPaginas = ceil($totalRegistros / $limite);
                         </div>
                         <div>
                             <h5>Lucro Líquico</h5>
-                            <h3>R$ <?= number_format($lucro, 2, ',', '.') ?></h3>
+                            <h3>R$ <?= number_format($lucroLiquido, 2, ',', '.') ?></h3>
                         </div>
                     </div>
                     <div class="card-bottom">
@@ -177,9 +162,7 @@ $totalPaginas = ceil($totalRegistros / $limite);
                 </div>
 
                 <div class="card">
-
                     <div class="card-top">
-
                         <div class="icon orange">
                             <i class="bi bi-graph-up-arrow"></i>
                         </div>
@@ -191,7 +174,6 @@ $totalPaginas = ceil($totalRegistros / $limite);
                     </div>
 
                     <div class="card-bottom"></div>
-
                 </div>
 
             </section>
@@ -292,13 +274,6 @@ $totalPaginas = ceil($totalRegistros / $limite);
                 <div class="r-finan">
                     <div class="top-r-finan">
                         <p>Resumo Financeiro</p>
-                        <!-- <select>
-                            <option>Este Mês</option>
-                            <option>Mês Passado</option>
-                            <option>3 Meses</option>
-                            <option>9 Meses</option>
-                            <option>1 Ano</option>
-                        </select> -->
                     </div>
 
                     <div class="infos-resumo">
@@ -312,7 +287,7 @@ $totalPaginas = ceil($totalRegistros / $limite);
                         </div>
                         <div class="lucro">
                             <p>Lucro Total</p>
-                            <span>R$ <?= number_format($lucro, 2, ',', '.') ?></span>
+                            <span>R$ <?= number_format($lucroLiquido, 2, ',', '.') ?></span>
                         </div>
                         <div class="margin">
                             <p>Margem de Lucro</p>
@@ -329,16 +304,12 @@ $totalPaginas = ceil($totalRegistros / $limite);
                 <div class="card">
 
                     <div class="top-table">
-
                         <p>Últimas Transações</p>
-                        <a href="#">Ver todas</a>
-
                     </div>
 
                     <div class="tabela">
 
                         <table>
-
                             <thead>
 
                                 <tr>
@@ -347,11 +318,9 @@ $totalPaginas = ceil($totalRegistros / $limite);
                                     <th>Valor</th>
                                     <th>Data</th>
                                 </tr>
-
                             </thead>
 
                             <tbody>
-
                                 <?php
 
                                 foreach ($transacoes as $t) {

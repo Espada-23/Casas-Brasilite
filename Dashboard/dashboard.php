@@ -7,11 +7,14 @@ $clientes = read($pdo, 'usuario');
 $pedidos = read($pdo, 'pedido');
 
 $total_clientes = count($clientes);
-$total_pedidos = count($pedidos);
+$stmt = $pdo->query("SELECT COUNT(*) as total FROM pedido");
+$total_pedidos = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+// KPIs
 
 $stmt = $pdo->query("
-    SELECT SUM(valor_total) as total 
-    FROM pagamento 
+    SELECT SUM(valor_total) AS total
+    FROM pagamento
     WHERE status_pagamento = 'pago'
 ");
 
@@ -23,19 +26,26 @@ $stmt = $pdo->query("
 ");
 $itens_vendidos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
+// Custos
+
 $stmt = $pdo->query("
-    SELECT COUNT(*) * 100 as total
-    FROM movimentacao
-    WHERE tipo_movimentacao = 'saida'
+    SELECT SUM(m.quantidade * p.custo_produto) AS total
+    FROM movimentacao m
+    JOIN estoque e ON m.idEstoque = e.id_estoque
+    JOIN produto p ON e.idProduto = p.id_produto
+    WHERE m.tipo_movimentacao = 'saida'
+      AND m.idPagamento IS NOT NULL
 ");
 
 $custos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
-$lucro = $faturamento - $custos;
+// Lucro
 
-$margem = $faturamento > 0 ? ($lucro / $faturamento) * 100 : 0;
+$lucroLiquido = $faturamento - $custos;
 
-// Estoque Crítico
+$margem = $faturamento > 0 ? ($lucroLiquido / $faturamento) * 100 : 0;
+
+// ESTOQUE
 
 $stmt = $pdo->query("
     SELECT
@@ -52,7 +62,7 @@ $stmt = $pdo->query("
 
 $estoques = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Pedidos
+// PEDIDOS
 
 $stmt = $pdo->query("
     SELECT
@@ -63,9 +73,9 @@ $stmt = $pdo->query("
         pg.data_pagamento
     FROM pedido p 
     JOIN usuario u ON p.idUsuario = u.id_usuario
-    JOIN pagamento pg ON p.idPagamento = pg.id_pagamento
-    ORDER BY p.id_pedido ASC
-    LIMIT 5
+    LEFT JOIN pagamento pg ON p.idPagamento = pg.id_pagamento
+    ORDER BY p.id_pedido DESC
+    LIMIT 10
 ");
 
 $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -79,7 +89,6 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="\Casas-Brasilite\imagens\icon.png" type="image/x-icon">
-    <link rel="icon" href="../imagens/logo.png">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/dashboard.css">
@@ -113,7 +122,6 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <main class="main">
 
-            <!-- KPIs -->
             <section class="cards-top">
 
                 <div class="card">
@@ -138,13 +146,9 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <i class="bi bi-currency-dollar"></i>
                         </div>
                         <div>
-                            <h5>Lucro Líquico</h5>
-                            <h3>R$ <?= number_format($lucro, 2, ',', '.') ?></h3>
+                            <h5>Lucro Líquido</h5>
+                            <h3>R$ <?= number_format($lucroLiquido, 2, ',', '.') ?></h3>
                         </div>
-                    </div>
-                    <div class="card-bottom">
-                        <span class="green">↑ 14,2%</span>
-                        <p>vs mês anterior</p>
                     </div>
                 </div>
 
@@ -188,27 +192,10 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-top">
-                        <div class="icon orange">
-                            <i class="bi bi-box-seam"></i>
-                        </div>
-                        <div>
-                            <h5>Número de Produtos</h5>
-                            <h3><?= $itens_vendidos ?></h3>
-                        </div>
-                    </div>
-                    <div class="card-bottom"></div>
-                </div>
-
             </section>
 
-            <!-- CHARTS ROW -->
             <div class="charts-row">
-
-                <!-- Evolução do Faturamento + Entrada x Saída -->
                 <div class="grid-grafico">
-
                     <div class="grafico-card">
                         <div class="grafico-header">
                             <div>
@@ -322,10 +309,10 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         <div class="grafico-barra">
                             <div class="valores-esquerda">
-                                <span>16k</span>
-                                <span>12k</span>
-                                <span>8k</span>
-                                <span>4k</span>
+                                <span>80</span>
+                                <span>60</span>
+                                <span>40</span>
+                                <span>20</span>
                                 <span>0</span>
                             </div>
                             <div class="linha-bg b1"></div>
@@ -369,10 +356,8 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <span>Sex</span><span>Sáb</span><span>Dom</span>
                         </div>
                     </div>
-
                 </div>
 
-                <!-- Resumo Financeiro -->
                 <div class="r-finan">
                     <div class="top-r-finan">
                         <p>Resumo Financeiro</p>
@@ -387,7 +372,7 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     <?php
 
-                    $margin_lucro = ($lucro / $faturamento) * 100;
+                    $margin_lucro = ($lucroLiquido / $faturamento) * 100;
 
                     ?>
 
@@ -402,7 +387,7 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         <div class="lucro">
                             <p>Lucro Total</p>
-                            <span>R$ <?= number_format($lucro, 2, ',', '.') ?></span>
+                            <span>R$ <?= number_format($lucroLiquido, 2, ',', '.') ?></span>
                         </div>
                         <div class="margin">
                             <p>Margem de Lucro</p>
@@ -413,10 +398,8 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             </div>
 
-            <!-- BOTTOM ROW -->
             <div class="bottom-row">
 
-                <!-- Produtos mais vendidos -->
                 <div class="card">
                     <div class="card-head">
                         <p class="card-title">Produtos mais vendidos</p>
@@ -508,12 +491,11 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </table>
                 </div>
 
-                <!-- Pedidos Recentes -->
                 <div class="card">
                     <div class="tabela-wrapper">
                         <div class="top-table">
                             <p>Pedidos Recentes</p>
-                            <a href="#">Ver Todos</a>
+                            <a href="pedidos.php">Ver Todos</a>
                         </div>
                         <div class="tabela">
                             <table>
@@ -547,18 +529,14 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </tbody>
                             </table>
                         </div>
-                        <div class="ver-pedidos">
-                            <a href="#">Ver Todos os Pedidos</a>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Estoque Crítico -->
                 <div class="card">
                     <div class="estoque">
                         <div class="top-estoque">
                             <p>Status Estoque</p>
-                            <a href="estoque.html">Ver Todos</a>
+                            <a href="produtos.php">Ver Todos</a>
                         </div>
 
                         <?php

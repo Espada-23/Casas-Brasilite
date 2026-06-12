@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="/Casas-Brasilite/style.css">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/sobre.css">
+  <link rel="stylesheet" href="\Casas-Brasilite\partials-css\footer.css">
 </head>
 
 <body>
@@ -102,8 +103,6 @@
           perfeito que valorizam o seu imóvel.
         </p>
 
-        <button>Nossa trajetória</button>
-
       </div>
 
     </section>
@@ -160,34 +159,11 @@
 
     </section>
 
-    <section class="cta">
-
-      <div class="cta-left">
-
-        <span>Vamos construir juntos?</span>
-
-        <h2>
-          Conte com a casas brasilites na sua próxima obra.
-        </h2>
-
-      </div>
-
-      <div class="cta-right">
-
-        <p>
-          Temos tudo o que você precisa para construir
-          com economia, qualidade e segurança.
-        </p>
-
-        <button>Ver produtos</button>
-
-      </div>
-
-    </section>
 
   </div>
 
   <?php require_once "../../partials/footer-sobre.php" ?>
 
 </body>
+
 </html>

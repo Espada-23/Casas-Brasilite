@@ -3,48 +3,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$total_itens_carrinho = 0;
+require_once __DIR__ . '/../Crud/crud.php';
+require_once __DIR__ . '/../Crud/sessions.php';
+
+$total_itens_carrinho = contarItensCarrinho($pdo);
 $registros_pesquisa = 0;
 
-$res = isset($_GET['res']) ? $_GET['res'] : null;
-
-if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
-    $total_itens_carrinho = count($_SESSION['carrinho']);
-}
-
-/*
-<?php if($registros_pesquisa == 1 ): ?>
-                <div class="main-resultados">
-                    <div class="resultados-busca">
-                        <?php if (!empty($resultados)):
-                            foreach ($resultados as $res): ?>
-                                <div class="item-resultado">
-                                    <div class="info-resultado">
-                                        <a href="clientes.php?id_filtrado=<?= $res['id_usuario']; ?>" class="link-resultado">
-                                            <div class="info-resultado">
-                                                <span>
-                                                    <i class="bi bi-person"></i>
-                                                    <span class="nome-resultado"><?= htmlspecialchars($res['nome']); ?></span>
-                                                </span>
-                                                <span>
-                                                    <span class="email-resultado"><?= htmlspecialchars($res['email']); ?></span>
-                                                </span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
-                                <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
-                                <?= !empty($mensagem_pesquisa) ? $mensagem_pesquisa : "Nenhum usuário encontrado."; ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <?php endif; ?>
-                </div>
-*/
+$res = $_SESSION['resultados_produtos'] ?? null;
 ?>
 <link rel="stylesheet" href="/Casas-Brasilite/partials-css/header.css">
 
@@ -58,7 +23,7 @@ if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
 
         <div class="topo-direita">
             <a href="/Casas-Brasilite/janelas/pedidos/pedidos.php"><i class="fas fa-box"></i> Meus pedidos</a>
-            <a href="#">Ajuda</a>
+            <a href="/Casas-Brasilite/janelas/sobre/ajuda.php">Ajuda</a>
         </div>
     </div>
 </div>
@@ -74,36 +39,58 @@ if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
             <input type="text" name="pesquisa" placeholder="O que você procura?" required>
             <button class="btn-pesquisa" type="submit"><i class="fas fa-search"></i></button>
         </form>
+        <?php
+        $resultados = $_SESSION['resultados'] ?? [];
+        $mostrar_resultados = $_SESSION['resultados_produtos'] ?? false;
+        $mensagem_pesquisa = $_SESSION['mensagem_pesquisa'] ?? null;
+        ?>
 
-        <?php if ($res !== null): ?>
+        <?php if ($mostrar_resultados): ?>
             <div class="main-resultados">
                 <div class="resultados-busca">
-                    <?php if (!empty($_SESSION['resultados'])):
-                        foreach ($_SESSION['resultados'] as $res): ?>
+
+                    <?php if (!empty($resultados)): ?>
+
+                        <?php foreach ($resultados as $item): ?>
                             <div class="item-resultado">
-                                <div class="info-resultado">
-                                    <a href="clientes.php?id_filtrado=<?= $res['id_usuario']; ?>" class="link-resultado">
-                                        <div class="info-resultado">
-                                            <span>
-                                                <i class="bi bi-person"></i>
-                                                <span class="nome-resultado"><?= htmlspecialchars($res['nome']); ?></span>
-                                            </span>
-                                            <span>
-                                                <span class="email-resultado"><?= htmlspecialchars($res['email']); ?></span>
-                                            </span>
-                                        </div>
-                                    </a>
-                                </div>
+
+                                <a href="/Casas-Brasilite/janelas/janela-produto/janela-produto.php?id=<?= $item['id_produto'] ?>" class="link-resultado">
+
+                                    <div class="info-resultado">
+
+                                        <span class="nome-resultado">
+                                            <?= htmlspecialchars($item['nome_produto']) ?>
+                                        </span>
+
+                                        <span class="marca-resultado">
+                                            <?= htmlspecialchars($item['marca']) ?>
+                                        </span>
+
+                                    </div>
+
+                                </a>
+
                             </div>
                         <?php endforeach; ?>
+
                     <?php else: ?>
+
                         <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
                             <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
-                            <?= !empty($mensagem_pesquisa) ? $mensagem_pesquisa : "Nenhum usuário encontrado."; ?>
+                            <?= $mensagem_pesquisa ?? "Nenhum produto encontrado." ?>
                         </div>
+
                     <?php endif; ?>
+
                 </div>
             </div>
+
+            <?php
+            unset($_SESSION['resultados']);
+            unset($_SESSION['resultados_produtos']);
+            unset($_SESSION['mensagem_pesquisa']);
+            ?>
+
         <?php endif; ?>
 
         <div class="acoes-usuario">
@@ -113,10 +100,20 @@ if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
                 <span>Favoritos</span>
             </a>
 
-            <a href="/Casas-Brasilite/janelas/cadastro-login/login.php" class="icone-acao">
-                <i class="far fa-user"></i>
-                <span>Entrar</span>
-            </a>
+            <?php if (usuarioLogado()): ?>
+                <a href="/Casas-Brasilite/janelas/cadastro-login/logout.php" class="icone-acao" title="Clique para sair">
+                    <i class="far fa-user"></i>
+                    <span><?= htmlspecialchars($_SESSION['usuario']['nome']) ?></span>
+                </a>
+            <?php else: ?>
+                <a href="/Casas-Brasilite/janelas/cadastro-login/login.php" class="icone-acao">
+                    <i class="far fa-user"></i>
+                    <span>Entrar</span>
+                </a>
+                <a href="#" class="settings">
+                    <i class="bi bi-gear"></i>
+                </a>
+            <?php endif; ?>
 
             <a href="/Casas-Brasilite/janelas/carrinho/carrinho.php" class="icone-acao carrinho">
                 <i class="fas fa-shopping-cart"></i>
@@ -272,7 +269,7 @@ if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
         </div>
 
         <ul class="lista-links">
-            <li><a href="/Casas-Brasilite/index.php#mais-vendidos">Mais vendidos</a></li>
+            <li><a href="/Casas-Brasilite/index.php#mais-vendidos">Melhores avaliados</a></li>
             <li><a href="/Casas-Brasilite/index.php#ofertas">Promoções</a></li>
             <li><a href="/Casas-Brasilite/index.php#parcerias">Parcerias</a></li>
             <li><a href="/Casas-Brasilite/index.php#avaliaçoes">Avaliações</a></li>
@@ -283,11 +280,14 @@ if (isset($_SESSION['carrinho']) && !empty($_SESSION['carrinho'])) {
             <i class="fas fa-map-marker-alt"></i>
             <div class="texto-local">
                 <span>Enviar para:</span>
-                <?php if (isset($_SESSION['cep_index']) && $_SESSION['cep_index'] !== null) { ?>
-                    <span style="color: black;"><strong>CEP: <?= $_SESSION['cep_index']; ?></strong></span>
+                <?php
+                $cep_header = $_SESSION['usuario']['cep'] ?? ($_SESSION['cep_index'] ?? null);
+                if (!empty($cep_header)) { ?>
+                    <span style="color: black;"><strong>CEP: <?= htmlspecialchars($cep_header); ?></strong></span>
                 <?php } else { ?>
                     <span style="color: black;"><strong>Informe seu CEP</strong></span>
                 <?php } ?>
+
             </div>
         </div>
     </div>

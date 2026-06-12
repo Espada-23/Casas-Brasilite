@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/Casas-Brasilite/style.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/contato.css">
+    <link rel="stylesheet" href="\Casas-Brasilite\partials-css\footer.css">
 </head>
 
 <body>
@@ -86,20 +87,21 @@
                 <h2>Envie sua mensagem</h2>
                 <p>Preencha o formulário abaixo que entraremos em contato.</p>
 
-                <form>
+                <form action="enviar.php" method="POST">
                     <div class="form-group">
                         <label for="nome">Nome completo <span>*</span></label>
-                        <input type="text" id="nome" placeholder="Digite seu nome">
+                        <input type="text" id="nome" name="nome" placeholder="Ex: Carlos Souza" required>
+
                     </div>
 
                     <div class="form-group">
                         <label for="email">E-mail <span>*</span></label>
-                        <input type="email" id="email" placeholder="Digite seu e-mail">
-                    </div>
+                        <input type="email" id="email" name="email" placeholder="Ex: constru@gmail.com" required>                    
+                    </div>      
 
                     <div class="form-group">
                         <label for="assunto">Assunto <span>*</span></label>
-                        <select id="assunto">
+                        <select id="assunto" name="assunto" required>
                             <option value="">Selecione um assunto</option>
                             <option value="duvida">Dúvida</option>
                             <option value="orcamento">Orçamento</option>
@@ -109,7 +111,7 @@
 
                     <div class="form-group">
                         <label for="mensagem">Mensagem <span>*</span></label>
-                        <textarea id="mensagem" rows="4" placeholder="Digite sua mensagem"></textarea>
+                        <textarea id="mensagem" name="mensagem" rows="4" placeholder="Digite sua mensagem ..." required></textarea>
                     </div>
 
                     <button type="submit" class="btn-enviar">
@@ -132,12 +134,12 @@
                         </svg>
                         <div>
                             <h3>Sede Administrativa</h3>
-                            <p>Av. das Construções, 1234<br>Jardim blabal<br>São Paulo - SP, CEP 01234-567</p>
+                            <p>R. Santo André, 680 - Boa Vista, <br>São Caetano do Sul</br>São Paulo - SP, CEP 09572-000</p>
                         </div>
                     </div>
 
                     <div class="mapa-img">
-                        <p></p>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3654.8841334496246!2d-46.56091152372297!3d-23.64432016464723!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5cec46ebe475%3A0x8d2c14858d37a05e!2sEscola%20Senai%20Armando%20de%20Arruda%20Pereira!5e0!3m2!1spt-BR!2sbr!4v1780958204394!5m2!1spt-BR!2sbr" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
             </div>

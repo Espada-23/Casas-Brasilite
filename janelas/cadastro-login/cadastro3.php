@@ -62,11 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="linha-campos-duplos">
                         <div class="grupo-campo">
                             <label>Senha</label>
-                            <input type="password" name='senha' placeholder="Ex: SeuNome123" required>
+                            <input type="password" name='senha' placeholder="Ex: SeuNome123" minlength="8" required>
                         </div>
                         <div class="grupo-campo">
                             <label>Confirmar Senha</label>
-                            <input type="password" name='confirmarsenha' placeholder="Ex: SeuNome123" required>
+                            <input type="password" name='confirmarsenha' placeholder="Ex: SeuNome123" minlength="8" required>
                         </div> 
                     </div>
                     
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     <div class="grupo-campo">
                         <label>Telefone</label>
-                        <input type="tel" pattern="\(\d{2}\)\s\d{4,5}-\d{4}" name='telefone' placeholder="Ex: 11 99999-9999" required>
+                        <input type="tel" pattern="\(\d{2}\)\s\d{4,5}-\d{4}" name='telefone' placeholder="Ex: (11) 99999-9999" required>
                     </div>
 
                     <div class="caixa-selecao-termos">
