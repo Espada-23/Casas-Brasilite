@@ -7,19 +7,6 @@ $produtos_carrinho = buscarItensCarrinhoAtual($pdo);
 $subtotal = 0;
 $frete = 0;
 
-$editar = isset($_GET['#editar']) ? [
-    'codigo' => 'OPA GALERA',
-] : null;
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id_produto = (int) $_POST['id_produto'] ?? null;
-    $qtd_atual = (int) $_POST['qtd'] ?? null;
-
-    if ($qtd_atual > 0) {
-        adicionarProdutoCarrinhoBanco($pdo, usuarioLogado(), $id_produto, $qtd_atual);
-    }
-}
-
 foreach ($produtos_carrinho as $produto) {
     $subtotal += (float) $produto['subtotal'];
     $frete += (float) $produto['frete'];
@@ -41,7 +28,6 @@ if ($subtotal > 200) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/Casas-Brasilite/style.css">
     <link rel="stylesheet" href="carrinho.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -75,13 +61,9 @@ if ($subtotal > 200) {
 
                         <?php foreach ($produtos_carrinho as $produto):
                             $id_prod = (int) $produto['id_produto'];
-                            isset($_GET['editar']) ? $editar[
-                                'id_produto' => $id_prod,
-                            ] : null;
                             $qtd = (int) $produto['quantidade'];
                             $preco_total_item = (float) $produto['subtotal'];
                             $imagem = !empty($produto['caminho_imagem']) ? '../../' . $produto['caminho_imagem'] : '../../uploads/sem-foto.webp';
-
                         ?>
                             <div class="item-carrinho">
                                 <div class="info-produto-carrinho">
@@ -92,13 +74,7 @@ if ($subtotal > 200) {
                                         <a href="/Casas-Brasilite/janelas/janela-produto/janela-produto.php?id=<?= $id_prod ?>">
                                             <h4><?= htmlspecialchars($produto['nome_produto']) ?></h4>
                                         </a>
-                                        <p class="ref-produto">Qtd: <?php echo (!empty($editar) && isset($editar['codigo']) ? $editar['codigo'] : $qtd); ?> <a href="?editar=<?= $id_prod ?>"><span style="padding-left: 10px"><i class="fas fa-pencil-alt"></i></span></a></p>
-
-                                        <!-- <form action="carrinho.php" method="post">
-                                            <input type="hidden" name="id_produto" value="<?= $id_prod ?>">
-                                            <input type="number" name="qtd" id="qtd" min="1"  value="<?= $qtd ?>" style=" all: unset; width: 30px;">
-                                        </form>
-                                        <i class="fas fa-pencil-alt"></i> -->
+                                        <p class="ref-produto">Qtd: <?= $qtd ?></p>
                                     </div>
                                 </div>
 

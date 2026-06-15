@@ -1,13 +1,9 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once '../Crud/init.php';
 require_once '../Crud/crud.php';
-
-$nome_imagem_1 = $_SESSION['nome_imagem_1'] ?? "Imagem Principal";
-$nome_imagem_2 = $_SESSION['nome_imagem_2'] ?? "Imagem 2";
-$nome_imagem_3 = $_SESSION['nome_imagem_3'] ?? "Imagem 3";
-$nome_imagem_4 = $_SESSION['nome_imagem_4'] ?? "Imagem 4";
-$obrigatoria = "(Obrigatória)";
-$opcional = "(Opcional)";
 
 $acao = $_GET['acao'] ?? 'listar';
 $id = $_GET['id'] ?? null;
@@ -20,36 +16,7 @@ $marca_filtrado = isset($_GET['marca_filtrado']) ? trim($_GET['marca_filtrado'])
 $id_categoria_selecionada = $_GET['id_categoria'] ?? '';
 
 
-if ($_SERVER['REQUEST_METHOD'] === '=== POST' && ($acao === 'atualizar_fotos')) {
-    $_SESSION['dados_salvos'] = $_POST;
-
-    for ($i = 1; $i <= 4; $i++) {
-        $campo = 'foto_produto_' . $i;
-
-        if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] == 0) {
-            $_SESSION['nome_imagem_' . $i] = $_FILES[$campo]['name'];
-        }
-    }
-
-    include 'produtos.php';
-    exit;
-}
-
-header("Location: produtos.php");
-exit;
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($acao === 'salvar_novo' || $acao === 'salvar_edicao')) {
-    $_SESSION['dados_salvos'] = $_POST;
-
-    for ($i = 1; $i <= 4; $i++) {
-
-    $campo = 'foto_produto_' . $i;
-
-    if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] == 0) {
-        $_SESSION['nome_imagem_' . $i] = $_FILES[$campo]['name'];
-    }
-    }
-
     $dados_produto = [
         'idCategoria' => $_POST['id_categoria'] ?? '',
         'sku' => $_POST['sku'] ?? '',
@@ -65,6 +32,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($acao === 'salvar_novo' || $acao =
     ];
 
     if ($acao === 'salvar_novo') {
+        $stmtSku = $pdo->prepare("SELECT COUNT(*) AS total FROM produto WHERE sku = ?");
+        $stmtSku->execute([$dados_produto['sku']]);
+        $skuExiste = $stmtSku->fetch(PDO::FETCH_ASSOC)['total'];
+
+        if ($skuExiste > 0) {
+            die("Erro: já existe um produto cadastrado com esse SKU.");
+        }
+
         $id_produto_novo = create($pdo, 'produto', $dados_produto);
 
         $id_estoque_novo = create($pdo, 'estoque', [
@@ -104,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($acao === 'salvar_novo' || $acao =
             }
         }
 
-        unset($_SESSION['dados_salvos']);
         header('Location: produtos.php?mensagem=Criado com sucesso');
         exit;
     }
@@ -177,6 +151,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($acao === 'salvar_novo' || $acao =
         }
 
         unset($_SESSION['dados_salvos']);
+        unset($_SESSION['nome_imagem_1']);
+        unset($_SESSION['nome_imagem_2']);
+        unset($_SESSION['nome_imagem_3']);
+        unset($_SESSION['nome_imagem_4']);
+
         header('Location: produtos.php?mensagem=Editado com sucesso');
         exit;
     }
@@ -222,6 +201,7 @@ $categorias = readAll($pdo, 'categoria');
     <?php
     $pagina = "produtos";
     require_once("../partials/sidebar.php");
+    $form_dados = $_SESSION['dados_salvos'] ?? [];
     ?>
 
     <?php
@@ -453,12 +433,6 @@ $categorias = readAll($pdo, 'categoria');
 
                     <?php endif; ?>
 
-                    <?php if (empty($pesquisa)): ?>
-                        <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
-                            <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
-                            Por favor, digite um nome para realizar a busca.
-                        </div> <?php endif; ?>
-
 
                     <div class="container-tabela-produto">
                         <div class="tabela-wrapper">
@@ -558,7 +532,7 @@ $categorias = readAll($pdo, 'categoria');
         </div>
 
     <?php
-    elseif ($acao === 'novo' || $acao === 'editar' || $acao === 'atualizar_fotos'):
+    elseif ($acao === 'novo' || $acao === 'editar'):
         $produto = null;
         $estoque = null;
         $url_post = "?acao=salvar_novo";
@@ -604,8 +578,10 @@ $categorias = readAll($pdo, 'categoria');
                                             <option value="">Escolha a Categoria</option>
 
                                             <?php if (!empty($categorias)): ?>
-                                                <?php foreach ($categorias as $cat): ?>
-                                                    <option value="<?= $cat['id_categoria'] ?>" <?= ($produto['idCategoria'] ?? '') == $cat['id_categoria'] ? 'selected' : '' ?>>
+                                                <?php foreach ($categorias as $cat): 
+                                                    $cat_selecionada = $form_dados['id_categoria'] ?? $produto['idCategoria'] ?? '';
+                                                ?>
+                                                    <option value="<?= $cat['id_categoria'] ?>" <?= $cat_selecionada == $cat['id_categoria'] ? 'selected' : '' ?>>
                                                         <?= htmlspecialchars($cat['nome_categoria']) ?>
                                                     </option>
                                                 <?php endforeach; ?>
@@ -615,13 +591,14 @@ $categorias = readAll($pdo, 'categoria');
                                     </div>
                                     <div class="campo">
                                         <label>SKU <span>*</span></label>
-                                        <input type="text" placeholder="EX: SKU001" name="sku" value="<?= $produto['sku'] ?? '' ?>" required>
+                                        <input type="text" placeholder="EX: SKU001" name="sku" value="<?= $form_dados['sku'] ?? $produto['sku'] ?? ''; ?>" required>
                                     </div>
                                     <div class="campo">
                                         <label>Status do Produto <span>*</span></label>
                                         <select name="status_produto">
-                                            <option value="ativo" <?= ($produto['status_produto'] ?? '') === 'ativo' ? 'selected' : '' ?>>Ativo</option>
-                                            <option value="inativo" <?= ($produto['status_produto'] ?? '') === 'inativo' ? 'selected' : '' ?>>Inativo</option>
+                                            <?php $produto_selecionado = $form_dados['status_produto'] ?? $produto['status_produto'] ?? ''; ?>
+                                            <option value="ativo" <?= $produto_selecionado === 'ativo' ? 'selected' : '' ?>>Ativo</option>
+                                            <option value="inativo" <?= $produto_selecionado === 'inativo' ? 'selected' : '' ?>>Inativo</option>
                                         </select>
                                     </div>
                                 </div>
@@ -629,11 +606,11 @@ $categorias = readAll($pdo, 'categoria');
                                 <div class="main-form">
                                     <div class="campo">
                                         <label>Nome do Produto <span>*</span></label>
-                                        <input type="text" placeholder="Digite o nome do produto" name="nome_produto" value="<?= $produto['nome_produto'] ?? '' ?>" required>
+                                        <input type="text" placeholder="Digite o nome do produto" name="nome_produto" value="<?= $form_dados['nome_produto'] ?? $produto['nome_produto'] ?? ''; ?>" required>
                                     </div>
                                     <div class="campo">
                                         <label>Marca</label>
-                                        <input type="text" placeholder="Digite a marca (opcional)" name="marca" value="<?= $produto['marca'] ?? '' ?>">
+                                        <input type="text" placeholder="Digite a marca (opcional)" name="marca" value="<?= $form_dados['marca'] ?? $produto['marca'] ?? ''; ?>">
                                     </div>
                                 </div>
 
@@ -641,106 +618,69 @@ $categorias = readAll($pdo, 'categoria');
                                     <div class="campo">
                                         <label>Unidade de Medida <span>*</span></label>
                                         <select name="unidade_medida" required>
-                                            <option value="UN" <?= ($produto['unidade_medida'] ?? '') == 'UN' ? 'selected' : '' ?>>UN - Unidade</option>
-                                            <option value="CM" <?= ($produto['unidade_medida'] ?? '') == 'CM' ? 'selected' : '' ?>>CM - Centímetro</option>
-                                            <option value="M" <?= ($produto['unidade_medida'] ?? '') == 'M' ? 'selected' : '' ?>>M - Metro</option>
-                                            <option value="MM" <?= ($produto['unidade_medida'] ?? '') == 'MM' ? 'selected' : '' ?>>MM - Milímetro</option>
-                                            <option value="M2" <?= ($produto['unidade_medida'] ?? '') == 'M2' ? 'selected' : '' ?>>M2 - Metros Quadrados</option>
-                                            <option value="M3" <?= ($produto['unidade_medida'] ?? '') == 'M3' ? 'selected' : '' ?>>M3 - Metros Cúbicos</option>
-                                            <option value="KG" <?= ($produto['unidade_medida'] ?? '') == 'KG' ? 'selected' : '' ?>>KG - Quilograma</option>
-                                            <option value="G" <?= ($produto['unidade_medida'] ?? '') == 'G' ? 'selected' : '' ?>>G - Grama</option>
-                                            <option value="T" <?= ($produto['unidade_medida'] ?? '') == 'T' ? 'selected' : '' ?>>T - Tonelada</option>
+                                            <?php $unidade_selecionada = $form_dados['unidade_medida'] ?? $produto['unidade_medida'] ?? 'UN'; ?>
+                                            <option value="UN" <?= $unidade_selecionada == 'UN' ? 'selected' : '' ?>>UN - Unidade</option>
+                                            <option value="CM" <?= $unidade_selecionada == 'CM' ? 'selected' : '' ?>>CM - Centímetro</option>
+                                            <option value="M" <?= $unidade_selecionada == 'M' ? 'selected' : '' ?>>M - Metro</option>
+                                            <option value="MM" <?= $unidade_selecionada == 'MM' ? 'selected' : '' ?>>MM - Milímetro</option>
+                                            <option value="M2" <?= $unidade_selecionada == 'M2' ? 'selected' : '' ?>>M2 - Metros Quadrados</option>
+                                            <option value="M3" <?= $unidade_selecionada == 'M3' ? 'selected' : '' ?>>M3 - Metros Cúbicos</option>
+                                            <option value="KG" <?= $unidade_selecionada == 'KG' ? 'selected' : '' ?>>KG - Quilograma</option>
+                                            <option value="G" <?= $unidade_selecionada == 'G' ? 'selected' : '' ?>>G - Grama</option>
+                                            <option value="T" <?= $unidade_selecionada == 'T' ? 'selected' : '' ?>>T - Tonelada</option>
                                         </select>
                                     </div>
                                     <div class="campo">
                                         <label>Preço Unitário <span>*</span></label>
-                                        <input type="number" step="0.01" placeholder="R$ 0.00" name="preco_unitario" value="<?= $produto['preco_unitario'] ?? '' ?>" required>
+                                        <input type="number" step="0.01" placeholder="R$ 0.00" name="preco_unitario" value="<?= $form_dados['preco_unitario'] ?? $produto['preco_unitario'] ?? ''; ?>" required>
                                     </div>
                                     <div class="campo">
                                         <label>Desconto (R$)</label>
-                                        <input type="number" step="0.01" placeholder="R$ 0.00" name="desconto" value="<?= $produto['desconto'] ?? '0' ?>">
+                                        <input type="number" step="0.01" placeholder="R$ 0.00" name="desconto" value="<?= $form_dados['desconto'] ?? $produto['desconto'] ?? ''; ?>">
                                     </div>
                                     <div class="campo">
                                         <label>Custos (R$)</label>
-                                        <input type="number" step="0.01" placeholder="R$ 0.00" name="custo_produto" value="<?= $produto['custo_produto'] ?? '0' ?>">
+                                        <input type="number" step="0.01" placeholder="R$ 0.00" name="custo_produto" value="<?= $form_dados['custo_produto'] ?? $produto['custo_produto'] ?? ''; ?>">
                                     </div>
                                     <div class="campo">
                                         <label>Frete (R$)</label>
-                                        <input type="number" step="0.01" placeholder="R$ 0.00" name="frete" value="<?= $produto['frete'] ?? '0' ?>">
+                                        <input type="number" step="0.01" placeholder="R$ 0.00" name="frete" value="<?= $form_dados['frete'] ?? $produto['frete'] ?? ''; ?>">
                                     </div>
                                 </div>
 
                                 <div class="top-form">
                                     <div class="campo">
                                         <label>Quantidade em Estoque <span>*</span></label>
-                                        <input type="number" placeholder="Ex: 100" name="quantidade" value="<?= $estoque['quantidade_atual'] ?? '1' ?>" min="0" required>
+                                        <input type="number" placeholder="Ex: 100" name="quantidade" value="<?= $form_dados['quantidade_atual'] ?? $produto['quantidade_atual'] ?? '1'; ?>" min="0" required>
                                     </div>
                                     <div class="campo">
                                         <label>Estoque Mínimo <span>*</span></label>
-                                        <input type="number" placeholder="Ex: 10" name="estoque_minimo" value="<?= $estoque['estoque_minimo'] ?? '1' ?>" min="1" required>
+                                        <input type="number" placeholder="Ex: 10" name="estoque_minimo" value="<?= $form_dados['estoque_minimo'] ?? $produto['estoque_minimo'] ?? '1'; ?>" min="1" required>
                                     </div>
                                     <div class="campo">
                                         <label>Local de Armazenamento</label>
-                                        <input type="text" placeholder="Ex: Corredor A1" name="local_armazenamento" value="<?= $estoque['local_armazenamento'] ?? '' ?>">
+                                        <input type="text" placeholder="Ex: Corredor A1" name="local_armazenamento" value="<?= $form_dados['local_armazenamento'] ?? $produto['local_armazenamento'] ?? ''; ?>">
                                     </div>
                                 </div>
 
                                 <div class="main-form">
-                                <form action="produtos_fotos.php?acao=<?= $acao ?><?= isset($id) ? '&id='.$id : '' ?>" method="post" enctype="multipart/form-data">
-                                    <div class="campo">
-                                        <label>Imagem Principal</label>
-                                        <input type="file" onchange="this.form.action='produtos.php?acao=atualizar_fotos'; this.form.submit();" name="foto_produto_1" id="foto_principal" enctype="multipart/form-data" accept="image/png, image/jpeg, image/webp">
-                                        <label for="foto_principal" class="upload-label">
-                                            <span class="icon">+</span>
-                                            <span class="title"><?= $_SESSION['nome_imagem_1'] ?? $nome_imagem_1; ?></span>
-                                            <?php echo (!($_SESSION['nome_imagem_2']) ? '<span class="subtitle"><?= $brigatoria ?? ""; ?></span>' : 'Obrigatório'); ?>
-                                        </label>
-                                    </div>
+                                    <?php require_once "produtos_fotos.php"; ?>
 
-                                    <div class="campo">
-                                        <label>Imagem 2</label>
-                                        <input type="file" onchange="this.form.action='produtos.php?acao=atualizar_fotos'; this.form.submit();" name="foto_produto_2" id="foto_2" accept="image/png, image/jpeg, image/webp">
-                                        <label for="foto_2" class="upload-label">
-                                            <span class="icon">+</span>
-                                            <span class="title"><?= $_SESSION['nome_imagem_2'] ?? $nome_imagem_2; ?></span>
-                                            <?php echo (!($_SESSION['nome_imagem_2']) ? '<span class="subtitle"><?= $opcional ?? ""; ?></span>' : 'Opcional'); ?>
-                                        </label>
-                                    </div>
-
-                                    <div class="campo">
-                                        <label>Imagem 3</label>
-                                        <input type="file" onchange="this.form.action='produtos.php?acao=atualizar_fotos'; this.form.submit();" name="foto_produto_3" id="foto_3" accept="image/png, image/jpeg, image/webp">
-                                        <label for="foto_3" class="upload-label">
-                                            <span class="icon">+</span>
-                                            <span class="title"><?= $_SESSION['nome_imagem_3'] ?? $nome_imagem_3; ?></span>
-                                            <?php echo (!($_SESSION['nome_imagem_2']) ? '<span class="subtitle"><?= $opcional ?? ""; ?></span>' : 'Opcional'); ?>
-                                        </label>
-                                    </div>
-
-                                    <div class="campo">
-                                        <label>Imagem 4</label>
-                                        <input type="file" onchange="this.form.action='produtos.php?acao=atualizar_fotos'; this.form.submit();" name="foto_produto_4" id="foto_4" accept="image/png, image/jpeg, image/webp">
-                                        <label for="foto_4" class="upload-label">
-                                            <span class="icon">+</span>
-                                            <span class="title"><?= $_SESSION['nome_imagem_4'] ?? $nome_imagem_4; ?></span>
-                                            <?php echo (!($_SESSION['nome_imagem_2']) ? '<span class="subtitle"><?= $opcional ?? ""; ?></span>' : 'Opcional'); ?>
-                                        </label>
-                                    </div>
-                                </form>
-                                    <span style="margin-top:-15px;">Arraste e solte até 4 imagens (ou clique para selecionar). Tipos aceitos: JPG, PNG, WEBP.</span>
+                                    <span style="margin-top:-15px;">Selecione até 4 imagens. Tipos aceitos: JPG, PNG, WEBP.</span>
                                 </div>
                             </div>
                             <div class="botton-form">
                                 <div class="campo">
+                                    <?php var_dump($form_dados); ?>
                                     <label>Descrição da Imagem (Acessibilidade - Alt)</label>
-                                    <input type="text" placeholder="Ex: Saco de cimento 50kg" name="descricao_imagem">
+                                    <textarea name="descricao_imagem" placeholder="Ex: Saco de cimento 50kg"><?= $form_dados['descricao_imagem'] ?? $produto['descricao_imagem'] ?? ''; ?></textarea>
                                 </div>
+
                                 <div class="descricao">
                                     <label>Descrição de Produto</label>
-                                    <textarea placeholder="Digite os detalhes do produto aqui..." name="descricao_produto"><?= $produto['descricao_produto'] ?? '' ?></textarea>
+                                    <textarea placeholder="Digite os detalhes do produto aqui..." name="descricao_produto"><?= $form_dados['descricao_produto'] ?? $produto['descricao_produto'] ?? ''; ?></textarea>
                                 </div>
                             </div>
-
                     </div>
                     <div class="botoes">
                         <a href="?acao=listar">Cancelar</a>

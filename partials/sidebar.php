@@ -46,7 +46,7 @@ $nome_usuario = $_SESSION['login_admin']['usuario'] ?? 'Admin';
 
         <div class="lista-sidebar">
 
-            <a href="../Dashboard/produtos.php"
+            <a href="/Casas-Brasilite/Dashboard/produtos.php"
                 class="<?= ($pagina == "produtos") ? "active" : "" ?>">
 
                 <i class="bi bi-box-seam-fill"></i>
@@ -127,11 +127,12 @@ $nome_usuario = $_SESSION['login_admin']['usuario'] ?? 'Admin';
 
             <i class="bi bi-person-circle"></i>
 
-            <div class="user-name">
+                <div class="user-name">
+            <a href="/Casas-Brasilite/janelas/configuracao/configuracao.php">                
                 <p><?= $nome_usuario ?></p>
                 <span>Administrador</span>
-
-            </div>
+            </a>
+        </div>
 
         </div>
 

@@ -191,20 +191,6 @@ $queryBase = http_build_query([
                         </div>
                     </form>
 
-                    <?php if (empty($cadastrados)): ?>
-                        <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
-                            <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
-                            Nenhum cliente encontrado.
-                        </div>
-                        
-
-
-                     <?php elseif (empty($pesquisa)):?> 
-                        <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
-                            <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
-                            Por favor, digite um nome para realizar a busca.
-                        </div>      <?php endif; ?> 
-
                     <form method="GET" action="clientes.php">
                         <?php if (!empty($busca)): ?>
                             <input type="hidden" name="busca" value="<?= htmlspecialchars($busca) ?>">
@@ -246,6 +232,19 @@ $queryBase = http_build_query([
                     </form>
                 </div>
 
+                <?php if (empty($cadastrados)): ?>
+                        <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
+                            <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
+                            Nenhum cliente encontrado.
+                        </div>
+
+
+                    <?php elseif (empty($pesquisa)): ?>
+                        <div class="item-resultado sem-resultado" style="padding: 16px; color: #9ca3af; text-align: center; font-size: 14px;">
+                            <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
+                            Por favor, digite um nome para realizar a busca.
+                        </div>
+                    <?php endif; ?>
 
                 <div class="grid-clientes" style="margin-top: 2em;">
                     <?php foreach ($cadastrados as $usuario) {

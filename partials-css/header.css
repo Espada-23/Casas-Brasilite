@@ -177,10 +177,9 @@
         color: white;
     }
 
-
     .acoes-usuario {
         display: flex;
-        gap: 30px;
+        gap: 30px
     }
 
     .icone-acao {
@@ -376,6 +375,7 @@
         gap: 10px;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 18px;
+        position: fixed;
         position: absolute;
         margin-top: 290px;
         background-color: var(--branco);
@@ -389,18 +389,18 @@
         border: 1px solid var(--laranja);
         border-radius: 6px;
         gap: 10px;
-        width: 630px;
+        width: 575px;
         max-height: 300px;
         overflow-x: hidden;
         overflow-y: scroll;
-        padding: 10px;
+        padding: 5px;
         position: absolute;
         z-index: 10;
         background: var(--branco);
     }
 
     .item-resultado {
-        padding: 12px 15px;
+        padding: 10px 12px;
         border-bottom: 1px solid #e5e7eb;
         transition: 0.2s ease-in-out;
     }
@@ -422,7 +422,7 @@
 
     .info-resultado {
         display: grid;
-        grid-template-columns: repeat(2, 300px);
+        grid-template-columns: repeat(2, 400px);
         align-items: center;
         width: 100%;
     }

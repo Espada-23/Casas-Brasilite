@@ -1,0 +1,278 @@
+:root {
+    --primary: #274db6;
+    --green: #22C55E;
+    --red: #EF4444;
+    --orange: #F97316;
+    --orange-hover: #c05000;
+    --primary-color: #074880;
+    --secondary-color: #C26931;
+    --orange-grafico: #ff7700;
+    --blue-grafico: #2b09ec;
+    --background-color: #fdfdfd;
+    --title: #04196B;
+    --top-header: #032949e3;
+    --text-color: #FFFFFF;
+    --border: #e5e7eb;
+    --border-fraca: #e9ebee46;
+    --detalhes: #032949;
+    --icon-box: #aaaaaa;
+    --text-info: #707070b4;
+    --box-critico: #fa3e3e71;
+    --box-atencao: #f9c74f71;
+    --text-atencao: #ffd902;
+    --text-critico: #ff0000;
+    --border-lista: #e5e7eb34;
+    --footer-sidebar: #031349;
+    
+    --primary-blue: #0A1F3C;
+    --accent-orange: #F28C07;
+    --accent-green: #25D366;
+    --cinza-fundo: #f4f7f9;
+    --bg-white: #FFFFFF;
+    --text-gray: #6B7280;
+    --border-color: #E5E7EB;
+    --font-main: 'Arial', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--background-color);
+    color: var(--detalhes);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+li {
+    list-style: none;
+}
+
+/* ── Cabeçalho da página ── */
+.top-header {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.top-header h1 {
+    font-size: 1.4rem;
+    color: var(--title);
+}
+
+/* ── Alertas de sucesso / erro ── */
+.alerta {
+    max-width: 1200px;
+    margin: 0 auto 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.alerta-sucesso {
+    background-color: #dcfce7;
+    border: 1px solid var(--green);
+    color: #166534;
+}
+
+.alerta-erro {
+    background-color: #fee2e2;
+    border: 1px solid var(--red);
+    color: #991b1b;
+}
+
+/* ── Card principal ── */
+.container-main {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 30px 30px;
+    background-color: var(--text-color);
+    border-radius: 15px;
+    border: 1px solid var(--border);
+}
+
+/* ── Ícones dentro do card ── */
+.container-main i {
+    color: var(--primary);
+    font-size: 1.3rem;
+}
+
+/* ── Seções (cards internos) ── */
+.card-settings,
+.card-endereco,
+.info-conta,
+.privacidade {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 24px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Remove a borda da última seção antes dos botões */
+.privacidade {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+/* ── Título de cada seção ── */
+.title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 24px;
+}
+
+.title h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--title);
+}
+
+/* ── Grid de campos ── */
+.informacoes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+/* Endereço tem 5 campos: 4 na primeira linha, 1 na segunda */
+.card-endereco .informacoes {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.card-endereco .informacoes .campo:last-child {
+    grid-column: span 1;
+}
+
+/* Senha: 2 colunas lado a lado */
+.privacidade .informacoes {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+/* Perfil do usuário: ocupa só 1 coluna */
+.info-conta .informacoes {
+    grid-template-columns: 1fr;
+}
+
+/* ── Campo individual ── */
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campo label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--detalhes);
+}
+
+/* ── Inputs e pseudo-input (perfil) ── */
+.form-info input,
+.form-info p {
+    width: 100%;
+    border: 1px solid var(--border);
+    background-color: var(--cinza-fundo);
+    color: var(--detalhes);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-info input:focus {
+    border-color: var(--primary);
+    background-color: #fff;
+}
+
+/* ── Aviso de senha ── */
+.mensagem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(10, 75, 216, 0.08);
+    border: 1px solid var(--primary);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--primary);
+    margin-top: 8px;
+}
+
+.mensagem i {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* ── Botões ── */
+.botoes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    margin-top: 8px;
+    border-top: 1px solid var(--border);
+}
+
+.sair,
+.salvar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: var(--text-color);
+}
+
+.sair {
+    background-color: var(--red);
+}
+
+.sair:hover {
+    background-color: #9c0202;
+}
+
+.salvar {
+    background-color: var(--orange);
+}
+
+.salvar:hover {
+    background-color: var(--orange-hover);
+}
+
+.salvar i,
+.sair i {
+    color: var(--text-color);
+    font-size: 1rem;
+}

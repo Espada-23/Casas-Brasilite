@@ -149,3 +149,4 @@ function buscarItensCarrinhoAtual(PDO $pdo): array
 
     return $produtos;
 }
+

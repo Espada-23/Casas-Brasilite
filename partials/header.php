@@ -101,7 +101,7 @@ $res = $_SESSION['resultados_produtos'] ?? null;
             </a>
 
             <?php if (usuarioLogado()): ?>
-                <a href="../janelas/configuracao/configuracao.php" class="icone-acao" title="Clique para sair">
+                <a href="/Casas-Brasilite/janelas/configuracao/configuracao.php" class="icone-acao" title="Clique para configurar">
                     <i class="far fa-user"></i>
                     <span><?= htmlspecialchars($_SESSION['usuario']['nome']) ?></span>
                 </a>
@@ -117,7 +117,6 @@ $res = $_SESSION['resultados_produtos'] ?? null;
                 <span class="badge-carrinho"><?= $total_itens_carrinho ?></span>
                 <span>Carrinho</span>
             </a>
-
         </div>
     </div>
 </header>

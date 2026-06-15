@@ -239,6 +239,18 @@ body {
     background: transparent;
 }
 
+.item-resultado {
+    border-bottom: 1px solid #e5e7eb;
+    width: auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.item-resultado:last-child {
+    border-bottom: none;
+}
+
+
 .grid-clientes {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
