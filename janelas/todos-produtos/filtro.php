@@ -82,13 +82,11 @@ function buscarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $ordem
 
     $sql .= " GROUP BY p.id_produto";
 
-    // estrelas de avaliação
     if (!empty($avaliacao)) {
         $inAvaliacao = implode(',', $avaliacao);
         $sql .= " HAVING ROUND(media_avaliacao) IN ($inAvaliacao)";
     }
 
-    // Ordenação dos produtos
     if ($ordem == 'menor_preco') {
         $sql .= " ORDER BY p.preco_unitario ASC";
     } elseif ($ordem == 'maior_preco') {
@@ -146,7 +144,6 @@ function contarProdutos($pdo, $categoria, $marca, $preco_min, $preco_max, $avali
     if ($preco_max !== null && $preco_max !== '') {
         $sql .= " AND p.preco_unitario <= '$preco_max'";
     }
-    // diposnivel/ nao disponivel
 
     if ($disponibilidade == 'estoque') {
         $sql .= " AND e.quantidade_atual > 0";

@@ -291,7 +291,7 @@ foreach ($todosPedidosKpi as $pedidoKpi) {
                     </div>
 
                     <div class="status">
-                        <select name="status" onchange="this.form.submit()" <?= $pedido['status_pedido'] === 'cancelado' ? 'disabled' : '' ?>>
+                        <select name="status" onchange="this.form.submit()" <?= $pedidos['status_pedido'] === 'cancelado' ? 'disabled' : '' ?>>
                             <option value="">Todos os status</option>
                             <option value="processando" <?= $statusFiltro == 'processando' ? 'selected' : '' ?>>Processando</option>
                             <option value="enviado" <?= $statusFiltro == 'enviado' ? 'selected' : '' ?>>Enviado</option>

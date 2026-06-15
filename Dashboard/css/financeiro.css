@@ -464,3 +464,35 @@ tbody tr:hover {
     color: var(--navy);
     font-size: 20px;
 }
+
+
+
+.excel {
+    margin-bottom:20px; 
+    display:flex; 
+    justify-content:flex-end;
+    width:100%;
+    background: var(--text-color);
+    margin-top: 20px;
+
+}
+
+.excel a {
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    border-radius: 6px;
+    color: var(--primary-color);
+    transition: .3s;
+    font-weight: 600;
+    font-size: .85rem;
+    background:#28a745;
+    color:#fff;
+    padding:12px 18px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}

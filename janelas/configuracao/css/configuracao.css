@@ -1,5 +1,5 @@
 :root {
-    --primary: #1D4ED8;
+    --primary: #274db6;
     --green: #22C55E;
     --red: #EF4444;
     --orange: #F97316;
@@ -27,7 +27,7 @@
     --primary-blue: #0A1F3C;
     --accent-orange: #F28C07;
     --accent-green: #25D366;
-    --bg-light: #F9FAFB;
+    --cinza-fundo: #f4f7f9;
     --bg-white: #FFFFFF;
     --text-gray: #6B7280;
     --border-color: #E5E7EB;
@@ -38,6 +38,11 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
@@ -46,5 +51,162 @@ body {
     color: var(--detalhes);
     font-size: 14px;
     line-height: 1.5;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+li {
+    list-style: none;
+}
+
+.top-header {
+    max-width: 1500px;
+    margin: 20px auto;
+    padding: 10px 15px;
     display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+}
+
+.container-main {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px 30px;
+    background-color: var(--text-color);
+    border-radius: 15px;
+    border: 1px solid var(--border);
+}
+
+.card-settings,
+.card-endereco,
+.info-conta {
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+    flex-direction: column;
+}
+
+.title {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    padding: 15px 0 0;
+}
+
+.container-main i {
+    color: var(--primary);
+    font-size: 1.5em;
+}
+
+.informacoes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.campo label {
+    font-weight: 500;
+}
+
+.form-info input{
+    border: 1px solid var(--border);
+    background-color: var(--cinza-fundo);
+    color: var(--detalhes);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+    outline: none;
+}
+
+.form-info p {
+    border: 1px solid var(--border);
+    background-color: var(--cinza-fundo);
+    color: var(--detalhes);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+    outline: none;
+}
+
+.privacidade form {
+    display: grid;
+    display: flex;
+    gap: 10px;
+    min-width: 1200px;
+    width: 100%;
+}
+
+.privacidade form .campo input {
+    outline: none;
+    border: 1px solid var(--border);
+    padding: 10px;
+    border-radius: 6px;
+    color: var(--detalhes);
+    background-color: var(--cinza-fundo);
+    width: 565px;
+}
+
+.mensagem {
+    display: flex;
+    gap: 10px;
+    background: rgba(10, 75, 216, 0.164);
+    border: 1px solid var(--primary);
+    padding: 5px;
+    border-radius: 8px;
+    align-items: center;
+    font-size: .9em;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.botoes form {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sair {
+    border: none;
+    background-color: var(--red);
+    padding: 10px 20px;
+    border-radius: 6px;
+    color: var(--text-color);
+}
+
+.sair:hover {
+    background-color: #9c0202;
+}
+
+.salvar {
+    display: flex;
+    border: none;
+    background-color: var(--orange);
+    padding: 10px;
+    border-radius: 6px;
+    gap: 10px;
+    color: var(--text-color);
+}
+
+.salvar i {
+    color: var(--text-color);
+    font-size: 1em;
+}
+
+.salvar:hover {
+    background-color: var(--orange-hover);
 }

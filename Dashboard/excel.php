@@ -1,12 +1,9 @@
 <?php
-// Importa o crud e a conexão PDO ($pdo)
 require_once '../Crud/crud.php';
 require_once '../Crud/init.php';
 
-// VERIFICAÇÃO ESSENCIAL: Só executa a exportação se o botão foi clicado (?exportar=true)
 if (isset($_GET['exportar']) && $_GET['exportar'] == 'true') {
     try {
-        // Consulta SQL TOTALMENTE CORRIGIDA com base no seu arquivo .sql real
         $sql = "
  
 
@@ -71,7 +68,6 @@ exit;
         exit;
     }
 }   
-// Se a URL NÃO tiver '?exportar=true', o PHP ignora o bloco acima e continua para o HTML abaixo
 ?>
 
 <!DOCTYPE html>

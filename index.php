@@ -55,6 +55,7 @@ $melhoresAvaliados = $stmt_melhores->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body>
@@ -165,11 +166,22 @@ $melhoresAvaliados = $stmt_melhores->fetchAll(PDO::FETCH_ASSOC);
                     <div class="grid-produtos">
 
                         <?php foreach ($melhoresAvaliados as $produto): ?>
+                            <?php
+                            $preco_original = (float)$produto['preco_unitario'];
+                            $desconto_reais = (float)$produto['desconto'];
+                            $preco_final = max(0, $preco_original - $desconto_reais);
+                            $porcentagem_desconto = 0;
+
+                            if ($desconto_reais > 0 && $preco_original > 0) {
+                                $porcentagem_desconto = round(($desconto_reais / $preco_original) * 100);
+                            }
+                            ?>
+
                             <div class="cartao-produto">
 
                                 <?php if (!empty($produto['desconto']) && $produto['desconto'] != 0): ?>
                                     <span class="selo-desconto">
-                                        <?= round($produto['desconto'], 0) ?>%
+                                        <?= $porcentagem_desconto ?>%
                                     </span>
                                 <?php endif; ?>
 
@@ -189,7 +201,7 @@ $melhoresAvaliados = $stmt_melhores->fetchAll(PDO::FETCH_ASSOC);
                                     </h4>
 
                                     <p class="preco-produto">
-                                        R$ <?= number_format($produto['preco_unitario'], 2, ',', '.') ?>
+                                        R$ <?= number_format($preco_final, 2, ',', '.') ?>
                                     </p>
 
                                     <?php if (!empty($produto['desconto']) && $produto['desconto'] > 0): ?>
@@ -218,7 +230,7 @@ $melhoresAvaliados = $stmt_melhores->fetchAll(PDO::FETCH_ASSOC);
                                         $parcelas = 10;
                                     }
 
-                                    $valorParcela = $produto['preco_unitario'] / $parcelas;
+                                    $valorParcela = $preco_final / $parcelas;
                                     ?>
 
                                     <p class="parcelamento">

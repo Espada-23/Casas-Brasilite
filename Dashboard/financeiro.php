@@ -16,8 +16,6 @@ $stmt = $pdo->query("
 ");
 $itens_vendidos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
-// Cusos
-
 $stmt = $pdo->query("
     SELECT SUM(m.quantidade * p.custo_produto) AS total
     FROM movimentacao m
@@ -29,13 +27,9 @@ $stmt = $pdo->query("
 
 $custos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
-// Lucro
-
 $lucroLiquido = $faturamento - $custos;
 
 $margin_lucro = $faturamento > 0 ? ($lucroLiquido / $faturamento) * 100 : 0;
-
-// transações
 
 $paginaAtual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 
@@ -65,11 +59,79 @@ $stmtTotal = $pdo->query("SELECT COUNT(*) as total FROM pagamento");
 $totalRegistros = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
 
 $totalPaginas = ceil($totalRegistros / $limite);
+
+if (isset($_GET['exportar']) && $_GET['exportar'] == 'true') {
+
+    try {
+
+        $sql = "
+            SELECT
+                pr.nome_produto AS produto,
+                SUM(m.quantidade) AS quantidade_vendida,
+                pr.preco_unitario AS valor_unitario,
+                SUM(m.quantidade * pr.preco_unitario) AS valor_total
+
+            FROM pagamento p
+
+            INNER JOIN movimentacao m
+                ON p.id_pagamento = m.idPagamento
+
+            INNER JOIN estoque e
+                ON m.idEstoque = e.id_estoque
+
+            INNER JOIN produto pr
+                ON e.idProduto = pr.id_produto
+
+            WHERE
+                p.status_pagamento = 'pago'
+                AND m.tipo_movimentacao = 'saida'
+
+            GROUP BY
+                pr.id_produto
+
+            ORDER BY
+                quantidade_vendida DESC
+        ";
+
+        $stmt = $pdo->query($sql);
+        $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="relatorio_produtos_pagos.csv"');
+
+        $output = fopen('php://output', 'w');
+
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+        fputcsv($output, [
+            'Produto',
+            'Quantidade Vendida',
+            'Valor Unitário',
+            'Valor Total'
+        ], ';');
+
+        foreach ($dados as $linha) {
+
+            fputcsv($output, [
+                $linha['produto'],
+                $linha['quantidade_vendida'],
+                number_format($linha['valor_unitario'], 2, ',', '.'),
+                number_format($linha['valor_total'], 2, ',', '.')
+            ], ';');
+
+        }
+
+        fclose($output);
+        exit;
+
+    } catch (PDOException $e) {
+
+        die("Erro ao exportar: " . $e->getMessage());
+
+    }
+}
+
 ?>
-
-
-
-
 <!DOCTYPE html>
 
 
@@ -201,6 +263,8 @@ $totalPaginas = ceil($totalRegistros / $limite);
                         </select>
                     </div>
 
+
+
                     <div class="grafico">
                         <div class="linha-bg l1"></div>
                         <div class="linha-bg l2"></div>
@@ -298,7 +362,12 @@ $totalPaginas = ceil($totalRegistros / $limite);
 
             </div>
 
-
+                        <div class="excel">
+                            <a href="?exportar=true">
+                                <i class="bi bi-file-earmark-excel"></i>
+                                Exportar Produtos Pagos
+                            </a>
+                        </div>
             <div class="bottom-row">
 
                 <div class="card">

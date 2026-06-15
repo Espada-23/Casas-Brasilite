@@ -147,11 +147,28 @@ require_once "filtro.php";
                 <?php endif; ?>
 
                 <?php foreach ($produtos as $p): ?>
+                    <?php
+                    $preco_original = (float)$p['preco_unitario'];
+                    $desconto_reais = (float)$p['desconto'];
+
+                    $preco_final = $preco_original - $desconto_reais;
+
+                    if ($preco_final < 0) {
+                        $preco_final = 0;
+                    }
+
+                    $porcentagem_desconto = 0;
+
+                    if ($desconto_reais > 0 && $preco_original > 0) {
+                        $porcentagem_desconto = round(($desconto_reais / $preco_original) * 100);
+                    }
+                    ?>
+
                     <div class="cartao-produto">
 
-                        <?php if ($p['desconto'] > 0): ?>
+                        <?php if ($desconto_reais > 0): ?>
                             <span class="selo-desconto">
-                                <?= number_format(($p['desconto']), 0) ?>%
+                                <?= $porcentagem_desconto ?>%
                             </span>
                         <?php endif; ?>
 
@@ -188,19 +205,14 @@ require_once "filtro.php";
                             (<?= $p['total_avaliacoes'] ?>)
                         </div>
 
-                        <?php if (!empty($p['desconto']) && $p['desconto'] > 0): ?>
-                            <?php if ($p['desconto'] < 100) {
-                                $precoAntigo = $p['preco_unitario'] / (1 - ($p['desconto'] / 100));
-                            } else {
-                                $precoAntigo = $p['preco_unitario'];
-                            } ?>
+                        <?php if ($desconto_reais > 0): ?>
                             <p class="preco-antigo">
-                                R$ <?= number_format(round($precoAntigo, 2), 2, ',', '.') ?>
+                                R$ <?= number_format($preco_original, 2, ',', '.') ?>
                             </p>
                         <?php endif; ?>
 
                         <div class="preco-produto">
-                            R$ <?= number_format($p['preco_unitario'], 2, ',', '.') ?>
+                            R$ <?= number_format($preco_final, 2, ',', '.') ?>
                         </div>
 
                         <?php
@@ -218,7 +230,7 @@ require_once "filtro.php";
                             $parcelas = 10;
                         }
 
-                        $valorParcela = $p['preco_unitario'] / $parcelas;
+                        $valorParcela = $preco_final / $parcelas;
                         ?>
 
                         <div class="parcelamento">

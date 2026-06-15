@@ -14,7 +14,6 @@ if (!usuarioLogado()) {
 
 $id_usuario_logado = idUsuarioLogado();
 
-//  Consulta dos pedidos
 $queryPedidos = "
     SELECT 
         p.id_pedido, 

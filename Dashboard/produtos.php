@@ -2,6 +2,13 @@
 require_once '../Crud/init.php';
 require_once '../Crud/crud.php';
 
+$nome_imagem_1 = $_SESSION['nome_imagem_1'] ?? "Imagem Principal";
+$nome_imagem_2 = $_SESSION['nome_imagem_2'] ?? "Imagem 2";
+$nome_imagem_3 = $_SESSION['nome_imagem_3'] ?? "Imagem 3";
+$nome_imagem_4 = $_SESSION['nome_imagem_4'] ?? "Imagem 4";
+$obrigatoria = "(Obrigatória)";
+$opcional = "(Opcional)";
+
 $acao = $_GET['acao'] ?? 'listar';
 $id = $_GET['id'] ?? null;
 
@@ -10,9 +17,38 @@ $statusFiltro = $_GET['status'] ?? '';
 $pesquisa = isset($_GET['pesquisa']) ? trim($_GET['pesquisa']) : '';
 $id_filtrado = isset($_GET['id_filtrado']) ? (int)$_GET['id_filtrado'] : null;
 $marca_filtrado = isset($_GET['marca_filtrado']) ? trim($_GET['marca_filtrado']) : null;
-$id_categoria_selecionada = isset($_GET['id_categoria']) ? $_GET['id_categoria'] : '';
+$id_categoria_selecionada = $_GET['id_categoria'] ?? '';
+
+
+if ($_SERVER['REQUEST_METHOD'] === '=== POST' && ($acao === 'atualizar_fotos')) {
+    $_SESSION['dados_salvos'] = $_POST;
+
+    for ($i = 1; $i <= 4; $i++) {
+        $campo = 'foto_produto_' . $i;
+
+        if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] == 0) {
+            $_SESSION['nome_imagem_' . $i] = $_FILES[$campo]['name'];
+        }
+    }
+
+    include 'produtos.php';
+    exit;
+}
+
+header("Location: produtos.php");
+exit;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($acao === 'salvar_novo' || $acao === 'salvar_edicao')) {
+    $_SESSION['dados_salvos'] = $_POST;
+
+    for ($i = 1; $i <= 4; $i++) {
+
+    $campo = 'foto_produto_' . $i;
+
+    if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] == 0) {
+        $_SESSION['nome_imagem_' . $i] = $_FILES[$campo]['name'];
+    }
+    }
 
     $dados_produto = [
         'idCategoria' => $_POST['id_categoria'] ?? '',
@@ -31,51 +67,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($acao === 'salvar_novo' || $acao =
     if ($acao === 'salvar_novo') {
         $id_produto_novo = create($pdo, 'produto', $dados_produto);
 
-        $dados_estoque = [
+        $id_estoque_novo = create($pdo, 'estoque', [
             'idProduto' => $id_produto_novo,
             'quantidade_atual' => $_POST['quantidade'] ?? 1,
             'estoque_minimo' => $_POST['estoque_minimo'] ?? 1,
             'local_armazenamento' => $_POST['local_armazenamento'] ?? null,
             'status_estoque' => 'disponivel'
-        ];
+        ]);
 
-        $id_estoque_novo = create($pdo, 'estoque', $dados_estoque);
-
-        $dados_movimentacao = [
+        create($pdo, 'movimentacao', [
             'idUsuario' => $_SESSION['id_usuario'] ?? 1,
             'idEstoque' => $id_estoque_novo,
             'tipo_movimentacao' => 'entrada',
             'quantidade' => $_POST['quantidade'] ?? 1,
             'status_movimentacao' => 'concluido'
-        ];
+        ]);
 
-        create($pdo, 'movimentacao', $dados_movimentacao);
+        $diretorio_destino = '../uploads/';
+        if (!is_dir($diretorio_destino)) {
+            mkdir($diretorio_destino, 0777, true);
+        }
 
-        if (isset($_FILES['foto_produto'])) {
-            $diretorio_destino = '../uploads/';
+        for ($i = 1; $i <= 4; $i++) {
+            $campo = 'foto_produto_' . $i;
+            if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] === UPLOAD_ERR_OK) {
+                $nome_arquivo = time() . '_' . $i . '_' . basename($_FILES[$campo]['name']);
+                $caminho_upload = $diretorio_destino . $nome_arquivo;
 
-            if (!is_dir($diretorio_destino)) {
-                mkdir($diretorio_destino, 0777, true);
-            }
-
-            foreach ($_FILES['foto_produto']['name'] as $i => $nomeOriginal) {
-                if ($_FILES['foto_produto']['error'][$i] === UPLOAD_ERR_OK && !empty($nomeOriginal)) {
-                    $nome_arquivo = time() . '_' . $i . '_' . basename($nomeOriginal);
-                    $caminho_upload = $diretorio_destino . $nome_arquivo;
-
-                    if (move_uploaded_file($_FILES['foto_produto']['tmp_name'][$i], $caminho_upload)) {
-                        $dados_foto = [
-                            'idProduto' => $id_produto_novo,
-                            'caminho_imagem' => 'uploads/' . $nome_arquivo,
-                            'descricao_imagem' => $_POST['descricao_imagem'] ?? null
-                        ];
-
-                        create($pdo, 'foto_produto', $dados_foto);
-                    }
+                if (move_uploaded_file($_FILES[$campo]['tmp_name'], $caminho_upload)) {
+                    create($pdo, 'foto_produto', [
+                        'idProduto' => $id_produto_novo,
+                        'caminho_imagem' => 'uploads/' . $nome_arquivo,
+                        'descricao_imagem' => $_POST['descricao_imagem'] ?? null
+                    ]);
                 }
             }
         }
 
+        unset($_SESSION['dados_salvos']);
         header('Location: produtos.php?mensagem=Criado com sucesso');
         exit;
     }
@@ -86,13 +115,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($acao === 'salvar_novo' || $acao =
 
         update($pdo, 'produto', $dados_produto, "id_produto = " . $id_int);
 
-        $dados_estoque = [
+        update($pdo, 'estoque', [
             'quantidade_atual' => $_POST['quantidade'] ?? 0,
             'estoque_minimo' => $_POST['estoque_minimo'] ?? 1,
             'local_armazenamento' => $_POST['local_armazenamento'] ?? null
-        ];
-
-        update($pdo, 'estoque', $dados_estoque, "idProduto = " . $id_int);
+        ], "idProduto = " . $id_int);
 
         if ($estoque_atual) {
             $qtd_anterior = (int)$estoque_atual['quantidade_atual'];
@@ -100,70 +127,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($acao === 'salvar_novo' || $acao =
             $diferenca = $qtd_nova - $qtd_anterior;
 
             if ($diferenca !== 0) {
-                $dados_movimentacao = [
+                create($pdo, 'movimentacao', [
                     'idUsuario' => $_SESSION['id_usuario'] ?? 1,
                     'idEstoque' => $estoque_atual['id_estoque'],
                     'tipo_movimentacao' => $diferenca > 0 ? 'entrada' : 'saida',
                     'quantidade' => abs($diferenca),
                     'status_movimentacao' => 'concluido'
-                ];
-
-                create($pdo, 'movimentacao', $dados_movimentacao);
+                ]);
             }
         }
 
-        if (isset($_FILES['foto_produto'])) {
-            $diretorio_destino = '../uploads/';
+        $diretorio_destino = '../uploads/';
+        if (!is_dir($diretorio_destino)) {
+            mkdir($diretorio_destino, 0777, true);
+        }
 
-            if (!is_dir($diretorio_destino)) {
-                mkdir($diretorio_destino, 0777, true);
-            }
+        for ($i = 1; $i <= 4; $i++) {
+            $campo = 'foto_produto_' . $i;
+            if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] === UPLOAD_ERR_OK) {
+                $nome_arquivo = time() . '_' . $i . '_' . basename($_FILES[$campo]['name']);
+                $caminho_upload = $diretorio_destino . $nome_arquivo;
 
-            $temImagemNova = false;
+                if (move_uploaded_file($_FILES[$campo]['tmp_name'], $caminho_upload)) {
+                    $foto_existente = $pdo
+                        ->query("SELECT * FROM foto_produto WHERE idProduto = $id_int ORDER BY id_foto ASC LIMIT 1 OFFSET " . ($i - 1))
+                        ->fetch(PDO::FETCH_ASSOC);
 
-            foreach ($_FILES['foto_produto']['name'] as $i => $nomeOriginal) {
-                if ($_FILES['foto_produto']['error'][$i] === UPLOAD_ERR_OK && !empty($nomeOriginal)) {
-                    $temImagemNova = true;
-                    break;
-                }
-            }
-
-            if ($temImagemNova) {
-                $fotos_antigas = $pdo
-                    ->query("SELECT * FROM foto_produto WHERE idProduto = " . $id_int)
-                    ->fetchAll(PDO::FETCH_ASSOC);
-
-                foreach ($fotos_antigas as $foto_antiga) {
-                    if (!empty($foto_antiga['caminho_imagem'])) {
-                        $arquivo_antigo = '../' . $foto_antiga['caminho_imagem'];
-
-                        if (file_exists($arquivo_antigo)) {
-                            unlink($arquivo_antigo);
+                    if ($foto_existente) {
+                        if (!empty($foto_existente['caminho_imagem'])) {
+                            $arquivo_antigo = '../' . $foto_existente['caminho_imagem'];
+                            if (file_exists($arquivo_antigo)) {
+                                unlink($arquivo_antigo);
+                            }
                         }
-                    }
-                }
 
-                delete($pdo, 'foto_produto', "idProduto = " . $id_int);
-
-                foreach ($_FILES['foto_produto']['name'] as $i => $nomeOriginal) {
-                    if ($_FILES['foto_produto']['error'][$i] === UPLOAD_ERR_OK && !empty($nomeOriginal)) {
-                        $nome_arquivo = time() . '_' . $i . '_' . basename($nomeOriginal);
-                        $caminho_upload = $diretorio_destino . $nome_arquivo;
-
-                        if (move_uploaded_file($_FILES['foto_produto']['tmp_name'][$i], $caminho_upload)) {
-                            $dados_foto = [
-                                'idProduto' => $id_int,
-                                'caminho_imagem' => 'uploads/' . $nome_arquivo,
-                                'descricao_imagem' => $_POST['descricao_imagem'] ?? null
-                            ];
-
-                            create($pdo, 'foto_produto', $dados_foto);
-                        }
+                        update($pdo, 'foto_produto', [
+                            'caminho_imagem' => 'uploads/' . $nome_arquivo,
+                            'descricao_imagem' => $_POST['descricao_imagem'] ?? null
+                        ], "id_foto = " . $foto_existente['id_foto']);
+                    } else {
+                        create($pdo, 'foto_produto', [
+                            'idProduto' => $id_int,
+                            'caminho_imagem' => 'uploads/' . $nome_arquivo,
+                            'descricao_imagem' => $_POST['descricao_imagem'] ?? null
+                        ]);
                     }
                 }
             }
         }
 
+        unset($_SESSION['dados_salvos']);
         header('Location: produtos.php?mensagem=Editado com sucesso');
         exit;
     }
@@ -174,15 +187,13 @@ if ($acao === 'excluir' && $id) {
     $estoque_atual = read($pdo, 'estoque', '*', "idProduto = " . $id_int);
 
     if ($estoque_atual && $estoque_atual['quantidade_atual'] > 0) {
-        $dados_movimentacao = [
+        create($pdo, 'movimentacao', [
             'idUsuario' => $_SESSION['id_usuario'] ?? 1,
             'idEstoque' => $estoque_atual['id_estoque'],
             'tipo_movimentacao' => 'saida',
             'quantidade' => $estoque_atual['quantidade_atual'],
             'status_movimentacao' => 'concluido'
-        ];
-
-        create($pdo, 'movimentacao', $dados_movimentacao);
+        ]);
     }
 
     delete($pdo, 'produto', "id_produto = " . $id_int);
@@ -349,7 +360,6 @@ $categorias = readAll($pdo, 'categoria');
 
 
                     <?php
-
                     $totalNormal = 0;
                     $totalAtencao = 0;
                     $totalCritico = 0;
@@ -548,7 +558,7 @@ $categorias = readAll($pdo, 'categoria');
         </div>
 
     <?php
-    elseif ($acao === 'novo' || $acao === 'editar'):
+    elseif ($acao === 'novo' || $acao === 'editar' || $acao === 'atualizar_fotos'):
         $produto = null;
         $estoque = null;
         $url_post = "?acao=salvar_novo";
@@ -676,26 +686,48 @@ $categorias = readAll($pdo, 'categoria');
                                 </div>
 
                                 <div class="main-form">
-
+                                <form action="produtos_fotos.php?acao=<?= $acao ?><?= isset($id) ? '&id='.$id : '' ?>" method="post" enctype="multipart/form-data">
                                     <div class="campo">
                                         <label>Imagem Principal</label>
-                                        <input type="file" name="foto_produto[]" accept="image/png, image/jpeg, image/webp">
+                                        <input type="file" onchange="this.form.action='produtos.php?acao=atualizar_fotos'; this.form.submit();" name="foto_produto_1" id="foto_principal" enctype="multipart/form-data" accept="image/png, image/jpeg, image/webp">
+                                        <label for="foto_principal" class="upload-label">
+                                            <span class="icon">+</span>
+                                            <span class="title"><?= $_SESSION['nome_imagem_1'] ?? $nome_imagem_1; ?></span>
+                                            <?php echo (!($_SESSION['nome_imagem_2']) ? '<span class="subtitle"><?= $brigatoria ?? ""; ?></span>' : 'Obrigatório'); ?>
+                                        </label>
                                     </div>
 
                                     <div class="campo">
                                         <label>Imagem 2</label>
-                                        <input type="file" name="foto_produto[]" accept="image/png, image/jpeg, image/webp">
+                                        <input type="file" onchange="this.form.action='produtos.php?acao=atualizar_fotos'; this.form.submit();" name="foto_produto_2" id="foto_2" accept="image/png, image/jpeg, image/webp">
+                                        <label for="foto_2" class="upload-label">
+                                            <span class="icon">+</span>
+                                            <span class="title"><?= $_SESSION['nome_imagem_2'] ?? $nome_imagem_2; ?></span>
+                                            <?php echo (!($_SESSION['nome_imagem_2']) ? '<span class="subtitle"><?= $opcional ?? ""; ?></span>' : 'Opcional'); ?>
+                                        </label>
                                     </div>
 
                                     <div class="campo">
                                         <label>Imagem 3</label>
-                                        <input type="file" name="foto_produto[]" accept="image/png, image/jpeg, image/webp">
+                                        <input type="file" onchange="this.form.action='produtos.php?acao=atualizar_fotos'; this.form.submit();" name="foto_produto_3" id="foto_3" accept="image/png, image/jpeg, image/webp">
+                                        <label for="foto_3" class="upload-label">
+                                            <span class="icon">+</span>
+                                            <span class="title"><?= $_SESSION['nome_imagem_3'] ?? $nome_imagem_3; ?></span>
+                                            <?php echo (!($_SESSION['nome_imagem_2']) ? '<span class="subtitle"><?= $opcional ?? ""; ?></span>' : 'Opcional'); ?>
+                                        </label>
                                     </div>
 
                                     <div class="campo">
                                         <label>Imagem 4</label>
-                                        <input type="file" name="foto_produto[]" accept="image/png, image/jpeg, image/webp">
+                                        <input type="file" onchange="this.form.action='produtos.php?acao=atualizar_fotos'; this.form.submit();" name="foto_produto_4" id="foto_4" accept="image/png, image/jpeg, image/webp">
+                                        <label for="foto_4" class="upload-label">
+                                            <span class="icon">+</span>
+                                            <span class="title"><?= $_SESSION['nome_imagem_4'] ?? $nome_imagem_4; ?></span>
+                                            <?php echo (!($_SESSION['nome_imagem_2']) ? '<span class="subtitle"><?= $opcional ?? ""; ?></span>' : 'Opcional'); ?>
+                                        </label>
                                     </div>
+                                </form>
+                                    <span style="margin-top:-15px;">Arraste e solte até 4 imagens (ou clique para selecionar). Tipos aceitos: JPG, PNG, WEBP.</span>
                                 </div>
                             </div>
                             <div class="botton-form">

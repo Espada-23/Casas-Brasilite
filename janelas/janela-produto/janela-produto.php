@@ -31,6 +31,12 @@ if (empty($fotos)) {
     $fotos[] = ['caminho_imagem' => '../../uploads/sem-foto.webp'];
 }
 
+$fotoSelecionada = isset($_GET['foto']) ? (int)$_GET['foto'] : 0;
+
+if (!isset($fotos[$fotoSelecionada])) {
+    $fotoSelecionada = 0;
+}
+
 $preco_atual = $produto['preco_unitario'];
 $desconto_porcentagem = (int)$produto['desconto'];
 if ($desconto_porcentagem > 0) {
@@ -122,13 +128,16 @@ $produtos_relacionados = $stmt_relacionados->fetchAll(PDO::FETCH_ASSOC);
                 <div class="galeria-produto">
 
                     <div class="miniaturas">
-                        <?php
-                        foreach ($fotos as $lista => $foto):
-                            $classe_ativa = ($lista === 0) ? 'ativa' : '';
-                        ?>
-                            <div class="miniatura <?= $classe_ativa ?>">
-                                <img src="../../<?= $foto['caminho_imagem'] ?>" alt="<?= $produto['nome_produto'] ?>">
-                            </div>
+                        <?php foreach ($fotos as $lista => $foto): ?>
+                            <?php $classe_ativa = ($lista == $fotoSelecionada) ? 'ativa' : ''; ?>
+
+                            <a href="janela-produto.php?id=<?= $id_produto ?>&foto=<?= $lista ?>"
+                                class="miniatura <?= $classe_ativa ?>">
+
+                                <img src="../../<?= $foto['caminho_imagem'] ?>"
+                                    alt="<?= $produto['nome_produto'] ?>">
+                            </a>
+
                         <?php endforeach; ?>
                     </div>
 
@@ -138,7 +147,8 @@ $produtos_relacionados = $stmt_relacionados->fetchAll(PDO::FETCH_ASSOC);
                                             ? 'fa-solid fa-heart'
                                             : 'fa-regular fa-heart' ?>"></i>
                         </a>
-                        <img src="../../<?= $produto['caminho_imagem'] ?>" alt="<?= $produto['nome_produto'] ?>">
+                        <img src="../../<?= $fotos[$fotoSelecionada]['caminho_imagem'] ?>"
+                            alt="<?= $produto['nome_produto'] ?>">
                     </div>
 
                 </div>
@@ -191,7 +201,7 @@ $produtos_relacionados = $stmt_relacionados->fetchAll(PDO::FETCH_ASSOC);
                             </span>
                         <?php endif; ?>
                     </div>
-                    
+
                     <?php
                     if ($preco_atual <= 50) {
                         $parcelas = 2;

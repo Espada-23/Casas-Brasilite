@@ -10,8 +10,6 @@ $total_clientes = count($clientes);
 $stmt = $pdo->query("SELECT COUNT(*) as total FROM pedido");
 $total_pedidos = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
-// KPIs
-
 $stmt = $pdo->query("
     SELECT SUM(valor_total) AS total
     FROM pagamento
@@ -26,8 +24,6 @@ $stmt = $pdo->query("
 ");
 $itens_vendidos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
-// Custos
-
 $stmt = $pdo->query("
     SELECT SUM(m.quantidade * p.custo_produto) AS total
     FROM movimentacao m
@@ -39,13 +35,9 @@ $stmt = $pdo->query("
 
 $custos = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
-// Lucro
-
 $lucroLiquido = $faturamento - $custos;
 
 $margem = $faturamento > 0 ? ($lucroLiquido / $faturamento) * 100 : 0;
-
-// ESTOQUE
 
 $stmt = $pdo->query("
     SELECT
@@ -62,8 +54,6 @@ $stmt = $pdo->query("
 
 $estoques = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// PEDIDOS
-
 $stmt = $pdo->query("
     SELECT
         p.id_pedido,
@@ -79,6 +69,77 @@ $stmt = $pdo->query("
 ");
 
 $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if (isset($_GET['exportar']) && $_GET['exportar'] == 'true') {
+
+    try {
+
+        $sql = "
+            SELECT
+                pr.nome_produto AS produto,
+                SUM(m.quantidade) AS quantidade_vendida,
+                pr.preco_unitario AS valor_unitario,
+                SUM(m.quantidade * pr.preco_unitario) AS valor_total
+
+            FROM pagamento p
+
+            INNER JOIN movimentacao m
+                ON p.id_pagamento = m.idPagamento
+
+            INNER JOIN estoque e
+                ON m.idEstoque = e.id_estoque
+
+            INNER JOIN produto pr
+                ON e.idProduto = pr.id_produto
+
+            WHERE
+                p.status_pagamento = 'pago'
+                AND m.tipo_movimentacao = 'saida'
+
+            GROUP BY
+                pr.id_produto
+
+            ORDER BY
+                quantidade_vendida DESC
+        ";
+
+        $stmt = $pdo->query($sql);
+        $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="relatorio_produtos_pagos.csv"');
+
+        $output = fopen('php://output', 'w');
+
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+        fputcsv($output, [
+            'Produto',
+            'Quantidade Vendida',
+            'Valor Unitário',
+            'Valor Total'
+        ], ';');
+
+        foreach ($dados as $linha) {
+
+            fputcsv($output, [
+                $linha['produto'],
+                $linha['quantidade_vendida'],
+                number_format($linha['valor_unitario'], 2, ',', '.'),
+                number_format($linha['valor_total'], 2, ',', '.')
+            ], ';');
+
+        }
+
+        fclose($output);
+        exit;
+
+    } catch (PDOException $e) {
+
+        die("Erro ao exportar: " . $e->getMessage());
+
+    }
+}
 
 ?>
 
@@ -121,6 +182,7 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </header>
 
         <main class="main">
+ 
 
             <section class="cards-top">
 
@@ -283,7 +345,12 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <span>Mai</span><span>Jun</span><span>Jul</span><span>Ago</span>
                             <span>Set</span><span>Out</span><span>Nov</span><span>Dez</span>
                         </div>
+
+
+
                     </div>
+
+                    
 
                     <div class="grafico-barra-card">
                         <div class="topo-barra">
@@ -397,6 +464,13 @@ $pedidos_recentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
 
             </div>
+
+                       <div class="excel">
+                            <a href="?exportar=true">
+                                <i class="bi bi-file-earmark-excel"></i>
+                                Exportar Produtos Pagos
+                            </a>
+                        </div>
 
             <div class="bottom-row">
 
