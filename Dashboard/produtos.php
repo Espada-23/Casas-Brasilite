@@ -5,8 +5,30 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once '../Crud/init.php';
 require_once '../Crud/crud.php';
 
-$acao = $_GET['acao'] ?? 'listar';
-$id = $_GET['id'] ?? null;
+$acao = $_POST['acao'] ?? $_GET['acao'] ?? 'listar';
+$id = $_POST['id'] ?? $_GET['id'] ?? null;
+
+$nome_imagem_1 = $_SESSION['nome_imagem_1'] ?? "Imagem Principal";
+$nome_imagem_2 = $_SESSION['nome_imagem_2'] ?? "Imagem 2";
+$nome_imagem_3 = $_SESSION['nome_imagem_3'] ?? "Imagem 3";
+$nome_imagem_4 = $_SESSION['nome_imagem_4'] ?? "Imagem 4";
+$obrigatoria = "(Obrigatória)";
+$opcional = "(Opcional)";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $acao === 'atualizar_fotos') {
+    $_SESSION['dados_salvos'] = $_POST ?? '';
+
+    for ($i = 1; $i <= 4; $i++) {
+        $campo = 'foto_produto_' . $i;
+
+        if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] == 0) {
+            $_SESSION['nome_imagem_' . $i] = $_FILES[$campo]['name'];
+        }
+    }
+
+    header("Location: produtos.php?acao=novo");
+    exit;
+}
 
 $erro = '';
 $statusFiltro = $_GET['status'] ?? '';
@@ -14,7 +36,6 @@ $pesquisa = isset($_GET['pesquisa']) ? trim($_GET['pesquisa']) : '';
 $id_filtrado = isset($_GET['id_filtrado']) ? (int)$_GET['id_filtrado'] : null;
 $marca_filtrado = isset($_GET['marca_filtrado']) ? trim($_GET['marca_filtrado']) : null;
 $id_categoria_selecionada = $_GET['id_categoria'] ?? '';
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($acao === 'salvar_novo' || $acao === 'salvar_edicao')) {
     $dados_produto = [
@@ -65,26 +86,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($acao === 'salvar_novo' || $acao =
 
         for ($i = 1; $i <= 4; $i++) {
             $campo = 'foto_produto_' . $i;
+
             if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] === UPLOAD_ERR_OK) {
                 $nome_arquivo = time() . '_' . $i . '_' . basename($_FILES[$campo]['name']);
                 $caminho_upload = $diretorio_destino . $nome_arquivo;
 
                 if (move_uploaded_file($_FILES[$campo]['tmp_name'], $caminho_upload)) {
-                    create($pdo, 'foto_produto', [
-                        'idProduto' => $id_produto_novo,
-                        'caminho_imagem' => 'uploads/' . $nome_arquivo,
-                        'descricao_imagem' => $_POST['descricao_imagem'] ?? null
-                    ]);
+
+                    $foto_existente = $pdo
+                        ->query("SELECT * FROM foto_produto WHERE idProduto = $id_produto_novo ORDER BY id_foto ASC LIMIT 1 OFFSET " . ($i - 1))
+                        ->fetch(PDO::FETCH_ASSOC);
+
+                    if ($foto_existente) {
+                        if (!empty($foto_existente['caminho_imagem'])) {
+                            $arquivo_antigo = '../' . $foto_existente['caminho_imagem'];
+                            if (file_exists($arquivo_antigo)) {
+                                unlink($arquivo_antigo);
+                            }
+                        }
+
+                        update($pdo, 'foto_produto', [
+                            'caminho_imagem' => 'uploads/' . $nome_arquivo,
+                            'descricao_imagem' => $_POST['descricao_imagem'] ?? null
+                        ], "id_foto = " . $foto_existente['id_foto']);
+                    } else {
+                        create($pdo, 'foto_produto', [
+                            'idProduto' => $id_produto_novo,
+                            'caminho_imagem' => 'uploads/' . $nome_arquivo,
+                            'descricao_imagem' => $_POST['descricao_imagem'] ?? null
+                        ]);
+                    }
                 }
             }
         }
 
-        header('Location: produtos.php?mensagem=Criado com sucesso');
+        unset($_SESSION['dados_salvos']);
+        unset($_SESSION['nome_imagem_1'], $_SESSION['nome_imagem_2'], $_SESSION['nome_imagem_3'], $_SESSION['nome_imagem_4']);
+
+        header('Location: produtos.php?mensagem=Cadastrado com sucesso');
         exit;
     }
 
     if ($acao === 'salvar_edicao' && $id) {
         $id_int = (int)$id;
+
         $estoque_atual = read($pdo, 'estoque', '*', "idProduto = " . $id_int);
 
         update($pdo, 'produto', $dados_produto, "id_produto = " . $id_int);
@@ -151,10 +196,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($acao === 'salvar_novo' || $acao =
         }
 
         unset($_SESSION['dados_salvos']);
-        unset($_SESSION['nome_imagem_1']);
-        unset($_SESSION['nome_imagem_2']);
-        unset($_SESSION['nome_imagem_3']);
-        unset($_SESSION['nome_imagem_4']);
 
         header('Location: produtos.php?mensagem=Editado com sucesso');
         exit;
@@ -296,9 +337,6 @@ $categorias = readAll($pdo, 'categoria');
             }
         }
 
-
-
-
         $queryBase = http_build_query([
             'status' => $statusFiltro,
             'id_categoria' => $id_categoria_selecionada,
@@ -344,7 +382,6 @@ $categorias = readAll($pdo, 'categoria');
                     $totalAtencao = 0;
                     $totalCritico = 0;
 
-
                     $sqlCards = "
                                 SELECT
                                     quantidade_atual,
@@ -356,7 +393,6 @@ $categorias = readAll($pdo, 'categoria');
                     $dadosCards = $stmtCards->fetchAll(PDO::FETCH_ASSOC);
 
                     foreach ($dadosCards as $item) {
-
                         if ($item['quantidade_atual'] == 0) {
                             $totalCritico++;
                         } elseif ($item['quantidade_atual'] <= $item['estoque_minimo']) {
@@ -394,7 +430,6 @@ $categorias = readAll($pdo, 'categoria');
                                     value="<?= htmlspecialchars($pesquisa) ?>"
                                     placeholder="Buscar Produto...">
                             </form>
-
                         </div>
 
                         <div class="selects">
@@ -430,7 +465,6 @@ $categorias = readAll($pdo, 'categoria');
                             <i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>
                             Nenhum produto encontrado.
                         </div>
-
                     <?php endif; ?>
 
 
@@ -535,12 +569,40 @@ $categorias = readAll($pdo, 'categoria');
     elseif ($acao === 'novo' || $acao === 'editar'):
         $produto = null;
         $estoque = null;
+        $foto = null;
         $url_post = "?acao=salvar_novo";
 
+        if ($acao === 'novo') {
+            $veio_de_fora = isset($_SERVER['HTTP_REFERER']) && !str_contains($_SERVER['HTTP_REFERER'], 'acao=novo');
+            $veio_do_upload = isset($_SERVER['HTTP_REFERER']) && str_contains($_SERVER['HTTP_REFERER'], 'produtos_fotos.php');
+
+            if ($veio_de_fora && !$veio_do_upload) {
+                unset($_SESSION['dados_salvos']);
+                unset($_SESSION['nome_imagem_1'], $_SESSION['nome_imagem_2'], $_SESSION['nome_imagem_3'], $_SESSION['nome_imagem_4']);
+                $form_dados = [];
+            }
+        }
+
         if ($acao === 'editar' && $id) {
-            $produto = read($pdo, 'produto', '*', "id_produto = " . (int)$id);
-            $estoque = read($pdo, 'estoque', '*', "idProduto = " . (int)$id);
-            $url_post = "?acao=salvar_edicao&id=" . (int)$id;
+            $id_int = (int)$id;
+
+            $produto = read($pdo, 'produto', '*', "id_produto = " . $id_int);
+            $estoque = read($pdo, 'estoque', '*', "idProduto = " . $id_int);
+
+            $stmtFoto = $pdo->prepare("SELECT * FROM foto_produto WHERE idProduto = ? ORDER BY id_foto ASC LIMIT 4");
+            $stmtFoto->execute([$id_int]);
+            $fotos_produto = $stmtFoto->fetchAll(PDO::FETCH_ASSOC);
+
+            $foto = [];
+            foreach ($fotos_produto as $idx => $f) {
+                $foto[$idx + 1] = $f;
+            }
+
+            if (empty($foto[1])) {
+                $foto[1] = ['caminho_imagem' => '', 'descricao_imagem' => ''];
+            }
+
+            $url_post = "?acao=salvar_edicao&id=" . $id_int;
         }
     ?>
         <div class="content">
@@ -569,7 +631,13 @@ $categorias = readAll($pdo, 'categoria');
                         <h2>Dados do Produto</h2>
                     </div>
                     <div class="main-card-cadastro">
-                        <form action="<?= $url_post ?>" method="POST" enctype="multipart/form-data" class="form-cadastro-produto">
+                        <form action="produtos.php<?= $url_post ?>" method="POST" enctype="multipart/form-data" class="form-cadastro-produto">
+                            <input type="hidden" name="acao" value="<?= $acao === 'editar' ? 'salvar_edicao' : 'salvar_novo' ?>">
+
+                            <?php if ($id): ?>
+                                <input type="hidden" name="id" value="<?= (int)$id ?>">
+                            <?php endif; ?>
+
                             <div class="cadastros-form">
                                 <div class="top-form">
                                     <div class="campo">
@@ -578,7 +646,7 @@ $categorias = readAll($pdo, 'categoria');
                                             <option value="">Escolha a Categoria</option>
 
                                             <?php if (!empty($categorias)): ?>
-                                                <?php foreach ($categorias as $cat): 
+                                                <?php foreach ($categorias as $cat):
                                                     $cat_selecionada = $form_dados['id_categoria'] ?? $produto['idCategoria'] ?? '';
                                                 ?>
                                                     <option value="<?= $cat['id_categoria'] ?>" <?= $cat_selecionada == $cat['id_categoria'] ? 'selected' : '' ?>>
@@ -651,42 +719,88 @@ $categorias = readAll($pdo, 'categoria');
                                 <div class="top-form">
                                     <div class="campo">
                                         <label>Quantidade em Estoque <span>*</span></label>
-                                        <input type="number" placeholder="Ex: 100" name="quantidade" value="<?= $form_dados['quantidade_atual'] ?? $produto['quantidade_atual'] ?? '1'; ?>" min="0" required>
+                                        <input type="number" placeholder="Ex: 100" name="quantidade" value="<?= $form_dados['quantidade_atual'] ?? $estoque['quantidade_atual'] ?? '1'; ?>" min="0" required>
                                     </div>
                                     <div class="campo">
                                         <label>Estoque Mínimo <span>*</span></label>
-                                        <input type="number" placeholder="Ex: 10" name="estoque_minimo" value="<?= $form_dados['estoque_minimo'] ?? $produto['estoque_minimo'] ?? '1'; ?>" min="1" required>
+                                        <input type="number" placeholder="Ex: 10" name="estoque_minimo" value="<?= $form_dados['estoque_minimo'] ?? $estoque['estoque_minimo'] ?? '1'; ?>" min="1" required>
                                     </div>
                                     <div class="campo">
                                         <label>Local de Armazenamento</label>
-                                        <input type="text" placeholder="Ex: Corredor A1" name="local_armazenamento" value="<?= $form_dados['local_armazenamento'] ?? $produto['local_armazenamento'] ?? ''; ?>">
+                                        <input type="text" placeholder="Ex: Corredor A1" name="local_armazenamento" value="<?= $form_dados['local_armazenamento'] ?? $estoque['local_armazenamento'] ?? ''; ?>">
                                     </div>
                                 </div>
-
-                                <div class="main-form">
-                                    <?php require_once "produtos_fotos.php"; ?>
-
-                                    <span style="margin-top:-15px;">Selecione até 4 imagens. Tipos aceitos: JPG, PNG, WEBP.</span>
-                                </div>
                             </div>
+
+                            <div class="main-form">
+                                <?php
+                                $nome_1 = $_SESSION['nome_imagem_1'] ?? (isset($foto[1]) && !empty($foto[1]['caminho_imagem']) ? basename($foto[1]['caminho_imagem']) : 'Imagem Principal');
+                                $nome_2 = $_SESSION['nome_imagem_2'] ?? (isset($foto[2]) && !empty($foto[2]['caminho_imagem']) ? basename($foto[2]['caminho_imagem']) : 'Imagem 2');
+                                $nome_3 = $_SESSION['nome_imagem_3'] ?? (isset($foto[3]) && !empty($foto[3]['caminho_imagem']) ? basename($foto[3]['caminho_imagem']) : 'Imagem 3');
+                                $nome_4 = $_SESSION['nome_imagem_4'] ?? (isset($foto[4]) && !empty($foto[4]['caminho_imagem']) ? basename($foto[4]['caminho_imagem']) : 'Imagem 4');
+                                ?>
+
+                                <div class="campo">
+                                    <label>Imagem Principal</label>
+                                    <input type="file" name="foto_produto_1" id="foto_principal" accept="image/png, image/jpeg, image/webp" <?= $acao === 'novo' ? 'required' : '' ?>>
+                                    <label for="foto_principal" class="upload-label">
+                                        <span class="icon">+</span>
+                                        <span class="title"><?= htmlspecialchars($nome_1) ?></span>
+                                        <span class="subtitle"><?= $obrigatoria ?></span>
+                                    </label>
+                                </div>
+
+                                <div class="campo">
+                                    <label>Imagem 2</label>
+                                    <input type="file" name="foto_produto_2" id="foto_2" accept="image/png, image/jpeg, image/webp">
+                                    <label for="foto_2" class="upload-label">
+                                        <span class="icon">+</span>
+                                        <span class="title"><?= htmlspecialchars($nome_2) ?></span>
+                                        <span class="subtitle"><?= $opcional ?></span>
+                                    </label>
+                                </div>
+
+                                <div class="campo">
+                                    <label>Imagem 3</label>
+                                    <input type="file" name="foto_produto_3" id="foto_3" accept="image/png, image/jpeg, image/webp">
+                                    <label for="foto_3" class="upload-label">
+                                        <span class="icon">+</span>
+                                        <span class="title"><?= htmlspecialchars($nome_3) ?></span>
+                                        <span class="subtitle"><?= $opcional ?></span>
+                                    </label>
+                                </div>
+
+                                <div class="campo">
+                                    <label>Imagem 4</label>
+                                    <input type="file" name="foto_produto_4" id="foto_4" accept="image/png, image/jpeg, image/webp">
+                                    <label for="foto_4" class="upload-label">
+                                        <span class="icon">+</span>
+                                        <span class="title"><?= htmlspecialchars($nome_4) ?></span>
+                                        <span class="subtitle"><?= $opcional ?></span>
+                                    </label>
+                                </div>
+
+                                <span style="margin-top:-15px;">Selecione até 4 imagens. Tipos aceitos: JPG, PNG, WEBP.</span>
+                            </div>
+
                             <div class="botton-form">
                                 <div class="campo">
-                                    <?php var_dump($form_dados); ?>
                                     <label>Descrição da Imagem (Acessibilidade - Alt)</label>
-                                    <textarea name="descricao_imagem" placeholder="Ex: Saco de cimento 50kg"><?= $form_dados['descricao_imagem'] ?? $produto['descricao_imagem'] ?? ''; ?></textarea>
+                                    <textarea name="descricao_imagem" placeholder="Ex: Saco de cimento 50kg"><?= htmlspecialchars($form_dados['descricao_imagem'] ?? $foto[1]['descricao_imagem'] ?? ''); ?></textarea>
                                 </div>
 
                                 <div class="descricao">
                                     <label>Descrição de Produto</label>
-                                    <textarea placeholder="Digite os detalhes do produto aqui..." name="descricao_produto"><?= $form_dados['descricao_produto'] ?? $produto['descricao_produto'] ?? ''; ?></textarea>
+                                    <textarea placeholder="Digite os detalhes do produto aqui..." name="descricao_produto"><?= htmlspecialchars($form_dados['descricao_produto'] ?? $produto['descricao_produto'] ?? ''); ?></textarea>
                                 </div>
                             </div>
+
+                            <div class="botoes">
+                                <a href="?acao=listar">Cancelar</a>
+                                <button type="submit"><i class="bi bi-floppy"></i> <?= $acao === 'novo' ? 'Salvar Produto' : 'Atualizar Produto' ?></button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="botoes">
-                        <a href="?acao=listar">Cancelar</a>
-                        <button type="submit"><i class="bi bi-floppy"></i> <?= $acao === 'novo' ? 'Salvar Produto' : 'Atualizar Produto' ?></button>
-                    </div>
-                    </form>
                 </div>
             </div>
         </div>

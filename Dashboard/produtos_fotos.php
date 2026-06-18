@@ -31,11 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $acao === 'atualizar_fotos') {
 }
 ?>
 
-<form action="produtos_fotos.php?acao=atualizar_fotos<?= isset($id) ? '&id='.$id : '' ?>" method="post" enctype="multipart/form-data">
-    
     <div class="campo">
         <label>Imagem Principal</label>
-        <input type="file" onchange="this.form.action='produtos_fotos.php?acao=atualizar_fotos'; this.form.submit();" name="foto_produto_1" id="foto_principal" accept="image/png, image/jpeg, image/webp">
+        <input type="file" onchange="this.form.action='produtos_fotos.php?acao=atualizar_fotos'; this.form.submit();" name="foto_produto_1" id="foto_principal" accept="image/png, image/jpeg, image/webp" required>
         <label for="foto_principal" class="upload-label">
             <span class="icon">+</span>
             <span class="title"><?= $_SESSION['nome_imagem_1'] ?? $nome_imagem_1 ?? 'Selecionar imagem'; ?></span>
@@ -80,4 +78,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $acao === 'atualizar_fotos') {
             </span>
         </label>
     </div>
-</form>

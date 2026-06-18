@@ -129,18 +129,15 @@ $produtos_relacionados = $stmt_relacionados->fetchAll(PDO::FETCH_ASSOC);
 
                     <div class="miniaturas">
                         <?php foreach ($fotos as $lista => $foto): ?>
+                            <?php if ($lista === 0) continue; ?>
                             <?php $classe_ativa = ($lista == $fotoSelecionada) ? 'ativa' : ''; ?>
-
                             <a href="janela-produto.php?id=<?= $id_produto ?>&foto=<?= $lista ?>"
                                 class="miniatura <?= $classe_ativa ?>">
-
                                 <img src="../../<?= $foto['caminho_imagem'] ?>"
                                     alt="<?= $produto['nome_produto'] ?>">
                             </a>
-
                         <?php endforeach; ?>
                     </div>
-
                     <div class="imagem-principal-produto">
                         <a href="/Casas-Brasilite/janelas/janela-favoritos/favoritar.php?id=<?= $produto['id_produto'] ?>" class="icone-favoritar">
                             <i class="<?= in_array($produto['id_produto'], $_SESSION['favoritos'])
